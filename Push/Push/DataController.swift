@@ -13,8 +13,6 @@ class DataController: NSObject {
     
     static let sharedController = DataController()
     
-    let pushChannels: [String] = [String]()
-    
     // MARK: - Core Data stack
     
     lazy var persistentContainer: NSPersistentContainer = {

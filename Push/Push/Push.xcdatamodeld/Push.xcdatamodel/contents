@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16C67" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Publish" representedClassName="Publish" syncable="YES" codeGenerationType="class">
+    <entity name="PublishStatus" representedClassName="PublishStatus" syncable="YES" codeGenerationType="class">
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
         <attribute name="statusCode" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" indexed="YES" syncable="YES"/>
     </entity>
-    <entity name="Push" representedClassName="Push" syncable="YES" codeGenerationType="class">
+    <entity name="PushMessage" representedClassName="PushMessage" syncable="YES" codeGenerationType="class">
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
     </entity>
+    <entity name="PushNotificationStatus" representedClassName="PushNotificationStatus" syncable="YES" codeGenerationType="class"/>
     <elements>
-        <element name="Publish" positionX="-63" positionY="-18" width="128" height="75"/>
-        <element name="Push" positionX="-54" positionY="-9" width="128" height="60"/>
+        <element name="PublishStatus" positionX="-63" positionY="-18" width="128" height="75"/>
+        <element name="PushMessage" positionX="-54" positionY="-9" width="128" height="60"/>
+        <element name="PushNotificationStatus" positionX="-36" positionY="18" width="128" height="45"/>
     </elements>
 </model>
