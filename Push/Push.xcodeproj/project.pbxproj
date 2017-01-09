@@ -13,6 +13,8 @@
 		510CED701E24343800527101 /* Push.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 510CED6E1E24343800527101 /* Push.xcdatamodeld */; };
 		510CED721E24343800527101 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 510CED711E24343800527101 /* Assets.xcassets */; };
 		510CED751E24343900527101 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 510CED731E24343900527101 /* LaunchScreen.storyboard */; };
+		510CED7D1E24356800527101 /* UtilityExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED7C1E24356800527101 /* UtilityExtensions.swift */; };
+		510CED7F1E24360D00527101 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED7E1E24360D00527101 /* Network.swift */; };
 		B3499F47BCFB2B1F55BF4F3B /* Pods_Push.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +28,8 @@
 		510CED711E24343800527101 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		510CED741E24343900527101 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		510CED761E24343900527101 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		510CED7C1E24356800527101 /* UtilityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityExtensions.swift; sourceTree = "<group>"; };
+		510CED7E1E24360D00527101 /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
 		8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Push.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -73,6 +77,8 @@
 			children = (
 				510CED671E24343800527101 /* AppDelegate.swift */,
 				510CED691E24343800527101 /* ViewController.swift */,
+				510CED7E1E24360D00527101 /* Network.swift */,
+				510CED7C1E24356800527101 /* UtilityExtensions.swift */,
 				510CED6B1E24343800527101 /* Main.storyboard */,
 				510CED711E24343800527101 /* Assets.xcassets */,
 				510CED731E24343900527101 /* LaunchScreen.storyboard */,
@@ -215,8 +221,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				510CED7F1E24360D00527101 /* Network.swift in Sources */,
 				510CED701E24343800527101 /* Push.xcdatamodeld in Sources */,
 				510CED6A1E24343800527101 /* ViewController.swift in Sources */,
+				510CED7D1E24356800527101 /* UtilityExtensions.swift in Sources */,
 				510CED681E24343800527101 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,6 +391,7 @@
 				510CED7B1E24343900527101 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
