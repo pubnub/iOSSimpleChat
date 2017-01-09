@@ -8,15 +8,44 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
+            switch settings.authorizationStatus {
+            // This means we have not yet asked for notification permissions
+            case .notDetermined:
+                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (granted, error) in
+                    // You might want to remove this, or handle errors differently in production
+                    assert(error == nil)
+                    if granted {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    }
+                })
+            // We are already authorized, so no need to ask
+            case .authorized:
+                // Just try and register for remote notifications
+                UIApplication.shared.registerForRemoteNotifications()
+            case .denied:
+                // Possibly display something to the user
+                let useNotificationsAlertController = UIAlertController(title: "Turn on notifications", message: "This app needs notifications turned on for the best user experience", preferredStyle: .alert)
+                let goToSettingsAction = UIAlertAction(title: "Go to settings", style: .default, handler: { (action) in
+                    
+                })
+                let cancelAction = UIAlertAction(title: "Cancel", style: .default)
+                useNotificationsAlertController.addAction(goToSettingsAction)
+                useNotificationsAlertController.addAction(cancelAction)
+                self.window?.rootViewController?.present(useNotificationsAlertController, animated: true)
+                print("We cannot use notifications because the user has denied permissions")
+            }
+        }
         return true
     }
 
@@ -42,6 +71,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
         self.saveContext()
+    }
+    
+    // MARK: - Remote Notifications
+    
+    func application(_ application: UIApplication,
+                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        // Sometimes it’s useful to store the device token in UserDefaults
+        UserDefaults.standard.set(deviceToken, forKey: "DeviceToken")
+    }
+    
+    func application(_ application: UIApplication,
+                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("didFail! with error: \(error)")
     }
 
     // MARK: - Core Data stack
@@ -89,6 +131,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+    
+    // MARK: - UNUserNotificationCenterDelegate
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+    }
+    
 
 }
 
