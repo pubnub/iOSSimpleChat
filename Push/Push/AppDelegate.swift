@@ -46,6 +46,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 print("We cannot use notifications because the user has denied permissions")
             }
         }
+        UNUserNotificationCenter.current().delegate = self
         return true
     }
 
@@ -135,7 +136,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     // MARK: - UNUserNotificationCenterDelegate
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        
+        print("response: \(response.debugDescription)")
     }
     
 
