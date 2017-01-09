@@ -10,18 +10,18 @@ import Foundation
 import UIKit
 import CoreData
 
-extension UIApplication {
-    var persistentContainer: NSPersistentContainer {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            fatalError()
-        }
-        return appDelegate.persistentContainer
-    }
-    
-    var viewContext: NSManagedObjectContext {
-        return persistentContainer.viewContext
-    }
-}
+//extension UIApplication {
+//    var persistentContainer: NSPersistentContainer {
+//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+//            fatalError()
+//        }
+//        return appDelegate.persistentContainer
+//    }
+//    
+//    var viewContext: NSManagedObjectContext {
+//        return persistentContainer.viewContext
+//    }
+//}
 
 extension UIView {
     
