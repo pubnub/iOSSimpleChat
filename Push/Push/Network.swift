@@ -9,8 +9,8 @@
 import UIKit
 import PubNub
 
-fileprivate let publishKey = "demo-36"
-fileprivate let subscribeKey = "demo-36"
+fileprivate let publishKey = "pub-c-a9dc3f6b-98f7-4b44-97e6-4ea5a705ab2d"
+fileprivate let subscribeKey = "sub-c-93f47f52-d6b4-11e6-9102-0619f8945a4f"
 
 class Network: NSObject, PNObjectEventListener {
     

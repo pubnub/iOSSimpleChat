@@ -80,6 +80,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         // Sometimes it’s useful to store the device token in UserDefaults
         UserDefaults.standard.set(deviceToken, forKey: "DeviceToken")
+        Network.sharedNetwork.client.addPushNotificationsOnChannels(["a"], withDevicePushToken: deviceToken) { (status) in
+            print("add push: \(status.debugDescription)")
+        }
     }
     
     func application(_ application: UIApplication,
@@ -135,8 +138,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     // MARK: - UNUserNotificationCenterDelegate
     
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        print("\(#function) notification: \(notification.debugDescription)")
+    }
+    
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        print("response: \(response.debugDescription)")
+        print("\(#function) response: \(response.debugDescription)")
     }
     
 

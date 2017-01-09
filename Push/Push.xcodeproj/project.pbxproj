@@ -30,6 +30,7 @@
 		510CED761E24343900527101 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		510CED7C1E24356800527101 /* UtilityExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UtilityExtensions.swift; sourceTree = "<group>"; };
 		510CED7E1E24360D00527101 /* Network.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Network.swift; sourceTree = "<group>"; };
+		510CED801E243D7300527101 /* Push.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Push.entitlements; sourceTree = "<group>"; };
 		8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Push.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,6 +76,7 @@
 		510CED661E24343800527101 /* Push */ = {
 			isa = PBXGroup;
 			children = (
+				510CED801E243D7300527101 /* Push.entitlements */,
 				510CED671E24343800527101 /* AppDelegate.swift */,
 				510CED691E24343800527101 /* ViewController.swift */,
 				510CED7E1E24360D00527101 /* Network.swift */,
@@ -134,6 +136,11 @@
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 8XP4D6N55Z;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -349,11 +356,12 @@
 			baseConfigurationReference = A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
 				DEVELOPMENT_TEAM = 8XP4D6N55Z;
 				INFOPLIST_FILE = Push/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.Push;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.PushExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -364,11 +372,12 @@
 			baseConfigurationReference = 2764B5C26659B7C156826A62 /* Pods-Push.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
 				DEVELOPMENT_TEAM = 8XP4D6N55Z;
 				INFOPLIST_FILE = Push/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.Push;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.PushExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
