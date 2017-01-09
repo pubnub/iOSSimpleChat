@@ -46,6 +46,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         UNUserNotificationCenter.current().delegate = self
+        
+        let bounds = UIScreen.main.bounds
+        let window = UIWindow(frame: bounds)
+        self.window = window
+        
+        let rootViewController = MainViewController(client: Network.sharedNetwork.client)
+        let navController = UINavigationController(rootViewController: rootViewController)
+        
+        self.window?.rootViewController = navController
+        self.window?.makeKeyAndVisible()
+        
         return true
     }
 

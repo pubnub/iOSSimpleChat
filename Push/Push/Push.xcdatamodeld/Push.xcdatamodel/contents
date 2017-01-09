@@ -7,10 +7,14 @@
     <entity name="PushMessage" representedClassName="PushMessage" syncable="YES" codeGenerationType="class">
         <attribute name="creationDate" optional="YES" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
     </entity>
-    <entity name="PushNotificationStatus" representedClassName="PushNotificationStatus" syncable="YES" codeGenerationType="class"/>
+    <entity name="PushNotificationModificationStatus" representedClassName="PushNotificationModificationStatus" syncable="YES" codeGenerationType="class"/>
+    <entity name="Result" representedClassName="Result" syncable="YES" codeGenerationType="class">
+        <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
+    </entity>
     <elements>
         <element name="PublishStatus" positionX="-63" positionY="-18" width="128" height="75"/>
         <element name="PushMessage" positionX="-54" positionY="-9" width="128" height="60"/>
-        <element name="PushNotificationStatus" positionX="-36" positionY="18" width="128" height="45"/>
+        <element name="PushNotificationModificationStatus" positionX="-36" positionY="18" width="128" height="45"/>
+        <element name="Result" positionX="-18" positionY="27" width="128" height="60"/>
     </elements>
 </model>
