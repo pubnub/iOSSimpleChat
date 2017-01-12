@@ -14,9 +14,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let viewContext = DataController.sharedController.persistentContainer.viewContext
+        viewContext.performAndWait {
+            let user = User(context: viewContext)
+            user.identifier = User.userID
+            do {
+                try viewContext.save()
+            } catch {
+                fatalError("What now?")
+            }
+            DataController.sharedController.currentUserObjectID = user.objectID
+//            Network.sharedNetwork.setUp()
+        }
+//        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
+//            context.perform {
+//                let user = User(context: context)
+//                user.identifier = User.userID
+//                DataController.sharedController.currentUserObjectID = user.objectID
+//                Network.sharedNetwork.setUp()
+//                do {
+//                    try context.save()
+//                } catch {
+//                    fatalError("What now?")
+//                }
+//                
+//            }
+//        }
+        
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             switch settings.authorizationStatus {
             // This means we have not yet asked for notification permissions
@@ -51,7 +77,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let window = UIWindow(frame: bounds)
         self.window = window
         
-        let rootViewController = MainViewController(client: Network.sharedNetwork.client)
+        let rootViewController = MainViewController()
         let navController = UINavigationController(rootViewController: rootViewController)
         
         self.window?.rootViewController = navController
@@ -93,7 +119,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 //        Network.sharedNetwork.client.addPushNotificationsOnChannels(["a"], withDevicePushToken: deviceToken) { (status) in
 //            print("add push: \(status.debugDescription)")
 //        }
-        Network.sharedNetwork.deviceToken = deviceToken
+//        Network.sharedNetwork.deviceToken = deviceToken
+        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
+            print("background task")
+            let currentUser = DataController.sharedController.currentUser(in: context)
+            currentUser.pushToken = deviceToken
+            do {
+                try context.save()
+            } catch {
+                fatalError("What went wrong now??")
+            }
+        }
     }
     
     func application(_ application: UIApplication,

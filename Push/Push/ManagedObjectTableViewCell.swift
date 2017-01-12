@@ -48,10 +48,10 @@ class ResultTableViewCell: ManagedObjectTableViewCell {
     }
     
     override func update(with object: NSManagedObject) {
-        guard let result = object as? PublishStatus else {
+        guard let result = object as? Result else {
             fatalError("Failed to convert: \(object.debugDescription)")
         }
-        textView.text = result.debugDescription
+        textView.text = result.textViewDisplayText
     }
     
     override func prepareForReuse() {

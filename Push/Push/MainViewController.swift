@@ -12,11 +12,15 @@ import CoreData
 
 class MainViewController: UIViewController {
     
-    let client: PubNub
+//    let client: PubNub
+    
+    var stackView: UIStackView!
+    var pushChannelsButton: UIButton!
+    let pushChannelsButtonPlaceholder = "Tap here to add push channels"
     
     let fetchRequest: NSFetchRequest<Result> = {
         let request: NSFetchRequest<Result> = Result.fetchRequest()
-        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Result.creationDate), ascending: true)
+        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Result.creationDate), ascending: false)
         request.sortDescriptors = [creationDateSortDescriptor]
         return request
     }()
@@ -24,14 +28,22 @@ class MainViewController: UIViewController {
     var consoleView: ClientConsoleView!
     
     override func loadView() {
-        consoleView = ClientConsoleView(fetchRequest: fetchRequest)
+//        consoleView = ClientConsoleView(fetchRequest: fetchRequest)
+//        let bounds = UIScreen.main.bounds
+//        consoleView.frame = bounds
+//        self.view = consoleView
         let bounds = UIScreen.main.bounds
-        consoleView.frame = bounds
-        self.view = consoleView
+        stackView = UIStackView(frame: bounds)
+        stackView.axis = .vertical
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+//        stackView.frame = bounds
+        self.view = stackView
+
     }
     
-    required init(client: PubNub) {
-        self.client = client
+    required init() {
+//        self.client = client
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -44,6 +56,20 @@ class MainViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         navigationItem.title = "Push!"
+        pushChannelsButton = UIButton(type: .custom)
+        guard let pushBackgroundImage = UIImage(color: .cyan) else {
+            fatalError("Couldn't create one color UIImage!")
+        }
+        pushChannelsButton.setBackgroundImage(pushBackgroundImage, for: .normal)
+        pushChannelsButton.setTitle(pushChannelsButtonPlaceholder, for: .normal)
+        pushChannelsButton.addTarget(self, action: #selector(pushChannelsButtonPressed(sender:)), for: .touchUpInside)
+        stackView.addArrangedSubview(pushChannelsButton)
+        consoleView = ClientConsoleView(fetchRequest: fetchRequest)
+        stackView.addArrangedSubview(consoleView)
+        
+        let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.25, constant: 0)
+        
+        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints])
     }
 
     override func didReceiveMemoryWarning() {
@@ -51,15 +77,10 @@ class MainViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    // MARK: - Actions
+    
+    func pushChannelsButtonPressed(sender: UIButton) {
+        
     }
-    */
 
 }
