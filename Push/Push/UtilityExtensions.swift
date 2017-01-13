@@ -10,19 +10,6 @@ import Foundation
 import UIKit
 import CoreData
 
-//extension UIApplication {
-//    var persistentContainer: NSPersistentContainer {
-//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-//            fatalError()
-//        }
-//        return appDelegate.persistentContainer
-//    }
-//    
-//    var viewContext: NSManagedObjectContext {
-//        return persistentContainer.viewContext
-//    }
-//}
-
 // http://stackoverflow.com/questions/26542035/create-uiimage-with-solid-color-in-swift
 public extension UIImage {
     public convenience init?(color: UIColor, size: CGSize = CGSize(width: 1, height: 1)) {

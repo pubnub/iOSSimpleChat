@@ -28,6 +28,7 @@
 		516814821E26F05C00A9ED89 /* User+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5168147C1E26F05C00A9ED89 /* User+CoreDataProperties.swift */; };
 		516814831E26F05C00A9ED89 /* Result+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5168147D1E26F05C00A9ED89 /* Result+CoreDataClass.swift */; };
 		516814841E26F05C00A9ED89 /* Result+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5168147E1E26F05C00A9ED89 /* Result+CoreDataProperties.swift */; };
+		516814881E28313600A9ED89 /* PubNubExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516814871E28313600A9ED89 /* PubNubExtensions.swift */; };
 		B3499F47BCFB2B1F55BF4F3B /* Pods_Push.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */; };
 /* End PBXBuildFile section */
 
@@ -57,6 +58,7 @@
 		5168147C1E26F05C00A9ED89 /* User+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		5168147D1E26F05C00A9ED89 /* Result+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+CoreDataClass.swift"; sourceTree = "<group>"; };
 		5168147E1E26F05C00A9ED89 /* Result+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Result+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		516814871E28313600A9ED89 /* PubNubExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PubNubExtensions.swift; sourceTree = "<group>"; };
 		8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Push.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,6 +110,7 @@
 				5142CA1C1E258388005FBAD8 /* UI */,
 				5142CA1D1E258396005FBAD8 /* Services */,
 				510CED7C1E24356800527101 /* UtilityExtensions.swift */,
+				516814871E28313600A9ED89 /* PubNubExtensions.swift */,
 			);
 			path = Push;
 			sourceTree = "<group>";
@@ -315,6 +318,7 @@
 				516814801E26F05C00A9ED89 /* Channel+CoreDataProperties.swift in Sources */,
 				516814821E26F05C00A9ED89 /* User+CoreDataProperties.swift in Sources */,
 				510CED9D1E25733800527101 /* PublishStatus+CoreDataClass.swift in Sources */,
+				516814881E28313600A9ED89 /* PubNubExtensions.swift in Sources */,
 				510CED841E2446D200527101 /* ClientConsoleView.swift in Sources */,
 				510CED681E24343800527101 /* AppDelegate.swift in Sources */,
 			);

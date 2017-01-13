@@ -22,10 +22,17 @@ class DataController: NSObject {
         }
     }
     
-    func currentUser(in context: NSManagedObjectContext) -> User {
+    
+    // view context by default if context is not supplied
+    func currentUser(in context: NSManagedObjectContext? = nil) -> User {
+        var context = context
+        if context == nil {
+            context = persistentContainer.viewContext
+        }
         var finalUser: User? = nil
-        context.performAndWait {
-            guard let object = context.object(with: self.currentUserObjectID) as? User else {
+        // forcibly unwrap, we want to make sure we fail if there is no context
+        context!.performAndWait {
+            guard let object = context?.object(with: self.currentUserObjectID) as? User else {
                 fatalError("What went wrong with context: \(context) and objectID: \(self.currentUserObjectID)")
             }
             finalUser = object

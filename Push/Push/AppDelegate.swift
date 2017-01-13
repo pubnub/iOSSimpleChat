@@ -78,6 +78,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         self.window = window
         
         let rootViewController = MainViewController()
+        rootViewController.currentUser = DataController.sharedController.currentUser()
+        print("Current user ID: \(DataController.sharedController.currentUser().identifier!)")
         let navController = UINavigationController(rootViewController: rootViewController)
         
         self.window?.rootViewController = navController

@@ -12,6 +12,8 @@ import CoreData
 
 class MainViewController: UIViewController {
     
+    private var mainViewContext = 0
+    
 //    let client: PubNub
     
     var stackView: UIStackView!
@@ -61,7 +63,8 @@ class MainViewController: UIViewController {
             fatalError("Couldn't create one color UIImage!")
         }
         pushChannelsButton.setBackgroundImage(pushBackgroundImage, for: .normal)
-        pushChannelsButton.setTitle(pushChannelsButtonPlaceholder, for: .normal)
+//        pushChannelsButton.setTitle(pushChannelsButtonPlaceholder, for: .normal)
+        updatePushChannelsButton()
         pushChannelsButton.addTarget(self, action: #selector(pushChannelsButtonPressed(sender:)), for: .touchUpInside)
         stackView.addArrangedSubview(pushChannelsButton)
         consoleView = ClientConsoleView(fetchRequest: fetchRequest)
@@ -80,7 +83,64 @@ class MainViewController: UIViewController {
     // MARK: - Actions
     
     func pushChannelsButtonPressed(sender: UIButton) {
-        
+        let viewContext = DataController.sharedController.persistentContainer.viewContext
+        let pushChannelsAlertController = DataController.sharedController.currentUser().alertControllerForPushChannels(in: viewContext)
+        present(pushChannelsAlertController, animated: true)
     }
+    
+    // MARK: - KVO
+    
+    // Properties
+    
+    func pushChannelsButtonTitle() -> String {
+        var finalTitle: String? = nil
+        DataController.sharedController.persistentContainer.viewContext.performAndWait {
+            finalTitle = (DataController.sharedController.currentUser().pushChannelsString ?? self.pushChannelsButtonPlaceholder)
+        }
+        return finalTitle!
+    }
+    
+    func updatePushChannelsButton() {
+        print("push channels button")
+        let title = pushChannelsButtonTitle()
+        DispatchQueue.main.async {
+            self.pushChannelsButton.setTitle(title, for: .normal)
+        }
+    }
+    
+    var currentUser: User? {
+        didSet {
+            if let existingOldValue = oldValue {
+                existingOldValue.removeObserver(self, forKeyPath: #keyPath(User.pushChannels), context: &mainViewContext)
+            }
+            currentUser?.addObserver(self, forKeyPath: #keyPath(User.pushChannels), options: [.new, .old, .initial], context: &mainViewContext)
+        }
+    }
+    
+    // Deinit
+    
+    deinit {
+        self.currentUser = nil
+    }
+    
+    
+    // KVO
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if context == &mainViewContext {
+            guard let existingKeyPath = keyPath else {
+                return
+            }
+            switch existingKeyPath {
+            case #keyPath(User.pushChannels):
+                updatePushChannelsButton()
+            default:
+                fatalError("what wrong in KVO?")
+            }
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
+    
 
 }

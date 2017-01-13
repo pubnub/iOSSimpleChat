@@ -79,17 +79,17 @@ class Network: NSObject, PNObjectEventListener {
             }
             switch existingKeyPath {
             case #keyPath(User.pushToken):
-                print("Update name")
-                print("object: \(object.debugDescription)")
-                print("change: \(change)")
+                print("Network: Push Token KVO")
+                print("Network: object: \(object.debugDescription)")
+                print("Network: change: \(change)")
                 let _ = change![NSKeyValueChangeKey.newKey] as? Data
-                print("KVO \(keyPath)")
+                print("Network: KVO \(keyPath)")
                 // now remove old and add new
             case #keyPath(User.pushChannels):
-                print("Update all media")
-                print("object: \(object.debugDescription)")
-                print("change: \(change)")
-                print("KVO \(keyPath)")
+                print("Network: Push Channels KVO")
+                print("Network: object: \(object.debugDescription)")
+                print("Network: change: \(change)")
+                print("Network: KVO \(keyPath)")
                 guard let _ = change![NSKeyValueChangeKey.newKey] as? Set<Channel> else {
                     return // no changes
                 }
