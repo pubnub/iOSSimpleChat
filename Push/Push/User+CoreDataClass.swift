@@ -45,6 +45,10 @@ public class User: NSManagedObject {
         }
     }
     
+    var pushChannelsArray: [Channel]? {
+        return pushChannels?.map { $0 }
+    }
+    
     var pushChannelsString: String? {
         guard let actualChannels = pushChannels, !actualChannels.isEmpty else {
             return nil
@@ -100,8 +104,10 @@ public class User: NSManagedObject {
                 })
                 let channelsSet: Set<Channel> = Set(channelsObjectArray) // we can forcibly unwrap because we checked for channels above
                 context.perform {
-                    currentUser.pushChannels?.formUnion(channelsSet)
-                    currentUser.pushChannels?.formIntersection(channelsSet)
+                    currentUser.mutableSetValue(forKey: #keyPath(User.pushChannels)).union(channelsSet)
+                    currentUser.mutableSetValue(forKey: #keyPath(User.pushChannels)).intersect(channelsSet)
+//                    currentUser.pushChannels?.formUnion(channelsSet)
+//                    currentUser.pushChannels?.formIntersection(channelsSet)
                     print("Done making push channel changes")
                 }
             } catch {
@@ -109,6 +115,27 @@ public class User: NSManagedObject {
             }
         }
         alertController.addAction(updateAction)
+        
+        let clearAction = UIAlertAction(title: "Clear", style: .destructive) { (action) in
+            defer {
+                context.perform {
+                    do {
+                        print("Save push channels change!")
+                        try context.save()
+                    } catch {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
+            let currentUser = DataController.sharedController.currentUser(in: context)
+            guard let entryText = textField.text, !entryText.isEmpty else {
+                context.perform {
+                    currentUser.pushChannels?.removeAll()
+                }
+                return
+            }
+        }
+        alertController.addAction(clearAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             

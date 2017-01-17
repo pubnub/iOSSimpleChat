@@ -55,6 +55,7 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     var client: PubNub!
+    
     private var user: User? {
         didSet {
             if let existingOldValue = oldValue {
@@ -79,20 +80,49 @@ class Network: NSObject, PNObjectEventListener {
             }
             switch existingKeyPath {
             case #keyPath(User.pushToken):
-                print("Network: Push Token KVO")
-                print("Network: object: \(object.debugDescription)")
-                print("Network: change: \(change)")
-                let _ = change![NSKeyValueChangeKey.newKey] as? Data
-                print("Network: KVO \(keyPath)")
+//                print("Network: Push Token KVO")
+//                print("Network: object: \(object.debugDescription)")
+//                print("Network: change: \(change)")
+//                let _ = change![NSKeyValueChangeKey.newKey] as? Data
+//                print("Network: KVO \(keyPath)")
                 // now remove old and add new
+                updatePushToken()
+//                self.pushToken = object as? Data // check this!!!!!
             case #keyPath(User.pushChannels):
-                print("Network: Push Channels KVO")
-                print("Network: object: \(object.debugDescription)")
-                print("Network: change: \(change)")
-                print("Network: KVO \(keyPath)")
-                guard let _ = change![NSKeyValueChangeKey.newKey] as? Set<Channel> else {
-                    return // no changes
+//                print("Network: Push Channels KVO")
+//                print("Network: object: \(object.debugDescription)")
+//                print("Network: change: \(change)")
+//                print("Network: KVO \(keyPath)")
+                guard let changeKindNumber = change?[NSKeyValueChangeKey.kindKey] as? NSNumber else {
+                    fatalError("there should always be a change kind")
                 }
+                guard let changeKind = NSKeyValueChange(rawValue: changeKindNumber.uintValue) else {
+                    fatalError("How did we not get a change kind?")
+                }
+                switch changeKind {
+                case .setting, .insertion:
+                    guard let newChannels = change![NSKeyValueChangeKey.newKey] as? Set<Channel> else {
+                        return // no changes
+                    }
+                    let channelsObjectArray = newChannels.map({ (channel) -> Channel in
+                        return channel
+                    })
+                    if !channelsObjectArray.isEmpty {
+                        addPush(channels: channelsObjectArray)
+                    }
+                case .removal:
+                    guard let newChannels = change![NSKeyValueChangeKey.newKey] as? Set<Channel> else {
+                        return // no changes
+                    }
+                    let channelsObjectArray = newChannels.map({ (channel) -> Channel in
+                        return channel
+                    })
+                    removePush(channels: channelsObjectArray)
+                case .replacement:
+                    fatalError("We can't handle replacements for: \(object.debugDescription) with keyPath: \(keyPath)")
+                    
+                }
+                
                 // now updated added channels
             default:
                 fatalError("what wrong in KVO?")
@@ -103,6 +133,13 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     let networkContext: NSManagedObjectContext
+    
+    var pushToken: Data? {
+        didSet {
+            print("set pushToken: \(pushToken)")
+            // now remove old token and update new token
+        }
+    }
     
     static let sharedNetwork = Network()
     
@@ -126,10 +163,72 @@ class Network: NSObject, PNObjectEventListener {
 //        }
         self.networkContext = DataController.sharedController.persistentContainer.newBackgroundContext()
         super.init()
+        networkContext.automaticallyMergesChangesFromParent = true
 //        client = PubNub.clientWithConfiguration(configuration)
 //        client.addListener(self)
 //        // add a channel here
 //        pushChannels.append("a")
+    }
+    
+    // MARK: - APNS
+    
+//    func addPush(token: Data) {
+//        networkContext.perform {
+//            do {
+////                let user = DataController.sharedController.currentUser(in: self.networkContext)
+////                guard let pushChannels = user.pushChannelsArray else {
+////                    return
+////                }
+////                self.client.removeAllPushNotificationsFromDeviceWithPushToken(<#T##pushToken: Data##Data#>, andCompletion: <#T##PNPushNotificationsStateModificationCompletionBlock?##PNPushNotificationsStateModificationCompletionBlock?##(PNAcknowledgmentStatus) -> Void#>)
+//                try self.networkContext.save()
+//            } catch {
+//                fatalError(error.localizedDescription)
+//            }
+//        }
+//    }
+//    
+//    func removePush(token: Data) {
+//        networkContext.perform {
+//            do {
+////                let user = DataController.sharedController.currentUser(in: self.networkContext)
+////                guard let pushChannels = user.pushChannelsArray else {
+////                    return
+////                }
+////                self.client.removePushNotificationsFromChannels(pushChannels, withDevicePushToken: self., andCompletion: <#T##PNPushNotificationsStateModificationCompletionBlock?##PNPushNotificationsStateModificationCompletionBlock?##(PNAcknowledgmentStatus) -> Void#>)
+//                try self.networkContext.save()
+//            } catch {
+//                fatalError(error.localizedDescription)
+//            }
+//        }
+//    }
+    
+//    func updatePushToken() {
+//        networkContext.perform {
+//            do {
+//                let user = DataController.sharedController.currentUser(in: self.networkContext)
+//                guard let pushChannels = user.pushChannelsArray else {
+//                    return
+//                }
+//                self.client.removePushNotificationsFromChannels(pushChannels, withDevicePushToken: self., andCompletion: <#T##PNPushNotificationsStateModificationCompletionBlock?##PNPushNotificationsStateModificationCompletionBlock?##(PNAcknowledgmentStatus) -> Void#>)
+//                try self.networkContext.save()
+//            } catch {
+//                fatalError(error.localizedDescription)
+//            }
+//        }
+//    }
+    
+    func addPush(channels: [Channel]) {
+        print("add channels: \(channels.debugDescription)")
+    }
+    
+    func removePush(channels: [Channel]) {
+        print("remove channels: \(channels.debugDescription)")
+    }
+    
+    func updatePushToken() {
+        networkContext.perform {
+            self.pushToken = self.user?.pushToken
+        }
     }
     
     // MARK: - PNObjectEventListener

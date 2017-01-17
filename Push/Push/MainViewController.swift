@@ -101,10 +101,10 @@ class MainViewController: UIViewController {
     }
     
     func updatePushChannelsButton() {
-        print("push channels button")
         let title = pushChannelsButtonTitle()
         DispatchQueue.main.async {
             self.pushChannelsButton.setTitle(title, for: .normal)
+            self.pushChannelsButton.setNeedsLayout()
         }
     }
     

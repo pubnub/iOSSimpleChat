@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16C67" minimumToolsVersion="Xcode 7.3" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Channel" representedClassName=".Channel" syncable="YES">
+        <attribute name="isPushChannel" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="isPushEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="pushChannels" inverseEntity="User" syncable="YES"/>
     </entity>
@@ -32,12 +34,12 @@
         <relationship name="results" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Result" inverseName="user" inverseEntity="Result" syncable="YES"/>
     </entity>
     <elements>
+        <element name="Channel" positionX="-27" positionY="63" width="128" height="105"/>
         <element name="PublishStatus" positionX="-63" positionY="-18" width="128" height="75"/>
         <element name="PushMessage" positionX="-54" positionY="-9" width="128" height="45"/>
         <element name="PushNotificationModificationStatus" positionX="-36" positionY="18" width="128" height="45"/>
         <element name="Result" positionX="-18" positionY="27" width="128" height="180"/>
         <element name="Status" positionX="0" positionY="90" width="128" height="75"/>
-        <element name="Channel" positionX="-27" positionY="63" width="128" height="75"/>
         <element name="User" positionX="-18" positionY="72" width="128" height="105"/>
     </elements>
 </model>

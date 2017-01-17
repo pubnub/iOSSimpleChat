@@ -125,6 +125,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
             print("background task")
             let currentUser = DataController.sharedController.currentUser(in: context)
+            print("received push token: \(deviceToken.debugDescription)")
             currentUser.pushToken = deviceToken
             do {
                 try context.save()
