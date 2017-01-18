@@ -20,6 +20,25 @@ public class User: NSManagedObject {
         identifier = UUID().uuidString
     }
     
+    public static func user(for userIdentifier: String, in context: NSManagedObjectContext? = nil) -> User? {
+        var context = context
+        if context == nil {
+            context = DataController.sharedController.persistentContainer.viewContext
+        }
+        var finalUser: User? = nil
+        context?.performAndWait {
+            let userFetchRequest: NSFetchRequest<User> = User.fetchRequest()
+            userFetchRequest.predicate = NSPredicate(format: "identifier == %@", userIdentifier)
+            do {
+                let results = try userFetchRequest.execute()
+                finalUser = results.first
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+        return finalUser
+    }
+    
 //    private static var _userID: String? {
 //        if let existingUserID = UserDefaults.standard.object(forKey: UserIdentifierKey) {
 //            _userID = existingUserID as! String
@@ -89,30 +108,39 @@ public class User: NSManagedObject {
                     }
                 }
             }
-            let currentUser = DataController.sharedController.currentUser(in: context)
-            guard let entryText = textField.text, !entryText.isEmpty else {
-                context.perform {
-                    currentUser.pushChannels?.removeAll()
+            context.perform {
+                let currentUser = DataController.sharedController.currentUser(in: context)
+                guard let entryText = textField.text, !entryText.isEmpty else {
+                    context.perform {
+                        currentUser.pushChannels?.removeAll()
+                    }
+                    return
                 }
-                return
-            }
-            do {
-                let channelsArray = try PubNub.stringToSubscribablesArray(channels: entryText)
-                let channelsObjectArray = channelsArray!.map({ (channelName) -> Channel in
-                    let foundChannel = Channel.channel(in: context, with: channelName, shouldSave: false)
-                    return foundChannel!
-                })
-                let channelsSet: Set<Channel> = Set(channelsObjectArray) // we can forcibly unwrap because we checked for channels above
-                context.perform {
-                    currentUser.mutableSetValue(forKey: #keyPath(User.pushChannels)).union(channelsSet)
-                    currentUser.mutableSetValue(forKey: #keyPath(User.pushChannels)).intersect(channelsSet)
-//                    currentUser.pushChannels?.formUnion(channelsSet)
-//                    currentUser.pushChannels?.formIntersection(channelsSet)
-                    print("Done making push channel changes")
+                do {
+                    let channelsArray = try PubNub.stringToSubscribablesArray(channels: entryText)
+                    let channelsObjectArray = channelsArray!.map({ (channelName) -> Channel in
+                        let foundChannel = Channel.channel(in: context, with: channelName, shouldSave: false)
+                        return foundChannel!
+                    })
+                    let channelsSet: Set<Channel> = Set(channelsObjectArray) // we can forcibly unwrap because we checked for channels above
+                    context.perform {
+                        let keyPath = #keyPath(User.pushChannels)
+                        if !channelsSet.isEmpty {
+                            currentUser.mutableSetValue(forKeyPath: keyPath).add(channelsSet.first!)
+                        }
+                        //                    currentUser.willChangeValue(forKey: keyPath, withSetMutation: .union, using: currentUser.pushChannels!)
+                        //                    currentUser.mutableSetValue(forKeyPath: keyPath).union(channelsSet)
+                        //                    currentUser.didChangeValue(forKey: keyPath, withSetMutation: .union, using: currentUser.pushChannels!)
+                        //currentUser.mutableSetValue(forKey: #keyPath(User.pushChannels)).intersect(channelsSet)
+                        //                    currentUser.pushChannels?.formUnion(channelsSet)
+                        //                    currentUser.pushChannels?.formIntersection(channelsSet)
+                        print("Done making push channel changes")
+                    }
+                } catch {
+                    fatalError(error.localizedDescription)
                 }
-            } catch {
-                fatalError(error.localizedDescription)
             }
+            
         }
         alertController.addAction(updateAction)
         

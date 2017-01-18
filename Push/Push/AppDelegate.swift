@@ -17,17 +17,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         let viewContext = DataController.sharedController.persistentContainer.viewContext
-        viewContext.performAndWait {
-            let user = User(context: viewContext)
-            user.identifier = User.userID
-            do {
-                try viewContext.save()
-            } catch {
-                fatalError("What now?")
+        let userID = User.userID
+        if let currentUser = User.user(for: userID, in: viewContext) {
+            DataController.sharedController.currentUserObjectID = currentUser.objectID
+        } else {
+            viewContext.performAndWait {
+                let user = User(context: viewContext)
+                user.identifier = userID
+                DataController.sharedController.currentUserObjectID = user.objectID
+                do {
+                    try viewContext.save()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
             }
-            DataController.sharedController.currentUserObjectID = user.objectID
-//            Network.sharedNetwork.setUp()
         }
+//        guard let currentUser = User.user(for: userID, in: viewContext) else {
+//            fatalError("Couldn't find user for ID: \(userID)")
+//        }
+//        viewContext.performAndWait {
+//            let user = User(context: viewContext)
+//            user.identifier = User.userID
+//            do {
+//                try viewContext.save()
+//            } catch {
+//                fatalError("What now?")
+//            }
+//            DataController.sharedController.currentUserObjectID = user.objectID
+////            Network.sharedNetwork.setUp()
+//        }
 //        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
 //            context.perform {
 //                let user = User(context: context)

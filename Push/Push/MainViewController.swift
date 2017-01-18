@@ -30,22 +30,16 @@ class MainViewController: UIViewController {
     var consoleView: ClientConsoleView!
     
     override func loadView() {
-//        consoleView = ClientConsoleView(fetchRequest: fetchRequest)
-//        let bounds = UIScreen.main.bounds
-//        consoleView.frame = bounds
-//        self.view = consoleView
         let bounds = UIScreen.main.bounds
         stackView = UIStackView(frame: bounds)
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-//        stackView.frame = bounds
         self.view = stackView
 
     }
     
     required init() {
-//        self.client = client
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -63,8 +57,6 @@ class MainViewController: UIViewController {
             fatalError("Couldn't create one color UIImage!")
         }
         pushChannelsButton.setBackgroundImage(pushBackgroundImage, for: .normal)
-//        pushChannelsButton.setTitle(pushChannelsButtonPlaceholder, for: .normal)
-        updatePushChannelsButton()
         pushChannelsButton.addTarget(self, action: #selector(pushChannelsButtonPressed(sender:)), for: .touchUpInside)
         stackView.addArrangedSubview(pushChannelsButton)
         consoleView = ClientConsoleView(fetchRequest: fetchRequest)
