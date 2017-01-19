@@ -24,14 +24,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         } else {
             viewContext.performAndWait {
                 let user = User(context: viewContext)
+                print("Create user for identifier: \(userID)")
                 user.identifier = userID
-                DataController.sharedController.currentUser = user
-//                DataController.sharedController.currentUserObjectID = user.objectID
                 do {
                     try viewContext.save()
                 } catch {
                     fatalError(error.localizedDescription)
                 }
+                DataController.sharedController.currentUser = user
+//                DataController.sharedController.currentUserObjectID = user.objectID
             }
         }
 //        guard let currentUser = User.user(for: userID, in: viewContext) else {
