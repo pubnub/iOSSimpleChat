@@ -14,17 +14,28 @@ fileprivate let UserIDKey = "UserIDKey"
 
 class DataController: NSObject {
     
+//    private let dataControllerKVOContext = 0
+    
     static let sharedController = DataController()
     
-    var currentUserObjectID: NSManagedObjectID! {
+//    var currentUserObjectID: NSManagedObjectID! {
+//        didSet {
+//            Network.sharedNetwork.setUp()
+//        }
+//    }
+    
+    var currentUserObjectID: NSManagedObjectID {
+        return currentUser!.objectID
+    }
+    
+    dynamic var currentUser: User? {
         didSet {
             Network.sharedNetwork.setUp()
         }
     }
     
-    
     // view context by default if context is not supplied
-    func currentUser(in context: NSManagedObjectContext? = nil) -> User {
+    func fetchCurrentUser(in context: NSManagedObjectContext? = nil) -> User {
         var context = context
         if context == nil {
             context = persistentContainer.viewContext

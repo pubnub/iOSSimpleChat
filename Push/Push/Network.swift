@@ -60,10 +60,19 @@ class Network: NSObject, PNObjectEventListener {
         didSet {
             if let existingOldValue = oldValue {
                 existingOldValue.removeObserver(self, forKeyPath: #keyPath(User.pushToken), context: &networkKVOContext)
-                existingOldValue.removeObserver(self, forKeyPath: #keyPath(User.pushChannels), context: &networkKVOContext)
+//                existingOldValue.removeObserver(self, forKeyPath: #keyPath(User.pushChannels), context: &networkKVOContext)
             }
             user?.addObserver(self, forKeyPath: #keyPath(User.pushToken), options: [.new, .old, .initial], context: &networkKVOContext)
-            user?.addObserver(self, forKeyPath: #keyPath(User.pushChannels), options: [.new, .old, .initial], context: &networkKVOContext)
+//            user?.addObserver(self, forKeyPath: #keyPath(User.pushChannels), options: [.new, .old, .initial], context: &networkKVOContext)
+//            guard let currentUser = user else {
+//                return
+//            }
+//            networkContext.perform {
+//                self.networkContext.refresh(currentUser, mergeChanges: true)
+//                let configuration = self.config(with: currentUser.identifier!)
+//                self.client = PubNub.clientWithConfiguration(configuration)
+//                self.client.addListener(self)
+//            }
         }
     }
     
@@ -89,10 +98,11 @@ class Network: NSObject, PNObjectEventListener {
                 updatePushToken()
 //                self.pushToken = object as? Data // check this!!!!!
             case #keyPath(User.pushChannels):
-//                print("Network: Push Channels KVO")
-//                print("Network: object: \(object.debugDescription)")
-//                print("Network: change: \(change)")
-//                print("Network: KVO \(keyPath)")
+                print("======================================")
+                print("Network: Push Channels KVO")
+                print("Network: object: \(object.debugDescription)")
+                print("Network: change: \(change)")
+                print("Network: KVO \(keyPath)")
                 guard let changeKindNumber = change?[NSKeyValueChangeKey.kindKey] as? NSNumber else {
                     fatalError("there should always be a change kind")
                 }
@@ -101,9 +111,15 @@ class Network: NSObject, PNObjectEventListener {
                 }
                 switch changeKind {
                 case .setting, .insertion:
-                    guard let newChannels = change![NSKeyValueChangeKey.newKey] as? Set<Channel> else {
+                    print("setting or insertion")
+                    guard let newChannels = change?[NSKeyValueChangeKey.newKey] as? Set<Channel> else {
                         return // no changes
                     }
+                    print("newChannels: \(newChannels)")
+                    guard let oldChannels = change?[NSKeyValueChangeKey.oldKey] as? Set<Channel> else {
+                        return
+                    }
+                    print("oldChannels: \(oldChannels)")
                     let channelsObjectArray = newChannels.map({ (channel) -> Channel in
                         return channel
                     })
@@ -111,6 +127,7 @@ class Network: NSObject, PNObjectEventListener {
                         addPush(channels: channelsObjectArray)
                     }
                 case .removal:
+                    print("removal")
                     guard let newChannels = change![NSKeyValueChangeKey.newKey] as? Set<Channel> else {
                         return // no changes
                     }
@@ -127,6 +144,7 @@ class Network: NSObject, PNObjectEventListener {
             default:
                 fatalError("what wrong in KVO?")
             }
+            print("======================================")
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
@@ -145,12 +163,122 @@ class Network: NSObject, PNObjectEventListener {
     
     func setUp() {
         // Should this be nested? It seems fishy
+        let viewContext = DataController.sharedController.persistentContainer.viewContext
+        NotificationCenter.default.addObserver(self, selector: #selector(managedObjectContextObjectsDidChange(notification:)), name: .NSManagedObjectContextObjectsDidChange, object: viewContext)
+        NotificationCenter.default.addObserver(self, selector: #selector(managedObjectContextObjectsDidSave(notification:)), name: .NSManagedObjectContextDidSave, object: viewContext)
         networkContext.perform {
-            self.user = DataController.sharedController.currentUser(in: self.networkContext)
-            let configuration = self.config(with: self.user!.identifier!)
-            self.client = PubNub.clientWithConfiguration(configuration)
-            self.client.addListener(self)
+//            guard let currentUser = self.networkContext.object(with: user.objectID) as? User else {
+//                fatalError("How did we not find a user for \(user.debugDescription)")
+//            }
+//            self.user = currentUser
+//            guard let currentUser = DataController.sharedController.fetchCurrentUser(in: self.networkContext) else {
+//                fatalError("How did we not find a user for user: \(user.debugDescription)")
+//            }
+//            self.user = currentUser
+            
+            self.user = DataController.sharedController.fetchCurrentUser(in: self.networkContext)
+//            let configuration = self.config(with: self.user!.identifier!)
+//            self.client = PubNub.clientWithConfiguration(configuration)
+//            self.client.addListener(self)
         }
+    }
+    
+    func managedObjectContextObjectsDidSave(notification: Notification) {
+        print("+++++++++++++++++++++++++++++++++")
+        print(#function)
+        guard let userInfo = notification.userInfo else {
+            return
+        }
+        
+        print("start updates")
+        if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>, updates.count > 0 {
+            for update in updates {
+                print("update: \(update.debugDescription)")
+                print("didSave changed values: \(update.changedValues())")
+                print("didSave changed values for current event: \(update.changedValuesForCurrentEvent())")
+                guard let user = update as? User else {
+                    continue
+                }
+                let oldValues = user.changedValuesForCurrentEvent()
+                let newValues = user.changedValues()
+                guard let oldPushChannels = oldValues["pushChannels"] as? Set<Channel>, let newPushChannels = newValues["pushChannels"] as? Set<Channel> else {
+                    continue
+                }
+                updatePush(oldChannels: oldPushChannels, newChannels: newPushChannels)
+            }
+        }
+        print("end updates")
+        
+        print("start refreshes")
+        if let refreshes = userInfo[NSRefreshedObjectsKey] as? Set<NSManagedObject>, refreshes.count > 0 {
+            for refresh in refreshes {
+                print("refresh: \(refresh.debugDescription)")
+                print("didSave changed values: \(refresh.changedValues())")
+                print("didSave changed values for current event: \(refresh.changedValuesForCurrentEvent())")
+                guard let user = refresh as? User else {
+                    continue
+                }
+                let oldValues = user.changedValuesForCurrentEvent()
+                let newValues = user.changedValues()
+                guard let oldPushChannels = oldValues["pushChannels"] as? Set<Channel>, let newPushChannels = newValues["pushChannels"] as? Set<Channel> else {
+                    continue
+                }
+                updatePush(oldChannels: oldPushChannels, newChannels: newPushChannels)
+            }
+        }
+        print("end refreshes")
+        
+        print("\(#function) userInfo: \(userInfo)")
+        networkContext.mergeChanges(fromContextDidSave: notification)
+        print("+++++++++++++++++++++++++++++++++")
+    }
+    
+    func managedObjectContextObjectsDidChange(notification: Notification) {
+        print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+        print(#function)
+        guard let userInfo = notification.userInfo else {
+            return
+        }
+        print("\(#function) userInfo: \(userInfo)")
+        print("start updates")
+        if let updates = userInfo[NSUpdatedObjectsKey] as? Set<NSManagedObject>, updates.count > 0 {
+            for update in updates {
+                print("update: \(update.debugDescription)")
+                print("didSave changed values: \(update.changedValues())")
+                print("didSave changed values for current event: \(update.changedValuesForCurrentEvent())")
+                guard let user = update as? User else {
+                    continue
+                }
+                let oldValues = user.changedValuesForCurrentEvent()
+                let newValues = user.changedValues()
+                guard let oldPushChannels = oldValues["pushChannels"] as? Set<Channel>, let newPushChannels = newValues["pushChannels"] as? Set<Channel> else {
+                    continue
+                }
+                updatePush(oldChannels: oldPushChannels, newChannels: newPushChannels)
+            }
+        }
+        print("end updates")
+        
+        print("start refreshes")
+        if let refreshes = userInfo[NSRefreshedObjectsKey] as? Set<NSManagedObject>, refreshes.count > 0 {
+            for refresh in refreshes {
+                print("refresh: \(refresh.debugDescription)")
+                print("didSave changed values: \(refresh.changedValues())")
+                print("didSave changed values for current event: \(refresh.changedValuesForCurrentEvent())")
+                guard let user = refresh as? User else {
+                    continue
+                }
+                let oldValues = user.changedValuesForCurrentEvent()
+                let newValues = user.changedValues()
+                guard let oldPushChannels = oldValues["pushChannels"] as? Set<Channel>, let newPushChannels = newValues["pushChannels"] as? Set<Channel> else {
+                    continue
+                }
+                updatePush(oldChannels: oldPushChannels, newChannels: newPushChannels)
+            }
+        }
+        print("end refreshes")
+        print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+//        networkContext.mergeChanges(fromContextDidSave: <#T##Notification#>)
     }
     
     
@@ -161,9 +289,10 @@ class Network: NSObject, PNObjectEventListener {
 //            }
 //            self.deviceToken = actualDeviceToken
 //        }
-        self.networkContext = DataController.sharedController.persistentContainer.newBackgroundContext()
+        let context = DataController.sharedController.persistentContainer.newBackgroundContext()
+//        context.automaticallyMergesChangesFromParent = true
+        self.networkContext = context
         super.init()
-        networkContext.automaticallyMergesChangesFromParent = true
 //        client = PubNub.clientWithConfiguration(configuration)
 //        client.addListener(self)
 //        // add a channel here
@@ -216,6 +345,18 @@ class Network: NSObject, PNObjectEventListener {
 //            }
 //        }
 //    }
+    
+    func updatePush(oldChannels: Set<Channel>, newChannels: Set<Channel>) {
+        networkContext.perform {
+            let currentPushChannels = self.user?.pushChannels
+            let updatedArray: [Channel] = newChannels.map({ (channel) -> Channel in
+                return self.networkContext.object(with: channel.objectID) as! Channel
+            })
+            let updatedSet: Set<Channel> = Set(updatedArray)
+            
+        }
+        print("%%%%%%%%%%%%%%%% \(#function) with old: \(oldChannels) and new: \(newChannels)")
+    }
     
     func addPush(channels: [Channel]) {
         print("add channels: \(channels.debugDescription)")

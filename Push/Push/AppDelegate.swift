@@ -18,13 +18,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         let viewContext = DataController.sharedController.persistentContainer.viewContext
         let userID = User.userID
-        if let currentUser = User.user(for: userID, in: viewContext) {
-            DataController.sharedController.currentUserObjectID = currentUser.objectID
+        if let currentUser = User.fetchUser(for: userID, in: viewContext) {
+//            DataController.sharedController.currentUserObjectID = currentUser.objectID
+            DataController.sharedController.currentUser = currentUser
         } else {
             viewContext.performAndWait {
                 let user = User(context: viewContext)
                 user.identifier = userID
-                DataController.sharedController.currentUserObjectID = user.objectID
+                DataController.sharedController.currentUser = user
+//                DataController.sharedController.currentUserObjectID = user.objectID
                 do {
                     try viewContext.save()
                 } catch {
@@ -96,8 +98,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         self.window = window
         
         let rootViewController = MainViewController()
-        rootViewController.currentUser = DataController.sharedController.currentUser()
-        print("Current user ID: \(DataController.sharedController.currentUser().identifier!)")
+        rootViewController.currentUser = DataController.sharedController.currentUser
         let navController = UINavigationController(rootViewController: rootViewController)
         
         self.window?.rootViewController = navController
@@ -142,7 +143,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 //        Network.sharedNetwork.deviceToken = deviceToken
         DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
             print("background task")
-            let currentUser = DataController.sharedController.currentUser(in: context)
+            let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
             print("received push token: \(deviceToken.debugDescription)")
             currentUser.pushToken = deviceToken
             do {

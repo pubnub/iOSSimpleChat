@@ -17,8 +17,10 @@ class MainViewController: UIViewController {
 //    let client: PubNub
     
     var stackView: UIStackView!
+    var pushTokenLabel: UILabel!
     var pushChannelsButton: UIButton!
     let pushChannelsButtonPlaceholder = "Tap here to add push channels"
+    let pushTokenLabelPlaceholder = "No push token currently"
     
     let fetchRequest: NSFetchRequest<Result> = {
         let request: NSFetchRequest<Result> = Result.fetchRequest()
@@ -31,12 +33,21 @@ class MainViewController: UIViewController {
     
     override func loadView() {
         let bounds = UIScreen.main.bounds
-        stackView = UIStackView(frame: bounds)
+        var topPadding = UIApplication.shared.statusBarFrame.height
+        if let navBarHeight = navigationController?.navigationBar.frame.height {
+            topPadding += navBarHeight
+        }
+        let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
+        stackView = UIStackView(frame: stackViewFrame)
+//        stackView.layoutMargins = UIEdgeInsets(top: topPadding, left: 0.0, bottom: 0.0, right: 0.0)
+//        stackView.isLayoutMarginsRelativeArrangement = true
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-        self.view = stackView
-
+        let backgroundView = UIView(frame: bounds)
+        backgroundView.addSubview(stackView)
+        self.view = backgroundView
+        self.view.setNeedsLayout()
     }
     
     required init() {
@@ -52,6 +63,11 @@ class MainViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         navigationItem.title = "Push!"
+        pushTokenLabel = UILabel(frame: .zero)
+        pushTokenLabel.backgroundColor = .red
+        pushTokenLabel.textAlignment = .center
+        pushTokenLabel.forceAutoLayout()
+        stackView.addArrangedSubview(pushTokenLabel)
         pushChannelsButton = UIButton(type: .custom)
         guard let pushBackgroundImage = UIImage(color: .cyan) else {
             fatalError("Couldn't create one color UIImage!")
@@ -62,9 +78,10 @@ class MainViewController: UIViewController {
         consoleView = ClientConsoleView(fetchRequest: fetchRequest)
         stackView.addArrangedSubview(consoleView)
         
+        let pushTokenLabelVerticalConstraints = NSLayoutConstraint(item: pushTokenLabel, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.10, constant: 0)
         let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.25, constant: 0)
         
-        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints])
+        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints])
     }
 
     override func didReceiveMemoryWarning() {
@@ -76,7 +93,7 @@ class MainViewController: UIViewController {
     
     func pushChannelsButtonPressed(sender: UIButton) {
         let viewContext = DataController.sharedController.persistentContainer.viewContext
-        let pushChannelsAlertController = DataController.sharedController.currentUser().alertControllerForPushChannels(in: viewContext)
+        let pushChannelsAlertController = DataController.sharedController.fetchCurrentUser().alertControllerForPushChannels(in: viewContext)
         present(pushChannelsAlertController, animated: true)
     }
     
@@ -87,7 +104,15 @@ class MainViewController: UIViewController {
     func pushChannelsButtonTitle() -> String {
         var finalTitle: String? = nil
         DataController.sharedController.persistentContainer.viewContext.performAndWait {
-            finalTitle = (DataController.sharedController.currentUser().pushChannelsString ?? self.pushChannelsButtonPlaceholder)
+            finalTitle = (DataController.sharedController.fetchCurrentUser().pushChannelsString ?? self.pushChannelsButtonPlaceholder)
+        }
+        return finalTitle!
+    }
+    
+    func pushTokenTitle() -> String {
+        var finalTitle: String? = nil
+        DataController.sharedController.persistentContainer.viewContext.performAndWait {
+            finalTitle = (DataController.sharedController.fetchCurrentUser().pushToken?.debugDescription ?? self.pushTokenLabelPlaceholder)
         }
         return finalTitle!
     }
@@ -100,11 +125,21 @@ class MainViewController: UIViewController {
         }
     }
     
+    func updatePushTokenLabel() {
+        let title = pushTokenTitle()
+        DispatchQueue.main.async {
+            self.pushTokenLabel.text = title
+            self.pushTokenLabel.setNeedsLayout()
+        }
+    }
+    
     var currentUser: User? {
         didSet {
             if let existingOldValue = oldValue {
                 existingOldValue.removeObserver(self, forKeyPath: #keyPath(User.pushChannels), context: &mainViewContext)
+                existingOldValue.removeObserver(self, forKeyPath: #keyPath(User.pushToken), context: &mainViewContext)
             }
+            currentUser?.addObserver(self, forKeyPath: #keyPath(User.pushToken), options: [.new, .old, .initial], context: &mainViewContext)
             currentUser?.addObserver(self, forKeyPath: #keyPath(User.pushChannels), options: [.new, .old, .initial], context: &mainViewContext)
         }
     }
@@ -126,6 +161,8 @@ class MainViewController: UIViewController {
             switch existingKeyPath {
             case #keyPath(User.pushChannels):
                 updatePushChannelsButton()
+            case #keyPath(User.pushToken):
+                updatePushTokenLabel()
             default:
                 fatalError("what wrong in KVO?")
             }
