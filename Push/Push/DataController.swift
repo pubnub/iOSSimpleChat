@@ -31,7 +31,7 @@ class DataController: NSObject {
     dynamic var currentUser: User? {
         didSet {
             print(#function)
-            Network.sharedNetwork.setCurrentUser(user: currentUser)
+            Network.sharedNetwork.user = currentUser
         }
     }
     
