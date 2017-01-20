@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Override point for customization after application launch.
         let viewContext = DataController.sharedController.persistentContainer.viewContext
         let userID = User.userID
-        if let currentUser = User.fetchUser(for: userID, in: viewContext) {
+        if let currentUser = DataController.sharedController.fetchUser(for: userID, in: viewContext) {
             DataController.sharedController.currentUser = currentUser
         } else {
             viewContext.performAndWait {

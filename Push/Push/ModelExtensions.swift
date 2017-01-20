@@ -40,7 +40,7 @@ enum ResultType {
         }
     }
     
-    static func createCoreDataObject(result: PNResult?, in context: NSManagedObjectContext) -> Result? {
+    static func createCoreDataObject(in context: NSManagedObjectContext, for result: PNResult?, with user: User? = nil) -> Result? {
         guard let actualResult = result else {
             return nil
         }
@@ -49,7 +49,20 @@ enum ResultType {
         }
         let actualResultType = resultType.resultType
         let entity = actualResultType.entity()
-        return actualResultType.init(result: actualResult, entity: entity, context: context)
+        var finalResult: Result? = nil
+        context.performAndWait {
+            finalResult = actualResultType.init(result: actualResult, entity: entity, context: context)
+            guard let actualUser = user else {
+                return
+            }
+            if actualUser.managedObjectContext == context {
+                finalResult?.user = actualUser
+            } else {
+                let contextualUser = DataController.sharedController.fetchUser(with: actualUser.objectID, in: context)
+                finalResult?.user = contextualUser
+            }
+        }
+        return finalResult
     }
     
 }

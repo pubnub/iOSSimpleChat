@@ -25,8 +25,26 @@ class DataController: NSObject {
         }
     }
     
-    // view context by default if context is not supplied
-    func fetchCurrentUser(in context: NSManagedObjectContext? = nil) -> User {
+    public func fetchUser(for userIdentifier: String, in context: NSManagedObjectContext? = nil) -> User? {
+        var context = context
+        if context == nil {
+            context = persistentContainer.viewContext
+        }
+        var finalUser: User? = nil
+        context?.performAndWait {
+            let userFetchRequest: NSFetchRequest<User> = User.fetchRequest()
+            userFetchRequest.predicate = NSPredicate(format: "identifier == %@", userIdentifier)
+            do {
+                let results = try userFetchRequest.execute()
+                finalUser = results.first
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+        return finalUser
+    }
+    
+    func fetchUser(with objectID: NSManagedObjectID, in context: NSManagedObjectContext? = nil) -> User? {
         var context = context
         if context == nil {
             context = persistentContainer.viewContext
@@ -34,12 +52,15 @@ class DataController: NSObject {
         var finalUser: User? = nil
         // forcibly unwrap, we want to make sure we fail if there is no context
         context!.performAndWait {
-            guard let object = context?.object(with: self.currentUserObjectID) as? User else {
-                fatalError("What went wrong with context: \(context) and objectID: \(self.currentUserObjectID)")
-            }
-            finalUser = object
+            finalUser = context!.object(with: objectID) as? User
         }
-        return finalUser!
+        return finalUser
+        
+    }
+    
+    // view context by default if context is not supplied
+    func fetchCurrentUser(in context: NSManagedObjectContext? = nil) -> User {
+        return fetchUser(with: currentUserObjectID, in: context)! // forcibly unwrap for now
     }
     
     // MARK: - Core Data stack
