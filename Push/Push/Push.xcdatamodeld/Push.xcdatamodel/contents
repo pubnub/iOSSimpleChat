@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16C67" minimumToolsVersion="Xcode 7.3" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="Channel" representedClassName=".Channel" syncable="YES">
+    <entity name="Channel" representedClassName="Channel" syncable="YES">
         <attribute name="isPushChannel" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="isPushEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" indexed="YES" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="pushChannels" inverseEntity="User" syncable="YES"/>
     </entity>
+    <entity name="Event" representedClassName="Event" syncable="YES">
+        <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="events" inverseEntity="User" syncable="YES"/>
+    </entity>
     <entity name="PublishStatus" representedClassName="PublishStatus" parentEntity="Status" syncable="YES">
         <attribute name="information" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="timetoken" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
-    <entity name="PushMessage" representedClassName="PushMessage" syncable="YES" codeGenerationType="class"/>
-    <entity name="PushNotificationModificationStatus" representedClassName="PushNotificationModificationStatus" syncable="YES" codeGenerationType="class"/>
-    <entity name="Result" representedClassName="Result" syncable="YES">
+    <entity name="PushAuditResult" representedClassName="PushAuditResult" parentEntity="Result" syncable="YES">
+        <attribute name="channels" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="PushMessage" representedClassName="PushMessage" parentEntity="Event" syncable="YES">
+        <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="Result" representedClassName="Result" parentEntity="Event" syncable="YES">
         <attribute name="authKey" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="clientRequest" optional="YES" attributeType="Transformable" syncable="YES"/>
-        <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
         <attribute name="isTLSEnabled" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="origin" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="statusCode" optional="YES" attributeType="Integer 16" defaultValueString="0.0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="stringifiedOperation" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
-        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="results" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="Status" representedClassName="Status" parentEntity="Result" syncable="YES">
         <attribute name="isError" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="stringifiedCategory" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="User" representedClassName=".User" syncable="YES">
+    <entity name="User" representedClassName="User" syncable="YES">
         <attribute name="identifier" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="pushToken" optional="YES" attributeType="Binary" syncable="YES"/>
+        <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="user" inverseEntity="Event" syncable="YES"/>
         <relationship name="pushChannels" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Channel" inverseName="user" inverseEntity="Channel" syncable="YES"/>
-        <relationship name="results" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Result" inverseName="user" inverseEntity="Result" syncable="YES"/>
     </entity>
     <elements>
         <element name="Channel" positionX="-27" positionY="63" width="128" height="105"/>
+        <element name="Event" positionX="-27" positionY="81" width="128" height="75"/>
         <element name="PublishStatus" positionX="-63" positionY="-18" width="128" height="75"/>
-        <element name="PushMessage" positionX="-54" positionY="-9" width="128" height="45"/>
-        <element name="PushNotificationModificationStatus" positionX="-36" positionY="18" width="128" height="45"/>
-        <element name="Result" positionX="-18" positionY="27" width="128" height="180"/>
+        <element name="PushAuditResult" positionX="-36" positionY="18" width="128" height="60"/>
+        <element name="PushMessage" positionX="-54" positionY="-9" width="128" height="60"/>
+        <element name="Result" positionX="-18" positionY="27" width="128" height="150"/>
         <element name="Status" positionX="0" positionY="90" width="128" height="75"/>
         <element name="User" positionX="-18" positionY="72" width="128" height="105"/>
     </elements>

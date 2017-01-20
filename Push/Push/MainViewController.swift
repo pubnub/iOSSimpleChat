@@ -17,6 +17,8 @@ class MainViewController: UIViewController {
     var stackView: UIStackView!
     var pushTokenLabel: UILabel!
     var pushChannelsButton: UIButton!
+    var pushChannelsAuditButton: UIButton!
+    let pushChannelsAuditButtonTitle = "Get push channels for token"
     let pushChannelsButtonPlaceholder = "Tap here to add push channels"
     let pushTokenLabelPlaceholder = "No push token currently"
     
@@ -64,6 +66,17 @@ class MainViewController: UIViewController {
         pushTokenLabel.textAlignment = .center
         pushTokenLabel.forceAutoLayout()
         stackView.addArrangedSubview(pushTokenLabel)
+        
+        pushChannelsAuditButton = UIButton(type: .system)
+        guard let pushChannelsAuditImage = UIImage(color: .green) else {
+            fatalError("Couldn't create one color UIImage!")
+        }
+        pushChannelsAuditButton.setTitle(pushChannelsAuditButtonTitle, for: .normal)
+        pushChannelsAuditButton.setBackgroundImage(pushChannelsAuditImage, for: .normal)
+        pushChannelsAuditButton.addTarget(self, action: #selector(pushChannelsAuditButtonPressed(sender:)), for: .touchUpInside)
+        pushChannelsAuditButton.forceAutoLayout()
+        stackView.addArrangedSubview(pushChannelsAuditButton)
+        
         pushChannelsButton = UIButton(type: .custom)
         guard let pushBackgroundImage = UIImage(color: .cyan) else {
             fatalError("Couldn't create one color UIImage!")
@@ -75,9 +88,10 @@ class MainViewController: UIViewController {
         stackView.addArrangedSubview(consoleView)
         
         let pushTokenLabelVerticalConstraints = NSLayoutConstraint(item: pushTokenLabel, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.10, constant: 0)
-        let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.25, constant: 0)
+        let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.20, constant: 0)
+        let pushChannelsAuditButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsAuditButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.15, constant: 0)
         
-        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints])
+        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints, pushChannelsAuditButtonVerticalConstraints])
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
     }
@@ -88,6 +102,10 @@ class MainViewController: UIViewController {
     }
     
     // MARK: - Actions
+    
+    func pushChannelsAuditButtonPressed(sender: UIButton) {
+        Network.sharedNetwork.requestPushChannelsForCurrentPushToken()
+    }
     
     func clearConsoleButtonPressed(sender: UIBarButtonItem) {
         DataController.sharedController.persistentContainer.performBackgroundTask { (context) in

@@ -1,9 +1,9 @@
 //
 //  Channel+CoreDataClass.swift
-//  
+//  Push
 //
-//  Created by Jordan Zucker on 1/11/17.
-//
+//  Created by Jordan Zucker on 1/20/17.
+//  Copyright © 2017 PubNub. All rights reserved.
 //
 
 import Foundation
@@ -58,7 +58,5 @@ public class Channel: NSManagedObject {
         }
         return updatedChannel
     }
-    
-    
 
 }

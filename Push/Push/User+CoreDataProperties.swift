@@ -1,9 +1,9 @@
 //
 //  User+CoreDataProperties.swift
-//  
+//  Push
 //
-//  Created by Jordan Zucker on 1/11/17.
-//
+//  Created by Jordan Zucker on 1/20/17.
+//  Copyright © 2017 PubNub. All rights reserved.
 //
 
 import Foundation
@@ -42,19 +42,19 @@ extension User {
 
 }
 
-// MARK: Generated accessors for results
+// MARK: Generated accessors for events
 extension User {
 
-    @objc(addResultsObject:)
-    @NSManaged public func addToResults(_ value: Result)
+    @objc(addEventsObject:)
+    @NSManaged public func addToEvents(_ value: Event)
 
-    @objc(removeResultsObject:)
-    @NSManaged public func removeFromResults(_ value: Result)
+    @objc(removeEventsObject:)
+    @NSManaged public func removeFromEvents(_ value: Event)
 
-    @objc(addResults:)
-    @NSManaged public func addToResults(_ values: NSSet)
+    @objc(addEvents:)
+    @NSManaged public func addToEvents(_ values: NSSet)
 
-    @objc(removeResults:)
-    @NSManaged public func removeFromResults(_ values: NSSet)
+    @objc(removeEvents:)
+    @NSManaged public func removeFromEvents(_ values: NSSet)
 
 }

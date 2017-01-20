@@ -1,9 +1,9 @@
 //
 //  Channel+CoreDataProperties.swift
-//  
+//  Push
 //
-//  Created by Jordan Zucker on 1/11/17.
-//
+//  Created by Jordan Zucker on 1/20/17.
+//  Copyright © 2017 PubNub. All rights reserved.
 //
 
 import Foundation
@@ -16,9 +16,9 @@ extension Channel {
         return NSFetchRequest<Channel>(entityName: "Channel");
     }
 
-    @NSManaged public var name: String?
-    @NSManaged public var user: User?
     @NSManaged public var isPushChannel: Bool
     @NSManaged public var isPushEnabled: Bool
+    @NSManaged public var name: String?
+    @NSManaged public var user: User?
 
 }

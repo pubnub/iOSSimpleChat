@@ -1,17 +1,16 @@
 //
 //  User+CoreDataClass.swift
-//  
+//  Push
 //
-//  Created by Jordan Zucker on 1/11/17.
-//
+//  Created by Jordan Zucker on 1/20/17.
+//  Copyright © 2017 PubNub. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import CoreData
 import PubNub
 
 let UserIdentifierKey = "UserIdentifierKey"
-
 
 public class User: NSManagedObject {
     
@@ -156,5 +155,5 @@ public class User: NSManagedObject {
         
         return alertController
     }
-
+    
 }

@@ -10,6 +10,70 @@ import Foundation
 import CoreData
 import PubNub
 
+protocol CoreDataObject {
+    var managedObjectType: NSManagedObject.Type { get }
+}
+
+enum SystemEvent: CoreDataObject {
+    case notification
+    case pushNotification
+    
+    var managedObjectType: NSManagedObject.Type {
+        switch self {
+        case .notification:
+            return NSManagedObject.self
+        default:
+            return NSManagedObject.self
+        }
+    }
+    
+}
+
+enum PubNubEvent: CoreDataObject {
+    case result
+    case status
+    case publishStatus
+    case pushAuditResult
+    
+    var managedObjectType: NSManagedObject.Type {
+        switch self {
+        case .result:
+            return Result.self
+        case .status:
+            return Status.self
+        case .publishStatus:
+            return PublishStatus.self
+        case .pushAuditResult:
+            return NSManagedObject.self
+        }
+    }
+    
+    init?(result: PNResult?) {
+        guard let actualResult = result else {
+            return nil
+        }
+        switch actualResult {
+        case _ as PNPublishStatus:
+            self = PubNubEvent.publishStatus
+        case _ as PNStatus:
+            self = PubNubEvent.status
+        case _ as PNAPNSEnabledChannelsResult:
+            self = PubNubEvent.pushAuditResult
+        default:
+            self = PubNubEvent.result
+        }
+    }
+    
+}
+
+enum EventType {
+    case system(SystemEvent)
+    case pubnub(PubNubEvent)
+    
+    
+    
+}
+
 enum ResultType {
     case result
     case status

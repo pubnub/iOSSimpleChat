@@ -127,6 +127,32 @@ class Network: NSObject, PNObjectEventListener {
     
     // MARK: - APNS
     
+    func requestPushChannelsForCurrentPushToken() {
+        guard let currentToken = self.pushToken else {
+            return
+        }
+        requestPushChannels(for: currentToken)
+    }
+    
+    func requestPushChannels(for token: Data) {
+        client.pushNotificationEnabledChannelsForDeviceWithPushToken(token) { (result, status) in
+            self.networkContext.perform {
+                var savingResponse: PNResult? = nil
+                if let actualResult = result {
+                    savingResponse = actualResult
+                } else {
+                    savingResponse = status
+                }
+                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: savingResponse, with: self.user)
+                do {
+                    try self.networkContext.save()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
     var _pushToken: Data?
     
     var pushToken: Data? {

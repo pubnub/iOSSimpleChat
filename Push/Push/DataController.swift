@@ -63,6 +63,33 @@ class DataController: NSObject {
         return fetchUser(with: currentUserObjectID, in: context)! // forcibly unwrap for now
     }
     
+    // MARK: - Events
+    
+    func createCoreDataObject(in context: NSManagedObjectContext, for result: PNResult?, with user: User? = nil) -> NSManagedObject? {
+        guard let actualResult = result else {
+            return nil
+        }
+        guard let resultType = ResultType(result: actualResult) else {
+            return nil
+        }
+        let actualResultType = resultType.resultType
+        let entity = actualResultType.entity()
+        var finalResult: Result? = nil
+        context.performAndWait {
+            finalResult = actualResultType.init(result: actualResult, entity: entity, context: context)
+            guard let actualUser = user else {
+                return
+            }
+            if actualUser.managedObjectContext == context {
+                finalResult?.user = actualUser
+            } else {
+                let contextualUser = DataController.sharedController.fetchUser(with: actualUser.objectID, in: context)
+                finalResult?.user = contextualUser
+            }
+        }
+        return finalResult
+    }
+    
     // MARK: - Core Data stack
     
     lazy var persistentContainer: NSPersistentContainer = {
