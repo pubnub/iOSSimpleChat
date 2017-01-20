@@ -20,25 +20,6 @@ public class User: NSManagedObject {
         identifier = UUID().uuidString
     }
     
-    public static func fetchUser(for userIdentifier: String, in context: NSManagedObjectContext? = nil) -> User? {
-        var context = context
-        if context == nil {
-            context = DataController.sharedController.persistentContainer.viewContext
-        }
-        var finalUser: User? = nil
-        context?.performAndWait {
-            let userFetchRequest: NSFetchRequest<User> = User.fetchRequest()
-            userFetchRequest.predicate = NSPredicate(format: "identifier == %@", userIdentifier)
-            do {
-                let results = try userFetchRequest.execute()
-                finalUser = results.first
-            } catch {
-                fatalError(error.localizedDescription)
-            }
-        }
-        return finalUser
-    }
-    
     static var userID: String {
         if let existingUserID = UserDefaults.standard.object(forKey: UserIdentifierKey) {
             return existingUserID as! String
