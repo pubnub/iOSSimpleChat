@@ -97,6 +97,8 @@ public class User: NSManagedObject {
         
         let textField = alertController.textFields![0] // we just added only a single textField
         
+        let pushChannelsKeyPath = #keyPath(User.pushChannels)
+        
         let updateAction = UIAlertAction(title: "Update", style: .default) { (action) in
             defer {
                 context.perform {
@@ -112,7 +114,7 @@ public class User: NSManagedObject {
                 let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
                 guard let entryText = textField.text, !entryText.isEmpty else {
                     context.perform {
-                        currentUser.pushChannels?.removeAll()
+                        currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).removeAllObjects()
                     }
                     return
                 }
@@ -136,37 +138,6 @@ public class User: NSManagedObject {
                     currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).union(channelsSet)
                     currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).intersect(channelsSet)
                 }
-                //                    currentUser.willChangeValue(forKey: keyPath, withSetMutation: .union, using: currentUser.pushChannels!)
-                //                    currentUser.mutableSetValue(forKeyPath: keyPath).union(channelsSet)
-                //                    currentUser.didChangeValue(forKey: keyPath, withSetMutation: .union, using: currentUser.pushChannels!)
-                //currentUser.mutableSetValue(forKey: #keyPath(User.pushChannels)).intersect(channelsSet)
-                //                    currentUser.pushChannels?.formUnion(channelsSet)
-                //                    currentUser.pushChannels?.formIntersection(channelsSet)
-                print("Done making push channel changes")
-//                do {
-//                    
-//                    context.perform {
-//                        let channelsArray = try PubNub.stringToSubscribablesArray(channels: entryText)
-//                        let channelsObjectArray = channelsArray!.map({ (channelName) -> Channel in
-//                            let foundChannel = Channel.channel(in: context, with: channelName, shouldSave: false)
-//                            return foundChannel!
-//                        })
-//                        let channelsSet: Set<Channel> = Set(channelsObjectArray) // we can forcibly unwrap because we checked for channels above
-//                        if !channelsSet.isEmpty {
-//                            print("user: \(currentUser.debugDescription)")
-//                            currentUser.mutableSetValue(forKey: #keyPath(User.pushChannels)).add(channelsSet)
-//                        }
-//                        //                    currentUser.willChangeValue(forKey: keyPath, withSetMutation: .union, using: currentUser.pushChannels!)
-//                        //                    currentUser.mutableSetValue(forKeyPath: keyPath).union(channelsSet)
-//                        //                    currentUser.didChangeValue(forKey: keyPath, withSetMutation: .union, using: currentUser.pushChannels!)
-//                        //currentUser.mutableSetValue(forKey: #keyPath(User.pushChannels)).intersect(channelsSet)
-//                        //                    currentUser.pushChannels?.formUnion(channelsSet)
-//                        //                    currentUser.pushChannels?.formIntersection(channelsSet)
-//                        print("Done making push channel changes")
-//                    }
-//                } catch {
-//                    fatalError(error.localizedDescription)
-//                }
             }
             
         }
@@ -183,12 +154,9 @@ public class User: NSManagedObject {
                     }
                 }
             }
-            let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
-            guard let entryText = textField.text, !entryText.isEmpty else {
-                context.perform {
-                    currentUser.pushChannels?.removeAll()
-                }
-                return
+            context.perform {
+                let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
+                currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).removeAllObjects()
             }
         }
         alertController.addAction(clearAction)

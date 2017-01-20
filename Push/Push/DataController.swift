@@ -10,19 +10,9 @@ import UIKit
 import CoreData
 import PubNub
 
-fileprivate let UserIDKey = "UserIDKey"
-
 class DataController: NSObject {
     
-//    private let dataControllerKVOContext = 0
-    
     static let sharedController = DataController()
-    
-//    var currentUserObjectID: NSManagedObjectID! {
-//        didSet {
-//            Network.sharedNetwork.setUp()
-//        }
-//    }
     
     var currentUserObjectID: NSManagedObjectID {
         return currentUser!.objectID
@@ -51,49 +41,6 @@ class DataController: NSObject {
         }
         return finalUser!
     }
-    
-//    func user(in context: NSManagedObjectContext) -> User {
-//        let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
-//        var finalResult: User? = nil
-//        context.performAndWait {
-//            do {
-//                let results = try fetchRequest.execute()
-//                finalResult = results.first! // should only ever be one user, crash otherwise
-//            } catch {
-//                fatalError(error.localizedDescription)
-//            }
-//        }
-//        return finalResult!
-//    }
-//    
-//    func currentUser(in context: NSManagedObjectContext) -> User {
-//        <#function body#>
-//    }
-    
-//    func user(in context: NSManagedObjectContext) -> User? {
-//        let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
-//        var finalResult: User? = nil
-//        context.performAndWait {
-//            do {
-//                let results = try fetchRequest.execute()
-//                finalResult = results.first // should only ever be one user, crash otherwise
-//            } catch {
-//                fatalError(error.localizedDescription)
-//            }
-//        }
-//        return finalResult
-//    }
-    
-//    var currentUser: User!
-    
-//    func currentUser(in context: NSManagedObjectContext) -> User {
-//        var finalResult: User? = nil
-//        context.performAndWait {
-//            guard let result = context.object(with: currentUser.objectID) else {
-//                return
-//            }
-//        }
-//    }
     
     // MARK: - Core Data stack
     
