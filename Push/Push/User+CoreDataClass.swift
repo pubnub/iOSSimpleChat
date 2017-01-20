@@ -20,20 +20,24 @@ public class User: NSManagedObject {
         identifier = UUID().uuidString
     }
     
-//    private static var _userID: String? {
-//        if let existingUserID = UserDefaults.standard.object(forKey: UserIdentifierKey) {
-//            _userID = existingUserID as! String
-//        } else {
-//            let uuidString = UUID().uuidString
-//            UserDefaults.standard.set(uuidString, forKey: UserIdentifierKey)
-//            _userID = uuidString
-//        }
-//        return _userID
-//    }
-    
-//    static var userID: String {
-//        if _userID
-//    }
+    public static func fetchUser(for userIdentifier: String, in context: NSManagedObjectContext? = nil) -> User? {
+        var context = context
+        if context == nil {
+            context = DataController.sharedController.persistentContainer.viewContext
+        }
+        var finalUser: User? = nil
+        context?.performAndWait {
+            let userFetchRequest: NSFetchRequest<User> = User.fetchRequest()
+            userFetchRequest.predicate = NSPredicate(format: "identifier == %@", userIdentifier)
+            do {
+                let results = try userFetchRequest.execute()
+                finalUser = results.first
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+        return finalUser
+    }
     
     static var userID: String {
         if let existingUserID = UserDefaults.standard.object(forKey: UserIdentifierKey) {
@@ -43,6 +47,10 @@ public class User: NSManagedObject {
             UserDefaults.standard.set(uuidString, forKey: UserIdentifierKey)
             return uuidString
         }
+    }
+    
+    var pushChannelsArray: [Channel]? {
+        return pushChannels?.map { $0 }
     }
     
     var pushChannelsString: String? {
@@ -62,7 +70,7 @@ public class User: NSManagedObject {
         alertController.addTextField { (textField) in
             textField.placeholder = "Channels ..."
             context.perform {
-                let currentUser = DataController.sharedController.currentUser(in: context)
+                let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
                 guard let channelsString = currentUser.pushChannelsString else {
                     return
                 }
@@ -73,6 +81,8 @@ public class User: NSManagedObject {
         }
         
         let textField = alertController.textFields![0] // we just added only a single textField
+        
+        let pushChannelsKeyPath = #keyPath(User.pushChannels)
         
         let updateAction = UIAlertAction(title: "Update", style: .default) { (action) in
             defer {
@@ -85,30 +95,56 @@ public class User: NSManagedObject {
                     }
                 }
             }
-            let currentUser = DataController.sharedController.currentUser(in: context)
-            guard let entryText = textField.text, !entryText.isEmpty else {
-                context.perform {
-                    currentUser.pushChannels?.removeAll()
+            context.perform {
+                let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
+                guard let entryText = textField.text, !entryText.isEmpty else {
+                    context.perform {
+                        currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).removeAllObjects()
+                    }
+                    return
                 }
-                return
-            }
-            do {
-                let channelsArray = try PubNub.stringToSubscribablesArray(channels: entryText)
+                var channelsArray: [String]? = nil
+                do {
+                    if let inputArray = try PubNub.stringToSubscribablesArray(channels: entryText) {
+                        channelsArray = inputArray
+                    }
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+                // check this forced unwrap
                 let channelsObjectArray = channelsArray!.map({ (channelName) -> Channel in
                     let foundChannel = Channel.channel(in: context, with: channelName, shouldSave: false)
                     return foundChannel!
                 })
                 let channelsSet: Set<Channel> = Set(channelsObjectArray) // we can forcibly unwrap because we checked for channels above
-                context.perform {
-                    currentUser.pushChannels?.formUnion(channelsSet)
-                    currentUser.pushChannels?.formIntersection(channelsSet)
-                    print("Done making push channel changes")
+                if !channelsSet.isEmpty {
+                    print("user: \(currentUser.debugDescription)")
+                    let pushChannelsKeyPath = #keyPath(User.pushChannels)
+                    currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).union(channelsSet)
+                    currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).intersect(channelsSet)
                 }
-            } catch {
-                fatalError(error.localizedDescription)
             }
+            
         }
         alertController.addAction(updateAction)
+        
+        let clearAction = UIAlertAction(title: "Clear", style: .destructive) { (action) in
+            defer {
+                context.perform {
+                    do {
+                        print("Save push channels change!")
+                        try context.save()
+                    } catch {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
+            context.perform {
+                let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
+                currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).removeAllObjects()
+            }
+        }
+        alertController.addAction(clearAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             

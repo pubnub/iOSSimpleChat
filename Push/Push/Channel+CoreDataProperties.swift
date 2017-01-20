@@ -18,5 +18,7 @@ extension Channel {
 
     @NSManaged public var name: String?
     @NSManaged public var user: User?
+    @NSManaged public var isPushChannel: Bool
+    @NSManaged public var isPushEnabled: Bool
 
 }

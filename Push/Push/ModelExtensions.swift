@@ -31,9 +31,9 @@ enum ResultType {
             return nil
         }
         switch actualResult {
-        case let publishStatus as PNPublishStatus:
+        case _ as PNPublishStatus:
             self = ResultType.publishStatus
-        case let status as PNStatus:
+        case _ as PNStatus:
             self = ResultType.status
         default:
             self = ResultType.result

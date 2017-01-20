@@ -16,15 +16,6 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     let fetchRequest: NSFetchRequest<Result>
     let fetchedResultsController: NSFetchedResultsController<Result>
     
-//    lazy var fetchedResultsController: NSFetchedResultsController<PublishStatus> = {
-//        let allRecipesFetchRequest: NSFetchRequest<Recipe> = Recipe.fetchRequest()
-//        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Recipe.creationDate), ascending: true)
-//        allRecipesFetchRequest.sortDescriptors = [creationDateSortDescriptor]
-//        let creatingFetchedResultsController = NSFetchedResultsController(fetchRequest: allRecipesFetchRequest, managedObjectContext: UIApplication.viewContext, sectionNameKeyPath: nil, cacheName: nil)
-//        creatingFetchedResultsController.delegate = self
-//        return creatingFetchedResultsController
-//    }()
-    
     required init(fetchRequest: NSFetchRequest<Result>) {
         self.tableView = UITableView(frame: .zero, style: .plain)
         self.fetchRequest = fetchRequest

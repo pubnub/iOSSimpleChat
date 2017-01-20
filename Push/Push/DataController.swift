@@ -10,21 +10,23 @@ import UIKit
 import CoreData
 import PubNub
 
-fileprivate let UserIDKey = "UserIDKey"
-
 class DataController: NSObject {
     
     static let sharedController = DataController()
     
-    var currentUserObjectID: NSManagedObjectID! {
+    var currentUserObjectID: NSManagedObjectID {
+        return currentUser!.objectID
+    }
+    
+    dynamic var currentUser: User? {
         didSet {
-            Network.sharedNetwork.setUp()
+            print(#function)
+            Network.sharedNetwork.user = currentUser
         }
     }
     
-    
     // view context by default if context is not supplied
-    func currentUser(in context: NSManagedObjectContext? = nil) -> User {
+    func fetchCurrentUser(in context: NSManagedObjectContext? = nil) -> User {
         var context = context
         if context == nil {
             context = persistentContainer.viewContext
@@ -39,49 +41,6 @@ class DataController: NSObject {
         }
         return finalUser!
     }
-    
-//    func user(in context: NSManagedObjectContext) -> User {
-//        let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
-//        var finalResult: User? = nil
-//        context.performAndWait {
-//            do {
-//                let results = try fetchRequest.execute()
-//                finalResult = results.first! // should only ever be one user, crash otherwise
-//            } catch {
-//                fatalError(error.localizedDescription)
-//            }
-//        }
-//        return finalResult!
-//    }
-//    
-//    func currentUser(in context: NSManagedObjectContext) -> User {
-//        <#function body#>
-//    }
-    
-//    func user(in context: NSManagedObjectContext) -> User? {
-//        let fetchRequest: NSFetchRequest<User> = User.fetchRequest()
-//        var finalResult: User? = nil
-//        context.performAndWait {
-//            do {
-//                let results = try fetchRequest.execute()
-//                finalResult = results.first // should only ever be one user, crash otherwise
-//            } catch {
-//                fatalError(error.localizedDescription)
-//            }
-//        }
-//        return finalResult
-//    }
-    
-//    var currentUser: User!
-    
-//    func currentUser(in context: NSManagedObjectContext) -> User {
-//        var finalResult: User? = nil
-//        context.performAndWait {
-//            guard let result = context.object(with: currentUser.objectID) else {
-//                return
-//            }
-//        }
-//    }
     
     // MARK: - Core Data stack
     

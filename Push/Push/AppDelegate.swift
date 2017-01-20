@@ -17,31 +17,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         let viewContext = DataController.sharedController.persistentContainer.viewContext
-        viewContext.performAndWait {
-            let user = User(context: viewContext)
-            user.identifier = User.userID
-            do {
-                try viewContext.save()
-            } catch {
-                fatalError("What now?")
+        let userID = User.userID
+        if let currentUser = User.fetchUser(for: userID, in: viewContext) {
+            DataController.sharedController.currentUser = currentUser
+        } else {
+            viewContext.performAndWait {
+                let user = User(context: viewContext)
+                print("Create user for identifier: \(userID)")
+                user.identifier = userID
+                do {
+                    try viewContext.save()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+                DataController.sharedController.currentUser = user
             }
-            DataController.sharedController.currentUserObjectID = user.objectID
-//            Network.sharedNetwork.setUp()
         }
-//        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
-//            context.perform {
-//                let user = User(context: context)
-//                user.identifier = User.userID
-//                DataController.sharedController.currentUserObjectID = user.objectID
-//                Network.sharedNetwork.setUp()
-//                do {
-//                    try context.save()
-//                } catch {
-//                    fatalError("What now?")
-//                }
-//                
-//            }
-//        }
         
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             switch settings.authorizationStatus {
@@ -78,8 +69,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         self.window = window
         
         let rootViewController = MainViewController()
-        rootViewController.currentUser = DataController.sharedController.currentUser()
-        print("Current user ID: \(DataController.sharedController.currentUser().identifier!)")
+        rootViewController.currentUser = DataController.sharedController.currentUser
         let navController = UINavigationController(rootViewController: rootViewController)
         
         self.window?.rootViewController = navController
@@ -116,15 +106,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // Sometimes it’s useful to store the device token in UserDefaults
-//        UserDefaults.standard.set(deviceToken, forKey: "DeviceToken")
-//        Network.sharedNetwork.client.addPushNotificationsOnChannels(["a"], withDevicePushToken: deviceToken) { (status) in
-//            print("add push: \(status.debugDescription)")
-//        }
-//        Network.sharedNetwork.deviceToken = deviceToken
         DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
             print("background task")
-            let currentUser = DataController.sharedController.currentUser(in: context)
+            let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
+            print("received push token: \(deviceToken.debugDescription)")
             currentUser.pushToken = deviceToken
             do {
                 try context.save()
