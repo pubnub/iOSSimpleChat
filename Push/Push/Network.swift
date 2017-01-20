@@ -187,7 +187,7 @@ class Network: NSObject, PNObjectEventListener {
         
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let _ = ResultType.createCoreDataObject(result: status, in: self.networkContext)
+                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
                 do {
                     try self.networkContext.save()
                 } catch {
@@ -220,7 +220,7 @@ class Network: NSObject, PNObjectEventListener {
         }
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let _ = ResultType.createCoreDataObject(result: status, in: self.networkContext)
+                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
                 do {
                     try self.networkContext.save()
                 } catch {

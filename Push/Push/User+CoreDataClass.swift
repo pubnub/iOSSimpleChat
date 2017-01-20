@@ -20,23 +20,26 @@ public class User: NSManagedObject {
         identifier = UUID().uuidString
     }
     
-    public static func fetchUser(for userIdentifier: String, in context: NSManagedObjectContext? = nil) -> User? {
+    func removeAllResults(in context: NSManagedObjectContext? = nil) {
         var context = context
         if context == nil {
             context = DataController.sharedController.persistentContainer.viewContext
         }
-        var finalUser: User? = nil
-        context?.performAndWait {
-            let userFetchRequest: NSFetchRequest<User> = User.fetchRequest()
-            userFetchRequest.predicate = NSPredicate(format: "identifier == %@", userIdentifier)
-            do {
-                let results = try userFetchRequest.execute()
-                finalUser = results.first
-            } catch {
-                fatalError(error.localizedDescription)
+        context?.perform {
+            let deleteUsers: (User) -> () = { (user) in
+                user.results?.forEach({ (result) in
+                    context?.delete(result)
+                })
+            }
+            if context == self.managedObjectContext {
+                deleteUsers(self)
+            } else {
+                guard let contextualUser = DataController.sharedController.fetchUser(with: self.objectID, in: context!) else {
+                    fatalError()
+                }
+                deleteUsers(contextualUser)
             }
         }
-        return finalUser
     }
     
     static var userID: String {
