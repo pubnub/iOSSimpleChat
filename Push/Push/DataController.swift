@@ -61,19 +61,6 @@ class DataController: NSObject {
     // view context by default if context is not supplied
     func fetchCurrentUser(in context: NSManagedObjectContext? = nil) -> User {
         return fetchUser(with: currentUserObjectID, in: context)! // forcibly unwrap for now
-//        var context = context
-//        if context == nil {
-//            context = persistentContainer.viewContext
-//        }
-//        var finalUser: User? = nil
-//        // forcibly unwrap, we want to make sure we fail if there is no context
-//        context!.performAndWait {
-//            guard let object = context?.object(with: self.currentUserObjectID) as? User else {
-//                fatalError("What went wrong with context: \(context) and objectID: \(self.currentUserObjectID)")
-//            }
-//            finalUser = object
-//        }
-//        return finalUser!
     }
     
     // MARK: - Core Data stack

@@ -20,6 +20,28 @@ public class User: NSManagedObject {
         identifier = UUID().uuidString
     }
     
+    func removeAllResults(in context: NSManagedObjectContext? = nil) {
+        var context = context
+        if context == nil {
+            context = DataController.sharedController.persistentContainer.viewContext
+        }
+        context?.perform {
+            let deleteUsers: (User) -> () = { (user) in
+                user.results?.forEach({ (result) in
+                    context?.delete(result)
+                })
+            }
+            if context == self.managedObjectContext {
+                deleteUsers(self)
+            } else {
+                guard let contextualUser = DataController.sharedController.fetchUser(with: self.objectID, in: context!) else {
+                    fatalError()
+                }
+                deleteUsers(contextualUser)
+            }
+        }
+    }
+    
     static var userID: String {
         if let existingUserID = UserDefaults.standard.object(forKey: UserIdentifierKey) {
             return existingUserID as! String

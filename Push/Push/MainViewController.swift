@@ -80,6 +80,8 @@ class MainViewController: UIViewController {
         let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.25, constant: 0)
         
         NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints])
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
     }
 
     override func didReceiveMemoryWarning() {
@@ -88,6 +90,19 @@ class MainViewController: UIViewController {
     }
     
     // MARK: - Actions
+    
+    func clearConsoleButtonPressed(sender: UIBarButtonItem) {
+        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
+            self.currentUser?.removeAllResults(in: context)
+            context.perform {
+                do {
+                    try context.save()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+            }
+        }
+    }
     
     func pushChannelsButtonPressed(sender: UIButton) {
         let viewContext = DataController.sharedController.persistentContainer.viewContext

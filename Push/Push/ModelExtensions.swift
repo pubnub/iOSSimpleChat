@@ -58,7 +58,8 @@ enum ResultType {
             if actualUser.managedObjectContext == context {
                 finalResult?.user = actualUser
             } else {
-//                let contextualUser =
+                let contextualUser = DataController.sharedController.fetchUser(with: actualUser.objectID, in: context)
+                finalResult?.user = contextualUser
             }
         }
         return finalResult
