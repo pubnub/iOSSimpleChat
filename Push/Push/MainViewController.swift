@@ -39,8 +39,6 @@ class MainViewController: UIViewController {
         }
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
         stackView = UIStackView(frame: stackViewFrame)
-//        stackView.layoutMargins = UIEdgeInsets(top: topPadding, left: 0.0, bottom: 0.0, right: 0.0)
-//        stackView.isLayoutMarginsRelativeArrangement = true
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill

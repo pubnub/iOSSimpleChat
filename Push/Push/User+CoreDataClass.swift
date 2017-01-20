@@ -39,21 +39,6 @@ public class User: NSManagedObject {
         return finalUser
     }
     
-//    private static var _userID: String? {
-//        if let existingUserID = UserDefaults.standard.object(forKey: UserIdentifierKey) {
-//            _userID = existingUserID as! String
-//        } else {
-//            let uuidString = UUID().uuidString
-//            UserDefaults.standard.set(uuidString, forKey: UserIdentifierKey)
-//            _userID = uuidString
-//        }
-//        return _userID
-//    }
-    
-//    static var userID: String {
-//        if _userID
-//    }
-    
     static var userID: String {
         if let existingUserID = UserDefaults.standard.object(forKey: UserIdentifierKey) {
             return existingUserID as! String

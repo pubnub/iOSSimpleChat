@@ -19,7 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let viewContext = DataController.sharedController.persistentContainer.viewContext
         let userID = User.userID
         if let currentUser = User.fetchUser(for: userID, in: viewContext) {
-//            DataController.sharedController.currentUserObjectID = currentUser.objectID
             DataController.sharedController.currentUser = currentUser
         } else {
             viewContext.performAndWait {
@@ -32,37 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                     fatalError(error.localizedDescription)
                 }
                 DataController.sharedController.currentUser = user
-//                DataController.sharedController.currentUserObjectID = user.objectID
             }
         }
-//        guard let currentUser = User.user(for: userID, in: viewContext) else {
-//            fatalError("Couldn't find user for ID: \(userID)")
-//        }
-//        viewContext.performAndWait {
-//            let user = User(context: viewContext)
-//            user.identifier = User.userID
-//            do {
-//                try viewContext.save()
-//            } catch {
-//                fatalError("What now?")
-//            }
-//            DataController.sharedController.currentUserObjectID = user.objectID
-////            Network.sharedNetwork.setUp()
-//        }
-//        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
-//            context.perform {
-//                let user = User(context: context)
-//                user.identifier = User.userID
-//                DataController.sharedController.currentUserObjectID = user.objectID
-//                Network.sharedNetwork.setUp()
-//                do {
-//                    try context.save()
-//                } catch {
-//                    fatalError("What now?")
-//                }
-//                
-//            }
-//        }
         
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
             switch settings.authorizationStatus {
@@ -136,12 +106,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        // Sometimes it’s useful to store the device token in UserDefaults
-//        UserDefaults.standard.set(deviceToken, forKey: "DeviceToken")
-//        Network.sharedNetwork.client.addPushNotificationsOnChannels(["a"], withDevicePushToken: deviceToken) { (status) in
-//            print("add push: \(status.debugDescription)")
-//        }
-//        Network.sharedNetwork.deviceToken = deviceToken
         DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
             print("background task")
             let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
