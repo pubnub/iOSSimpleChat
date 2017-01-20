@@ -13,9 +13,7 @@ import CoreData
 class MainViewController: UIViewController {
     
     private var mainViewContext = 0
-    
-//    let client: PubNub
-    
+        
     var stackView: UIStackView!
     var pushTokenLabel: UILabel!
     var pushChannelsButton: UIButton!
