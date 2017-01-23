@@ -22,9 +22,9 @@ class MainViewController: UIViewController {
     let pushChannelsButtonPlaceholder = "Tap here to add push channels"
     let pushTokenLabelPlaceholder = "No push token currently"
     
-    let fetchRequest: NSFetchRequest<Result> = {
-        let request: NSFetchRequest<Result> = Result.fetchRequest()
-        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Result.creationDate), ascending: false)
+    let fetchRequest: NSFetchRequest<Event> = {
+        let request: NSFetchRequest<Event> = Event.fetchRequest()
+        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Event.creationDate), ascending: false)
         request.sortDescriptors = [creationDateSortDescriptor]
         return request
     }()

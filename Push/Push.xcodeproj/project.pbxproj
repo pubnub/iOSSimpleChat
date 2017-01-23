@@ -29,6 +29,7 @@
 		51481C9A1E32B4D1002FEA7C /* Event+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51481C941E32B4D1002FEA7C /* Event+CoreDataProperties.swift */; };
 		51481C9B1E32B4D1002FEA7C /* PushAuditResult+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51481C951E32B4D1002FEA7C /* PushAuditResult+CoreDataClass.swift */; };
 		51481C9C1E32B4D1002FEA7C /* PushAuditResult+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51481C961E32B4D1002FEA7C /* PushAuditResult+CoreDataProperties.swift */; };
+		5154E92F1E36C3B800235C0E /* EventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5154E92E1E36C3B800235C0E /* EventTableViewCell.swift */; };
 		5168147F1E26F05C00A9ED89 /* Channel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516814791E26F05C00A9ED89 /* Channel+CoreDataClass.swift */; };
 		516814801E26F05C00A9ED89 /* Channel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5168147A1E26F05C00A9ED89 /* Channel+CoreDataProperties.swift */; };
 		516814811E26F05C00A9ED89 /* User+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5168147B1E26F05C00A9ED89 /* User+CoreDataClass.swift */; };
@@ -66,6 +67,7 @@
 		51481C941E32B4D1002FEA7C /* Event+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		51481C951E32B4D1002FEA7C /* PushAuditResult+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PushAuditResult+CoreDataClass.swift"; sourceTree = "<group>"; };
 		51481C961E32B4D1002FEA7C /* PushAuditResult+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PushAuditResult+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		5154E92E1E36C3B800235C0E /* EventTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableViewCell.swift; sourceTree = "<group>"; };
 		516814791E26F05C00A9ED89 /* Channel+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Channel+CoreDataClass.swift"; sourceTree = "<group>"; };
 		5168147A1E26F05C00A9ED89 /* Channel+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Channel+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		5168147B1E26F05C00A9ED89 /* User+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "User+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				510CED831E2446D200527101 /* ClientConsoleView.swift */,
 				510CED851E2446E900527101 /* ManagedObjectTableViewCell.swift */,
 				51481C8D1E319A49002FEA7C /* ResultTableViewCell.swift */,
+				5154E92E1E36C3B800235C0E /* EventTableViewCell.swift */,
 			);
 			name = Console;
 			sourceTree = "<group>";
@@ -342,6 +345,7 @@
 				510CEDA41E25789900527101 /* ModelExtensions.swift in Sources */,
 				510CED9F1E25733800527101 /* Status+CoreDataClass.swift in Sources */,
 				5168147F1E26F05C00A9ED89 /* Channel+CoreDataClass.swift in Sources */,
+				5154E92F1E36C3B800235C0E /* EventTableViewCell.swift in Sources */,
 				510CED821E24405E00527101 /* DataController.swift in Sources */,
 				51481C9A1E32B4D1002FEA7C /* Event+CoreDataProperties.swift in Sources */,
 				510CED701E24343800527101 /* Push.xcdatamodeld in Sources */,

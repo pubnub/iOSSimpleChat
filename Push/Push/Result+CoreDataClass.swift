@@ -42,7 +42,7 @@ public class Result: Event {
 //        self.init(result: result, entity: entity, context: context)
 //    }
     
-    public var textViewDisplayText: String {
+    public override var textViewDisplayText: String {
         //return "Type: PNResult\nOperation: \(stringifiedOperation)\nStatus Code: \(statusCode)\nLocal Time: \(creationDate)"
         return "Operation: \(stringifiedOperation!)\nStatus Code: \(statusCode)\nLocal Time: \(creationDate!)"
     }

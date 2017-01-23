@@ -25,5 +25,10 @@ public class Event: NSManagedObject {
         super.awakeFromInsert()
         creationDate = NSDate()
     }
+    
+    public var textViewDisplayText: String {
+        //return "Type: PNResult\nOperation: \(stringifiedOperation)\nStatus Code: \(statusCode)\nLocal Time: \(creationDate)"
+        return ""
+    }
 
 }
