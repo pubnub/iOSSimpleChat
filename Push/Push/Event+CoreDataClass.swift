@@ -12,6 +12,15 @@ import CoreData
 
 public class Event: NSManagedObject {
     
+    @objc
+    public override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
+    }
+    
+    public required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
+        super.init(entity: entity, insertInto: context)
+    }
+    
     public override func awakeFromInsert() {
         super.awakeFromInsert()
         creationDate = NSDate()

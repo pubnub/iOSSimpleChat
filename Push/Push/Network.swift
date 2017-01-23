@@ -137,13 +137,17 @@ class Network: NSObject, PNObjectEventListener {
     func requestPushChannels(for token: Data) {
         client.pushNotificationEnabledChannelsForDeviceWithPushToken(token) { (result, status) in
             self.networkContext.perform {
-                var savingResponse: PNResult? = nil
-                if let actualResult = result {
-                    savingResponse = actualResult
-                } else {
-                    savingResponse = status
-                }
-                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: savingResponse, with: self.user)
+//                var savingResponse: PNResult? = nil
+//                if let actualResult = result {
+//                    savingResponse = actualResult
+//                } else {
+//                    savingResponse = status
+//                }
+                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: result, with: self.user)
+                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+//                let _ = DataController.sharedController.createCoreDataObject(in: self.networkContext, for: result, with: self.user)
+//                let _ = DataController.sharedController.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
+//                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: savingResponse, with: self.user)
                 do {
                     try self.networkContext.save()
                 } catch {
@@ -213,7 +217,9 @@ class Network: NSObject, PNObjectEventListener {
         
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
+                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+//                let _ = DataController.sharedController.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
+//                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
                 do {
                     try self.networkContext.save()
                 } catch {
@@ -246,7 +252,9 @@ class Network: NSObject, PNObjectEventListener {
         }
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
+                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+//                let _ = DataController.sharedController.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
+//                let _ = ResultType.createCoreDataObject(in: self.networkContext, for: status, with: self.user)
                 do {
                     try self.networkContext.save()
                 } catch {

@@ -9,8 +9,27 @@
 
 import Foundation
 import CoreData
+import PubNub
 
 @objc(PushAuditResult)
 public class PushAuditResult: Result {
+    
+    @objc
+    public override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
+    }
+    
+    public required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
+        super.init(object: object, entity: entity, context: context)
+        guard let result = object as? PNAPNSEnabledChannelsResult else {
+            fatalError()
+        }
+        channels = "\(result.data.channels)"
+    }
+    
+    public override var textViewDisplayText: String {
+        let superText = super.textViewDisplayText
+        return superText + "\nChannels: \(channels!)"
+    }
 
 }

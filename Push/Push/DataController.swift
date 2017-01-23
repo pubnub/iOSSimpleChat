@@ -65,30 +65,78 @@ class DataController: NSObject {
     
     // MARK: - Events
     
-    func createCoreDataObject(in context: NSManagedObjectContext, for result: PNResult?, with user: User? = nil) -> NSManagedObject? {
-        guard let actualResult = result else {
+    func createCoreDataEvent(in context: NSManagedObjectContext, for object: NSObject?, with user: User? = nil) -> NSManagedObject? {
+//        guard let actualEvent = event else {
+//            return nil
+//        }
+//        guard let resultType = ResultType(result: actualEvent) else {
+//            return nil
+//        }
+//        let actualResultType = resultType.resultType
+//        let entity = actualResultType.entity()
+//        var finalResult: Result? = nil
+//        context.performAndWait {
+//            finalResult = actualResultType.init(result: actualResult, entity: entity, context: context)
+//            guard let actualUser = user else {
+//                return
+//            }
+//            if actualUser.managedObjectContext == context {
+//                finalResult?.user = actualUser
+//            } else {
+//                let contextualUser = DataController.sharedController.fetchUser(with: actualUser.objectID, in: context)
+//                finalResult?.user = contextualUser
+//            }
+//        }
+//        return finalResult
+        guard let actualObject = object else {
             return nil
         }
-        guard let resultType = ResultType(result: actualResult) else {
+        guard let eventType = EventType(event: actualObject) else {
             return nil
         }
-        let actualResultType = resultType.resultType
-        let entity = actualResultType.entity()
-        var finalResult: Result? = nil
-        context.performAndWait {
-            finalResult = actualResultType.init(result: actualResult, entity: entity, context: context)
+        let managedObjectType = eventType.managedObjectType
+        let entity = managedObjectType.entity()
+        var finalEvent: Event? = nil
+        context.perform {
+            print("whatever")
+            finalEvent = managedObjectType.init(object: actualObject, entity: entity, context: context)
             guard let actualUser = user else {
                 return
             }
             if actualUser.managedObjectContext == context {
-                finalResult?.user = actualUser
+                finalEvent?.user = actualUser
             } else {
                 let contextualUser = DataController.sharedController.fetchUser(with: actualUser.objectID, in: context)
-                finalResult?.user = contextualUser
+                finalEvent?.user = contextualUser
             }
         }
-        return finalResult
+        return finalEvent
     }
+    
+//    func createCoreDataObject(in context: NSManagedObjectContext, for result: PNResult?, with user: User? = nil) -> NSManagedObject? {
+//        guard let actualResult = result else {
+//            return nil
+//        }
+//        guard let resultType = ResultType(result: actualResult) else {
+//            return nil
+//        }
+//        let actualResultType = resultType.resultType
+//        let entity = actualResultType.entity()
+//        var finalResult: Result? = nil
+//        context.performAndWait {
+//            finalResult = actualResultType.init(object: actualResult, entity: entity, context: context)
+//            guard let actualUser = user else {
+//                return
+//            }
+//            if actualUser.managedObjectContext == context {
+//                finalResult?.user = actualUser
+//            } else {
+//                let contextualUser = DataController.sharedController.fetchUser(with: actualUser.objectID, in: context)
+//                finalResult?.user = contextualUser
+//            }
+//        }
+//        return finalResult
+//    }
     
     // MARK: - Core Data stack
     

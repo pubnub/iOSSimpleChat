@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-
+@objc(Channel)
 public class Channel: NSManagedObject {
     
     public convenience init(in context: NSManagedObjectContext, name: String, user: User? = nil) {

@@ -18,9 +18,9 @@ public class PublishStatus: Status {
         super.init(entity: entity, insertInto: context)
     }
     
-    public required init(result: PNResult, entity: NSEntityDescription, context: NSManagedObjectContext) {
-        super.init(result: result, entity: entity, context: context)
-        guard let publishStatus = result as? PNPublishStatus else {
+    public required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
+        super.init(object: object, entity: entity, context: context)
+        guard let publishStatus = object as? PNPublishStatus else {
             fatalError()
         }
         timetoken = publishStatus.data.timetoken.int64Value

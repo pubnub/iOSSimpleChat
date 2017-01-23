@@ -12,6 +12,7 @@ import PubNub
 
 let UserIdentifierKey = "UserIdentifierKey"
 
+@objc(User)
 public class User: NSManagedObject {
     
     public override func awakeFromInsert() {

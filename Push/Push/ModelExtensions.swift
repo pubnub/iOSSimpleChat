@@ -9,33 +9,48 @@
 import Foundation
 import CoreData
 import PubNub
+import UserNotifications
 
-protocol CoreDataObject {
-    var managedObjectType: NSManagedObject.Type { get }
+protocol CoreDataObjectType {
+    var managedObjectType: Event.Type { get }
+    init?(event: NSObject?)
 }
 
-enum SystemEvent: CoreDataObject {
+enum SystemEventType: CoreDataObjectType {
     case notification
     case pushNotification
     
-    var managedObjectType: NSManagedObject.Type {
+    var managedObjectType: Event.Type {
         switch self {
         case .notification:
-            return NSManagedObject.self
+            fatalError()
+        case .pushNotification:
+            return PushMessage.self
+        }
+    }
+    
+    init?(event: NSObject?) {
+        switch event {
+        case let nilEvent where nilEvent == nil:
+            return nil
+        case _ as Notification:
+            self = .notification
+        case _ as UNNotification:
+            self = .pushNotification
         default:
-            return NSManagedObject.self
+            fatalError()
         }
     }
     
 }
 
-enum PubNubEvent: CoreDataObject {
+enum PubNubEventType: CoreDataObjectType {
     case result
     case status
     case publishStatus
     case pushAuditResult
     
-    var managedObjectType: NSManagedObject.Type {
+    var managedObjectType: Event.Type {
         switch self {
         case .result:
             return Result.self
@@ -44,89 +59,108 @@ enum PubNubEvent: CoreDataObject {
         case .publishStatus:
             return PublishStatus.self
         case .pushAuditResult:
-            return NSManagedObject.self
+            return PushAuditResult.self
         }
     }
     
-    init?(result: PNResult?) {
-        guard let actualResult = result else {
+    init?(event: NSObject?) {
+        guard let actualEvent = event, actualEvent is PNResult else {
             return nil
         }
-        switch actualResult {
+        switch event {
         case _ as PNPublishStatus:
-            self = PubNubEvent.publishStatus
+            self = .publishStatus
         case _ as PNStatus:
-            self = PubNubEvent.status
+            self = .status
         case _ as PNAPNSEnabledChannelsResult:
-            self = PubNubEvent.pushAuditResult
+            self = .pushAuditResult
         default:
-            self = PubNubEvent.result
+            self = .result
         }
     }
     
 }
 
-enum EventType {
-    case system(SystemEvent)
-    case pubnub(PubNubEvent)
-    
-    
-    
-}
+enum EventType: CoreDataObjectType {
 
-enum ResultType {
-    case result
-    case status
-    case publishStatus
+    case system(NSObject)
+    case pubnub(NSObject)
     
-    var resultType: Result.Type {
+    var managedObjectType: Event.Type {
         switch self {
-        case .publishStatus:
-            return PublishStatus.self
-        case .status:
-            return Status.self
-        case .result:
-            return Result.self
+        case let .system(object):
+            return (SystemEventType(event: object)?.managedObjectType)!
+        case let .pubnub(object):
+            return (PubNubEventType(event: object)?.managedObjectType)!
         }
     }
     
-    init?(result: PNResult?) {
-        guard let actualResult = result else {
+    init?(event: NSObject?) {
+        guard let actualEvent = event else {
             return nil
         }
-        switch actualResult {
-        case _ as PNPublishStatus:
-            self = ResultType.publishStatus
-        case _ as PNStatus:
-            self = ResultType.status
-        default:
-            self = ResultType.result
+        if let _ = PubNubEventType(event: actualEvent) {
+            self = EventType.pubnub(actualEvent)
+        } else {
+            self = EventType.system(actualEvent)
         }
-    }
-    
-    static func createCoreDataObject(in context: NSManagedObjectContext, for result: PNResult?, with user: User? = nil) -> Result? {
-        guard let actualResult = result else {
-            return nil
-        }
-        guard let resultType = ResultType(result: actualResult) else {
-            return nil
-        }
-        let actualResultType = resultType.resultType
-        let entity = actualResultType.entity()
-        var finalResult: Result? = nil
-        context.performAndWait {
-            finalResult = actualResultType.init(result: actualResult, entity: entity, context: context)
-            guard let actualUser = user else {
-                return
-            }
-            if actualUser.managedObjectContext == context {
-                finalResult?.user = actualUser
-            } else {
-                let contextualUser = DataController.sharedController.fetchUser(with: actualUser.objectID, in: context)
-                finalResult?.user = contextualUser
-            }
-        }
-        return finalResult
     }
     
 }
+
+//enum ResultType {
+//    case result
+//    case status
+//    case publishStatus
+//    
+//    var resultType: Result.Type {
+//        switch self {
+//        case .publishStatus:
+//            return PublishStatus.self
+//        case .status:
+//            return Status.self
+//        case .result:
+//            return Result.self
+//        }
+//    }
+//    
+//    init?(result: PNResult?) {
+//        guard let actualResult = result else {
+//            return nil
+//        }
+//        switch actualResult {
+//        case _ as PNPublishStatus:
+//            self = ResultType.publishStatus
+//        case _ as PNStatus:
+//            self = ResultType.status
+//        default:
+//            self = ResultType.result
+//        }
+//    }
+//    
+////    static func createCoreDataObject(in context: NSManagedObjectContext, for result: PNResult?, with user: User? = nil) -> Result? {
+////        guard let actualResult = result else {
+////            return nil
+////        }
+////        guard let resultType = ResultType(result: actualResult) else {
+////            return nil
+////        }
+////        let actualResultType = resultType.resultType
+////        let entity = actualResultType.entity()
+////        var finalResult: Result? = nil
+////        context.performAndWait {
+////            finalResult = actualResultType.init(result: actualResult, entity: entity, context: context)
+////            guard let actualUser = user else {
+////                return
+////            }
+////            if actualUser.managedObjectContext == context {
+////                finalResult?.user = actualUser
+////            } else {
+////                let contextualUser = DataController.sharedController.fetchUser(with: actualUser.objectID, in: context)
+////                finalResult?.user = contextualUser
+////            }
+////        }
+////        return finalResult
+////    }
+//    
+//}

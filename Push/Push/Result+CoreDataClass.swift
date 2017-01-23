@@ -18,7 +18,17 @@ public class Result: Event {
         super.init(entity: entity, insertInto: context)
     }
     
-    public required init(result: PNResult, entity: NSEntityDescription, context: NSManagedObjectContext) {
+//    public convenience required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
+//        guard let result = object as? PNResult else {
+//            fatalError()
+//        }
+//        self.init(result: result, entity: entity, context: context)
+//    }
+    
+    public required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
+        guard let result = object as? PNResult else {
+            fatalError()
+        }
         super.init(entity: entity, insertInto: context)
         stringifiedOperation = result.stringifiedOperation()
         //        clientRequest = result.clientRequest?.url?.absoluteString
@@ -27,10 +37,10 @@ public class Result: Event {
         statusCode = Int16(result.statusCode)
     }
     
-    public convenience init(result: PNResult, context: NSManagedObjectContext) {
-        let entity = type(of: self).entity()
-        self.init(result: result, entity: entity, context: context)
-    }
+//    public convenience init(result: PNResult, context: NSManagedObjectContext) {
+//        let entity = type(of: self).entity()
+//        self.init(result: result, entity: entity, context: context)
+//    }
     
     public var textViewDisplayText: String {
         //return "Type: PNResult\nOperation: \(stringifiedOperation)\nStatus Code: \(statusCode)\nLocal Time: \(creationDate)"

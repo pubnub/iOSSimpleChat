@@ -18,9 +18,9 @@ public class Status: Result {
         super.init(entity: entity, insertInto: context)
     }
     
-    public required init(result: PNResult, entity: NSEntityDescription, context: NSManagedObjectContext) {
-        super.init(result: result, entity: entity, context: context)
-        guard let status = result as? PNStatus else {
+    public required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
+        super.init(object: object, entity: entity, context: context)
+        guard let status = object as? PNStatus else {
             fatalError()
         }
         isError = status.isError
