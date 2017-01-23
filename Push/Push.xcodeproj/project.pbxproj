@@ -22,7 +22,6 @@
 		510CED9F1E25733800527101 /* Status+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED991E25733800527101 /* Status+CoreDataClass.swift */; };
 		510CEDA01E25733800527101 /* Status+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED9A1E25733800527101 /* Status+CoreDataProperties.swift */; };
 		510CEDA41E25789900527101 /* ModelExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CEDA31E25789900527101 /* ModelExtensions.swift */; };
-		51481C8E1E319A49002FEA7C /* ResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51481C8D1E319A49002FEA7C /* ResultTableViewCell.swift */; };
 		51481C971E32B4D1002FEA7C /* PushMessage+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51481C911E32B4D1002FEA7C /* PushMessage+CoreDataClass.swift */; };
 		51481C981E32B4D1002FEA7C /* PushMessage+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51481C921E32B4D1002FEA7C /* PushMessage+CoreDataProperties.swift */; };
 		51481C991E32B4D1002FEA7C /* Event+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51481C931E32B4D1002FEA7C /* Event+CoreDataClass.swift */; };
@@ -60,7 +59,6 @@
 		510CED991E25733800527101 /* Status+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Status+CoreDataClass.swift"; sourceTree = "<group>"; };
 		510CED9A1E25733800527101 /* Status+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Status+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		510CEDA31E25789900527101 /* ModelExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExtensions.swift; sourceTree = "<group>"; };
-		51481C8D1E319A49002FEA7C /* ResultTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultTableViewCell.swift; sourceTree = "<group>"; };
 		51481C911E32B4D1002FEA7C /* PushMessage+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PushMessage+CoreDataClass.swift"; sourceTree = "<group>"; };
 		51481C921E32B4D1002FEA7C /* PushMessage+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PushMessage+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		51481C931E32B4D1002FEA7C /* Event+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Event+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -198,7 +196,6 @@
 			children = (
 				510CED831E2446D200527101 /* ClientConsoleView.swift */,
 				510CED851E2446E900527101 /* ManagedObjectTableViewCell.swift */,
-				51481C8D1E319A49002FEA7C /* ResultTableViewCell.swift */,
 				5154E92E1E36C3B800235C0E /* EventTableViewCell.swift */,
 			);
 			name = Console;
@@ -364,7 +361,6 @@
 				51481C981E32B4D1002FEA7C /* PushMessage+CoreDataProperties.swift in Sources */,
 				516814821E26F05C00A9ED89 /* User+CoreDataProperties.swift in Sources */,
 				51481C9B1E32B4D1002FEA7C /* PushAuditResult+CoreDataClass.swift in Sources */,
-				51481C8E1E319A49002FEA7C /* ResultTableViewCell.swift in Sources */,
 				510CED9D1E25733800527101 /* PublishStatus+CoreDataClass.swift in Sources */,
 				516814881E28313600A9ED89 /* PubNubExtensions.swift in Sources */,
 				510CED841E2446D200527101 /* ClientConsoleView.swift in Sources */,
