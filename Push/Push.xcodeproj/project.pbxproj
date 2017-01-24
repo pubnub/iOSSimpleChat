@@ -133,22 +133,7 @@
 		5142CA1A1E257ECE005FBAD8 /* CoreData */ = {
 			isa = PBXGroup;
 			children = (
-				51481C911E32B4D1002FEA7C /* PushMessage+CoreDataClass.swift */,
-				51481C921E32B4D1002FEA7C /* PushMessage+CoreDataProperties.swift */,
-				51481C931E32B4D1002FEA7C /* Event+CoreDataClass.swift */,
-				51481C941E32B4D1002FEA7C /* Event+CoreDataProperties.swift */,
-				51481C951E32B4D1002FEA7C /* PushAuditResult+CoreDataClass.swift */,
-				51481C961E32B4D1002FEA7C /* PushAuditResult+CoreDataProperties.swift */,
-				516814791E26F05C00A9ED89 /* Channel+CoreDataClass.swift */,
-				5168147A1E26F05C00A9ED89 /* Channel+CoreDataProperties.swift */,
-				5168147B1E26F05C00A9ED89 /* User+CoreDataClass.swift */,
-				5168147C1E26F05C00A9ED89 /* User+CoreDataProperties.swift */,
-				5168147D1E26F05C00A9ED89 /* Result+CoreDataClass.swift */,
-				5168147E1E26F05C00A9ED89 /* Result+CoreDataProperties.swift */,
-				510CED971E25733800527101 /* PublishStatus+CoreDataClass.swift */,
-				510CED981E25733800527101 /* PublishStatus+CoreDataProperties.swift */,
-				510CED991E25733800527101 /* Status+CoreDataClass.swift */,
-				510CED9A1E25733800527101 /* Status+CoreDataProperties.swift */,
+				51A56FBE1E37539C003195BF /* Objects */,
 				510CEDA31E25789900527101 /* ModelExtensions.swift */,
 				510CED6E1E24343800527101 /* Push.xcdatamodeld */,
 			);
@@ -202,6 +187,29 @@
 				5154E92E1E36C3B800235C0E /* EventTableViewCell.swift */,
 			);
 			name = Console;
+			sourceTree = "<group>";
+		};
+		51A56FBE1E37539C003195BF /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				51481C911E32B4D1002FEA7C /* PushMessage+CoreDataClass.swift */,
+				51481C921E32B4D1002FEA7C /* PushMessage+CoreDataProperties.swift */,
+				51481C931E32B4D1002FEA7C /* Event+CoreDataClass.swift */,
+				51481C941E32B4D1002FEA7C /* Event+CoreDataProperties.swift */,
+				51481C951E32B4D1002FEA7C /* PushAuditResult+CoreDataClass.swift */,
+				51481C961E32B4D1002FEA7C /* PushAuditResult+CoreDataProperties.swift */,
+				516814791E26F05C00A9ED89 /* Channel+CoreDataClass.swift */,
+				5168147A1E26F05C00A9ED89 /* Channel+CoreDataProperties.swift */,
+				5168147B1E26F05C00A9ED89 /* User+CoreDataClass.swift */,
+				5168147C1E26F05C00A9ED89 /* User+CoreDataProperties.swift */,
+				5168147D1E26F05C00A9ED89 /* Result+CoreDataClass.swift */,
+				5168147E1E26F05C00A9ED89 /* Result+CoreDataProperties.swift */,
+				510CED971E25733800527101 /* PublishStatus+CoreDataClass.swift */,
+				510CED981E25733800527101 /* PublishStatus+CoreDataProperties.swift */,
+				510CED991E25733800527101 /* Status+CoreDataClass.swift */,
+				510CED9A1E25733800527101 /* Status+CoreDataProperties.swift */,
+			);
+			name = Objects;
 			sourceTree = "<group>";
 		};
 		FDAA9F1FF75C306682DFBF3E /* Pods */ = {
