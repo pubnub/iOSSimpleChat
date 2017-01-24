@@ -7,6 +7,5 @@ This [link has the APNS payload formats](https://support.pubnub.com/support/disc
 - [ ] Tests
 - [ ] UI for PNConfiguration
 - [ ] Log system events (configurable?)
-- [ ] Branch for iOS 9 push handling
 - [ ] Branch for Push Notification Extension
 - [ ] Write up README with instructions
