@@ -7,11 +7,20 @@
 //
 
 import UIKit
+import CoreData
 import UserNotifications
 
 class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
     
     static let sharedNotifications = PushNotifications()
+    
+    let pushContext: NSManagedObjectContext
+    
+    override init() {
+        self.pushContext = DataController.sharedController.persistentContainer.newBackgroundContext()
+        super.init()
+        pushContext.automaticallyMergesChangesFromParent = true
+    }
     
     func appDidLaunchOperations(viewController: UIViewController? = nil) {
         UNUserNotificationCenter.current().delegate = self
@@ -49,6 +58,15 @@ class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         print("\(#function) notification: \(notification.debugDescription)")
+        pushContext.perform {
+            let _ = DataController.sharedController.createCoreDataEvent(in: self.pushContext, for: notification, with: DataController.sharedController.fetchCurrentUser(in: self.pushContext))
+            do {
+                try self.pushContext.save()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
+        
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
