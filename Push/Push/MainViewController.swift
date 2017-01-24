@@ -43,23 +43,9 @@ class MainViewController: UIViewController {
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
         stackView.frame = stackViewFrame
         view.frame = bounds
-//        stackView = UIStackView(frame: stackViewFrame)
-//        stackView.axis = .vertical
-//        stackView.alignment = .fill
-//        stackView.distribution = .fill
-//        let backgroundView = UIView(frame: bounds)
-//        backgroundView.addSubview(stackView)
-//        self.view = backgroundView
-//        self.view.setNeedsLayout()
     }
     
     override func loadView() {
-//        let bounds = UIScreen.main.bounds
-//        var topPadding = UIApplication.shared.statusBarFrame.height
-//        if let navBarHeight = navigationController?.navigationBar.frame.height {
-//            topPadding += navBarHeight
-//        }
-//        let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
         stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
         stackView.alignment = .fill
@@ -120,7 +106,8 @@ class MainViewController: UIViewController {
         
         NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints, pushChannelsAuditButtonVerticalConstraints])
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Publish", style: .plain, target: self, action: #selector(publishButtonPressed(sender:)))
     }
 
     override func didReceiveMemoryWarning() {
@@ -140,6 +127,11 @@ class MainViewController: UIViewController {
     func copyToClipboard(text: String) {
         UIPasteboard.general.string = text
         navigationItem.setPrompt(with: "Copied push token to clipboard")
+    }
+    
+    func publishButtonPressed(sender: UIBarButtonItem) {
+        let alertController = Network.sharedNetwork.publishAlertController()
+        present(alertController, animated: true)
     }
     
     func pushChannelsAuditButtonPressed(sender: UIButton) {
