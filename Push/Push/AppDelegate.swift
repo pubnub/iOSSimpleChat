@@ -34,36 +34,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         
-        UNUserNotificationCenter.current().getNotificationSettings { (settings) in
-            switch settings.authorizationStatus {
-            // This means we have not yet asked for notification permissions
-            case .notDetermined:
-                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (granted, error) in
-                    // You might want to remove this, or handle errors differently in production
-                    assert(error == nil)
-                    if granted {
-                        UIApplication.shared.registerForRemoteNotifications()
-                    }
-                })
-            // We are already authorized, so no need to ask
-            case .authorized:
-                // Just try and register for remote notifications
-                UIApplication.shared.registerForRemoteNotifications()
-            case .denied:
-                // Possibly display something to the user
-                let useNotificationsAlertController = UIAlertController(title: "Turn on notifications", message: "This app needs notifications turned on for the best user experience", preferredStyle: .alert)
-                let goToSettingsAction = UIAlertAction(title: "Go to settings", style: .default, handler: { (action) in
-                    
-                })
-                let cancelAction = UIAlertAction(title: "Cancel", style: .default)
-                useNotificationsAlertController.addAction(goToSettingsAction)
-                useNotificationsAlertController.addAction(cancelAction)
-                self.window?.rootViewController?.present(useNotificationsAlertController, animated: true)
-                print("We cannot use notifications because the user has denied permissions")
-            }
-        }
-        UNUserNotificationCenter.current().delegate = self
-        
         let bounds = UIScreen.main.bounds
         let window = UIWindow(frame: bounds)
         self.window = window
@@ -74,6 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.window?.rootViewController = navController
         self.window?.makeKeyAndVisible()
+        
+        PushNotifications.sharedNotifications.appDidLaunchOperations(viewController: self.window?.rootViewController)
         
         return true
     }
@@ -124,16 +96,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         print("didFail! with error: \(error)")
     }
     
-    // MARK: - UNUserNotificationCenterDelegate
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("\(#function) notification: \(notification.debugDescription)")
-    }
-    
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        print("\(#function) response: \(response.debugDescription)")
-    }
-    
+//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+//    }
 
 }
 

@@ -98,9 +98,9 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .fade)
+            tableView.insertRows(at: [newIndexPath!], with: .automatic)
         case .delete:
-            tableView.deleteRows(at: [indexPath!], with: .fade)
+            tableView.deleteRows(at: [indexPath!], with: .automatic)
         case .update:
             guard let cell = tableView.cellForRow(at: indexPath!) else {
                 fatalError()
