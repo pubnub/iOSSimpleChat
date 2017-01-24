@@ -25,7 +25,12 @@ class Network: NSObject, PNObjectEventListener {
         return config
     }
     
-    var client: PubNub!
+    var client: PubNub! {
+        didSet {
+            client.logger.enabled = true
+            client.logger.enableLogLevel(PNLogLevel.PNVerboseLogLevel.rawValue)
+        }
+    }
     
     private var _user: User?
     
@@ -208,7 +213,8 @@ class Network: NSObject, PNObjectEventListener {
         
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                let pushEvent = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                print("pushTokenEvent: \(pushEvent.debugDescription)")
                 do {
                     try self.networkContext.save()
                 } catch {
@@ -241,7 +247,8 @@ class Network: NSObject, PNObjectEventListener {
         }
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                let pushEvent = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                print("pushChannelEvent: \(pushEvent.debugDescription)")
                 do {
                     try self.networkContext.save()
                 } catch {

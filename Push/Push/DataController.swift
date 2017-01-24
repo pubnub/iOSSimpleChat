@@ -75,7 +75,7 @@ class DataController: NSObject {
         let managedObjectType = eventType.managedObjectType
         let entity = managedObjectType.entity()
         var finalEvent: Event? = nil
-        context.perform {
+        context.performAndWait {
             print("whatever")
             finalEvent = managedObjectType.init(object: actualObject, entity: entity, context: context)
             guard let actualUser = user else {
