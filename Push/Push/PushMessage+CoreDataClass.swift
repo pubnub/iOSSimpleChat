@@ -21,8 +21,26 @@ public class PushMessage: Event {
     
     public required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
         super.init(entity: entity, insertInto: context)
+//        switch object {
+//        case let notification as UNNotification:
+//            creationDate = notification.date as NSDate?
+//            trigger = Trigger.trigger(for: notification.request.trigger)
+//            let content = notification.request.content
+//            body = content.body
+//            categoryIdentifier = content.categoryIdentifier
+//            subtitle = content.subtitle
+//            title = content.title
+//            userInfo = content.userInfo.debugDescription
+//            badge = content.badge?.int16Value ?? Int16.max
+//        case let userInfo as [AnyHashable : Any]:
+//            creationDate = NSDate()
+//            trigger = .none
+//            
+//        default:
+//            fatalError("Can't handle object: \(object.debugDescription)")
+//        }
         guard let notification = object as? UNNotification else {
-            fatalError()
+            fatalError("Can't handle object: \(object.debugDescription)")
         }
         creationDate = notification.date as NSDate?
         trigger = Trigger.trigger(for: notification.request.trigger)
@@ -33,6 +51,7 @@ public class PushMessage: Event {
         title = content.title
         userInfo = content.userInfo.debugDescription
         badge = content.badge?.int16Value ?? Int16.max
+        
     }
     
     public enum Trigger: Int16 {

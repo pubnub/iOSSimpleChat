@@ -95,6 +95,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                      didFailToRegisterForRemoteNotificationsWithError error: Error) {
         print("didFail! with error: \(error)")
     }
+    
+//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+//    }
 
 }
 

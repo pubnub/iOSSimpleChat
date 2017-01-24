@@ -25,12 +25,7 @@ class Network: NSObject, PNObjectEventListener {
         return config
     }
     
-    var client: PubNub! {
-        didSet {
-            client.logger.enabled = true
-            client.logger.enableLogLevel(PNLogLevel.PNVerboseLogLevel.rawValue)
-        }
-    }
+    var client: PubNub!
     
     private var _user: User?
     
