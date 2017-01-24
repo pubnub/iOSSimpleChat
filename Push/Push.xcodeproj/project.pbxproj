@@ -38,7 +38,6 @@
 		516814881E28313600A9ED89 /* PubNubExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516814871E28313600A9ED89 /* PubNubExtensions.swift */; };
 		51A56FBD1E3745DA003195BF /* Publish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FBC1E3745DA003195BF /* Publish.swift */; };
 		51A56FC01E3754F2003195BF /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FBF1E3754F2003195BF /* PushNotifications.swift */; };
-		51A56FC81E3758A1003195BF /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FC71E3758A1003195BF /* NotificationService.swift */; };
 		51A56FCC1E3758A1003195BF /* PushServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 51A56FC51E3758A1003195BF /* PushServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3499F47BCFB2B1F55BF4F3B /* Pods_Push.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */; };
 /* End PBXBuildFile section */
@@ -104,8 +103,6 @@
 		51A56FBC1E3745DA003195BF /* Publish.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Publish.swift; sourceTree = "<group>"; };
 		51A56FBF1E3754F2003195BF /* PushNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
 		51A56FC51E3758A1003195BF /* PushServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		51A56FC71E3758A1003195BF /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		51A56FC91E3758A1003195BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Push.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -141,7 +138,6 @@
 			isa = PBXGroup;
 			children = (
 				510CED661E24343800527101 /* Push */,
-				51A56FC61E3758A1003195BF /* PushServiceExtension */,
 				510CED651E24343800527101 /* Products */,
 				FDAA9F1FF75C306682DFBF3E /* Pods */,
 				2A9EFB258A7E745441EC7CEC /* Frameworks */,
@@ -251,15 +247,6 @@
 				510CED9A1E25733800527101 /* Status+CoreDataProperties.swift */,
 			);
 			name = Objects;
-			sourceTree = "<group>";
-		};
-		51A56FC61E3758A1003195BF /* PushServiceExtension */ = {
-			isa = PBXGroup;
-			children = (
-				51A56FC71E3758A1003195BF /* NotificationService.swift */,
-				51A56FC91E3758A1003195BF /* Info.plist */,
-			);
-			path = PushServiceExtension;
 			sourceTree = "<group>";
 		};
 		FDAA9F1FF75C306682DFBF3E /* Pods */ = {
@@ -467,7 +454,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				51A56FC81E3758A1003195BF /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -590,7 +576,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
 				DEVELOPMENT_TEAM = 8XP4D6N55Z;
@@ -607,7 +592,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2764B5C26659B7C156826A62 /* Pods-Push.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
 				DEVELOPMENT_TEAM = 8XP4D6N55Z;
