@@ -17,12 +17,16 @@ class MainViewController: UIViewController {
     var stackView: UIStackView!
     var pushTokenLabel: UILabel!
     var pushChannelsButton: UIButton!
+    var pushChannelsAuditButton: UIButton!
+    let pushChannelsAuditButtonTitle = "Get push channels for token"
     let pushChannelsButtonPlaceholder = "Tap here to add push channels"
     let pushTokenLabelPlaceholder = "No push token currently"
     
-    let fetchRequest: NSFetchRequest<Result> = {
-        let request: NSFetchRequest<Result> = Result.fetchRequest()
-        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Result.creationDate), ascending: false)
+    var pushTokenLabelGR: UITapGestureRecognizer!
+    
+    let fetchRequest: NSFetchRequest<Event> = {
+        let request: NSFetchRequest<Event> = Event.fetchRequest()
+        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Event.creationDate), ascending: false)
         request.sortDescriptors = [creationDateSortDescriptor]
         return request
     }()
@@ -61,9 +65,25 @@ class MainViewController: UIViewController {
         navigationItem.title = "Push!"
         pushTokenLabel = UILabel(frame: .zero)
         pushTokenLabel.backgroundColor = .red
+        pushTokenLabel.adjustsFontSizeToFitWidth = true
         pushTokenLabel.textAlignment = .center
+        pushTokenLabel.isUserInteractionEnabled = true
         pushTokenLabel.forceAutoLayout()
         stackView.addArrangedSubview(pushTokenLabel)
+        
+        pushTokenLabelGR = UITapGestureRecognizer(target: self, action: #selector(pushTokenLabelTapped(sender:)))
+        pushTokenLabel.addGestureRecognizer(pushTokenLabelGR)
+        
+        pushChannelsAuditButton = UIButton(type: .system)
+        guard let pushChannelsAuditImage = UIImage(color: .green) else {
+            fatalError("Couldn't create one color UIImage!")
+        }
+        pushChannelsAuditButton.setTitle(pushChannelsAuditButtonTitle, for: .normal)
+        pushChannelsAuditButton.setBackgroundImage(pushChannelsAuditImage, for: .normal)
+        pushChannelsAuditButton.addTarget(self, action: #selector(pushChannelsAuditButtonPressed(sender:)), for: .touchUpInside)
+        pushChannelsAuditButton.forceAutoLayout()
+        stackView.addArrangedSubview(pushChannelsAuditButton)
+        
         pushChannelsButton = UIButton(type: .custom)
         guard let pushBackgroundImage = UIImage(color: .cyan) else {
             fatalError("Couldn't create one color UIImage!")
@@ -75,9 +95,10 @@ class MainViewController: UIViewController {
         stackView.addArrangedSubview(consoleView)
         
         let pushTokenLabelVerticalConstraints = NSLayoutConstraint(item: pushTokenLabel, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.10, constant: 0)
-        let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.25, constant: 0)
+        let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.20, constant: 0)
+        let pushChannelsAuditButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsAuditButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.15, constant: 0)
         
-        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints])
+        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints, pushChannelsAuditButtonVerticalConstraints])
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
     }
@@ -88,6 +109,22 @@ class MainViewController: UIViewController {
     }
     
     // MARK: - Actions
+    
+    func pushTokenLabelTapped(sender: UITapGestureRecognizer) {
+        guard let pushTokenText = pushTokenLabel.text, pushTokenText != pushTokenLabelPlaceholder else {
+            return
+        }
+        copyToClipboard(text: pushTokenText)
+    }
+    
+    func copyToClipboard(text: String) {
+        UIPasteboard.general.string = text
+        navigationItem.setPrompt(with: "Copied push token to clipboard")
+    }
+    
+    func pushChannelsAuditButtonPressed(sender: UIButton) {
+        Network.sharedNetwork.requestPushChannelsForCurrentPushToken()
+    }
     
     func clearConsoleButtonPressed(sender: UIBarButtonItem) {
         DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
@@ -123,7 +160,7 @@ class MainViewController: UIViewController {
     func pushTokenTitle() -> String {
         var finalTitle: String? = nil
         DataController.sharedController.persistentContainer.viewContext.performAndWait {
-            finalTitle = (DataController.sharedController.fetchCurrentUser().pushToken?.debugDescription ?? self.pushTokenLabelPlaceholder)
+            finalTitle = (DataController.sharedController.fetchCurrentUser().pushTokenString ?? self.pushTokenLabelPlaceholder)
         }
         return finalTitle!
     }

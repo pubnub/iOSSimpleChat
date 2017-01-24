@@ -1,9 +1,9 @@
 //
 //  Result+CoreDataClass.swift
-//  
+//  Push
 //
-//  Created by Jordan Zucker on 1/11/17.
-//
+//  Created by Jordan Zucker on 1/20/17.
+//  Copyright © 2017 PubNub. All rights reserved.
 //
 
 import Foundation
@@ -11,13 +11,24 @@ import CoreData
 import PubNub
 
 @objc(Result)
-public class Result: NSManagedObject {
+public class Result: Event {
+    
     @objc
     public override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
         super.init(entity: entity, insertInto: context)
     }
     
-    public required init(result: PNResult, entity: NSEntityDescription, context: NSManagedObjectContext) {
+//    public convenience required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
+//        guard let result = object as? PNResult else {
+//            fatalError()
+//        }
+//        self.init(result: result, entity: entity, context: context)
+//    }
+    
+    public required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
+        guard let result = object as? PNResult else {
+            fatalError()
+        }
         super.init(entity: entity, insertInto: context)
         stringifiedOperation = result.stringifiedOperation()
         //        clientRequest = result.clientRequest?.url?.absoluteString
@@ -26,18 +37,14 @@ public class Result: NSManagedObject {
         statusCode = Int16(result.statusCode)
     }
     
-    public convenience init(result: PNResult, context: NSManagedObjectContext) {
-        let entity = type(of: self).entity()
-        self.init(result: result, entity: entity, context: context)
-    }
+//    public convenience init(result: PNResult, context: NSManagedObjectContext) {
+//        let entity = type(of: self).entity()
+//        self.init(result: result, entity: entity, context: context)
+//    }
     
-    public override func awakeFromInsert() {
-        super.awakeFromInsert()
-        creationDate = NSDate()
-    }
-    
-    public var textViewDisplayText: String {
+    public override var textViewDisplayText: String {
         //return "Type: PNResult\nOperation: \(stringifiedOperation)\nStatus Code: \(statusCode)\nLocal Time: \(creationDate)"
         return "Operation: \(stringifiedOperation!)\nStatus Code: \(statusCode)\nLocal Time: \(creationDate!)"
     }
+
 }

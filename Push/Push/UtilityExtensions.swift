@@ -44,3 +44,15 @@ extension UIView {
         self.translatesAutoresizingMaskIntoConstraints = false
     }
 }
+
+extension UINavigationItem {
+    func setPrompt(with message: String, for duration: Double = 3.0) {
+        assert(duration > 0.0)
+        assert(duration < 10.0)
+        self.prompt = message
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            self.prompt = nil
+        }
+    }
+    
+}

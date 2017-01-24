@@ -1,18 +1,18 @@
 //
 //  User+CoreDataClass.swift
-//  
+//  Push
 //
-//  Created by Jordan Zucker on 1/11/17.
-//
+//  Created by Jordan Zucker on 1/20/17.
+//  Copyright © 2017 PubNub. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import CoreData
 import PubNub
 
 let UserIdentifierKey = "UserIdentifierKey"
 
-
+@objc(User)
 public class User: NSManagedObject {
     
     public override func awakeFromInsert() {
@@ -54,6 +54,14 @@ public class User: NSManagedObject {
     
     var pushChannelsArray: [Channel]? {
         return pushChannels?.map { $0 }
+    }
+    
+    var pushTokenString: String? {
+        guard let actualPushToken = pushToken else {
+            return nil
+        }
+        let tokenString = actualPushToken.reduce("", {$0 + String(format: "%02X", $1)})
+        return tokenString.lowercased()
     }
     
     var pushChannelsString: String? {
@@ -156,5 +164,5 @@ public class User: NSManagedObject {
         
         return alertController
     }
-
+    
 }
