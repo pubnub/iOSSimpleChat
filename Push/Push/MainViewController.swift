@@ -17,6 +17,7 @@ class MainViewController: UIViewController {
     var stackView: UIStackView!
     var pushTokenLabel: UILabel!
     var pushChannelsButton: UIButton!
+    var clientConfigurationButton: UIButton!
     var pushChannelsAuditButton: UIButton!
     let pushChannelsAuditButtonTitle = "Get push channels for token"
     let pushChannelsButtonPlaceholder = "Tap here to add push channels"
@@ -69,6 +70,18 @@ class MainViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         navigationItem.title = "Push!"
+        
+        clientConfigurationButton = UIButton(type: .system)
+        clientConfigurationButton.setTitle("Client info", for: .normal)
+        guard let clientConfigImage = UIImage(color: .yellow) else {
+            fatalError("Couldn't create one color UIImage!")
+        }
+        clientConfigurationButton.setBackgroundImage(clientConfigImage, for: .normal)
+        clientConfigurationButton.titleLabel?.numberOfLines = 2
+        clientConfigurationButton.addTarget(self, action: #selector(clientConfigurationButtonPressed(sender:)), for: .touchUpInside)
+        clientConfigurationButton.forceAutoLayout()
+        stackView.addArrangedSubview(clientConfigurationButton)
+        
         pushTokenLabel = UILabel(frame: .zero)
         pushTokenLabel.backgroundColor = .red
         pushTokenLabel.adjustsFontSizeToFitWidth = true
@@ -104,8 +117,9 @@ class MainViewController: UIViewController {
         let pushTokenLabelVerticalConstraints = NSLayoutConstraint(item: pushTokenLabel, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.10, constant: 0)
         let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.20, constant: 0)
         let pushChannelsAuditButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsAuditButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.15, constant: 0)
+        let clientConfigButtonVerticalConstraints = NSLayoutConstraint(item: clientConfigurationButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.125, constant: 0)
         
-        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints, pushChannelsAuditButtonVerticalConstraints])
+        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints, pushChannelsAuditButtonVerticalConstraints, clientConfigButtonVerticalConstraints])
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .done, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Publish", style: .plain, target: self, action: #selector(publishButtonPressed(sender:)))
@@ -117,6 +131,12 @@ class MainViewController: UIViewController {
     }
     
     // MARK: - Actions
+    
+    func clientConfigurationButtonPressed(sender: UIButton) {
+        let configurationController = ConfigurationViewController()
+        navigationController?.pushViewController(configurationController, animated: true)
+        
+    }
     
     func pushTokenLabelTapped(sender: UITapGestureRecognizer) {
         guard let pushTokenText = pushTokenLabel.text, pushTokenText != pushTokenLabelPlaceholder else {
