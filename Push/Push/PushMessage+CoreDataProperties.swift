@@ -18,5 +18,11 @@ extension PushMessage {
     }
 
     @NSManaged public var identifier: String?
-
+    @NSManaged public var rawTrigger: Int16
+    @NSManaged public var badge: Int16
+    @NSManaged public var body: String?
+    @NSManaged public var categoryIdentifier: String?
+    @NSManaged public var subtitle: String?
+    @NSManaged public var title: String?
+    @NSManaged public var userInfo: String?
 }

@@ -73,6 +73,28 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Saves changes in the application's managed object context before the application terminates.
         DataController.sharedController.saveContext()
     }
+    
+    // MARK: - Remote Notifications
+    
+    func application(_ application: UIApplication,
+                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
+            print("background task")
+            let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
+            print("received push token: \(deviceToken.debugDescription)")
+            currentUser.pushToken = deviceToken
+            do {
+                try context.save()
+            } catch {
+                fatalError("What went wrong now??")
+            }
+        }
+    }
+    
+    func application(_ application: UIApplication,
+                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("didFail! with error: \(error)")
+    }
 
 }
 

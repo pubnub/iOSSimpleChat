@@ -162,7 +162,7 @@ class Network: NSObject, PNObjectEventListener {
                 print("pushToken: setItem")
                 oldValue = self._pushToken
                 self._pushToken = newValue
-                print("now update push token")
+                print("now update push token with \(newValue)")
                 self.updatePush(tokens: (oldValue, newValue), current: self._pushChannels)
             }
             networkQueue.async(execute: setItem)

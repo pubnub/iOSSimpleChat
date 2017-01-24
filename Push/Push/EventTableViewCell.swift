@@ -30,10 +30,10 @@ class EventTableViewCell: ManagedObjectTableViewCell {
     }
     
     override func update(with object: NSManagedObject) {
-        guard let result = object as? Result else {
+        guard let event = object as? Event else {
             fatalError("Failed to convert: \(object.debugDescription)")
         }
-        textView.text = result.textViewDisplayText
+        textView.text = event.textViewDisplayText
     }
     
     override func prepareForReuse() {
