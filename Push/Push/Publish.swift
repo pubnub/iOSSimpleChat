@@ -16,7 +16,7 @@ extension Network {
         let alertController = UIAlertController(title: "Publish Message to PubNub", message: "Configure the message then click publish below", preferredStyle: .alert)
         
         alertController.addTextField { (textField) in
-            textField.placeholder = "Channels ..."
+            textField.placeholder = "Enter one channel name ..."
         }
         
         let channelsTextField = alertController.textFields![0]

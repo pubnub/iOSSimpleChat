@@ -25,12 +25,7 @@ class Network: NSObject, PNObjectEventListener {
         return config
     }
     
-    var client: PubNub! {
-        didSet {
-            client.logger.enabled = true
-            client.logger.enableLogLevel(PNLogLevel.PNVerboseLogLevel.rawValue)
-        }
-    }
+    var client: PubNub!
     
     private var _user: User?
     
@@ -162,7 +157,7 @@ class Network: NSObject, PNObjectEventListener {
                 print("pushToken: setItem")
                 oldValue = self._pushToken
                 self._pushToken = newValue
-                print("now update push token")
+                print("now update push token with \(newValue)")
                 self.updatePush(tokens: (oldValue, newValue), current: self._pushChannels)
             }
             networkQueue.async(execute: setItem)

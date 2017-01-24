@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16C67" minimumToolsVersion="Xcode 7.3" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11759" systemVersion="16D32" minimumToolsVersion="Xcode 7.3" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Channel" representedClassName="Channel" syncable="YES">
         <attribute name="isPushChannel" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="isPushEnabled" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
@@ -18,7 +18,14 @@
         <attribute name="channels" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="PushMessage" representedClassName="PushMessage" parentEntity="Event" syncable="YES">
+        <attribute name="badge" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="body" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="categoryIdentifier" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="identifier" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="rawTrigger" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="subtitle" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="userInfo" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="Result" representedClassName="Result" parentEntity="Event" syncable="YES">
         <attribute name="authKey" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
@@ -44,7 +51,7 @@
         <element name="Event" positionX="-27" positionY="81" width="128" height="75"/>
         <element name="PublishStatus" positionX="-63" positionY="-18" width="128" height="75"/>
         <element name="PushAuditResult" positionX="-36" positionY="18" width="128" height="60"/>
-        <element name="PushMessage" positionX="-54" positionY="-9" width="128" height="60"/>
+        <element name="PushMessage" positionX="-54" positionY="-9" width="128" height="165"/>
         <element name="Result" positionX="-18" positionY="27" width="128" height="150"/>
         <element name="Status" positionX="0" positionY="90" width="128" height="75"/>
         <element name="User" positionX="-18" positionY="72" width="128" height="105"/>

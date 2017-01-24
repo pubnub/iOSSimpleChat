@@ -73,6 +73,7 @@ class MainViewController: UIViewController {
         pushTokenLabel.backgroundColor = .red
         pushTokenLabel.adjustsFontSizeToFitWidth = true
         pushTokenLabel.textAlignment = .center
+        pushTokenLabel.numberOfLines = 2
         pushTokenLabel.isUserInteractionEnabled = true
         pushTokenLabel.forceAutoLayout()
         stackView.addArrangedSubview(pushTokenLabel)
@@ -106,7 +107,7 @@ class MainViewController: UIViewController {
         
         NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints, pushChannelsAuditButtonVerticalConstraints])
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .plain, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .done, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Publish", style: .plain, target: self, action: #selector(publishButtonPressed(sender:)))
     }
 
@@ -164,7 +165,11 @@ class MainViewController: UIViewController {
     func pushChannelsButtonTitle() -> String {
         var finalTitle: String? = nil
         DataController.sharedController.persistentContainer.viewContext.performAndWait {
-            finalTitle = (DataController.sharedController.fetchCurrentUser().pushChannelsString ?? self.pushChannelsButtonPlaceholder)
+            guard let currentPushChannelsString = DataController.sharedController.fetchCurrentUser().pushChannelsString else {
+                finalTitle = self.pushChannelsButtonPlaceholder
+                return
+            }
+            finalTitle = "Push channels: \(currentPushChannelsString)"
         }
         return finalTitle!
     }
@@ -172,7 +177,12 @@ class MainViewController: UIViewController {
     func pushTokenTitle() -> String {
         var finalTitle: String? = nil
         DataController.sharedController.persistentContainer.viewContext.performAndWait {
-            finalTitle = (DataController.sharedController.fetchCurrentUser().pushTokenString ?? self.pushTokenLabelPlaceholder)
+//            finalTitle = (DataController.sharedController.fetchCurrentUser().pushTokenString ?? self.pushTokenLabelPlaceholder)
+            guard let currentPushTokenTitle = DataController.sharedController.fetchCurrentUser().pushTokenString else {
+                finalTitle = self.pushTokenLabelPlaceholder
+                return
+            }
+            finalTitle = "Push Device Token\n\(currentPushTokenTitle)"
         }
         return finalTitle!
     }
