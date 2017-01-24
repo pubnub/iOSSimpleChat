@@ -22,6 +22,8 @@ class MainViewController: UIViewController {
     let pushChannelsButtonPlaceholder = "Tap here to add push channels"
     let pushTokenLabelPlaceholder = "No push token currently"
     
+    var pushTokenLabelGR: UITapGestureRecognizer!
+    
     let fetchRequest: NSFetchRequest<Event> = {
         let request: NSFetchRequest<Event> = Event.fetchRequest()
         let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Event.creationDate), ascending: false)
@@ -63,9 +65,14 @@ class MainViewController: UIViewController {
         navigationItem.title = "Push!"
         pushTokenLabel = UILabel(frame: .zero)
         pushTokenLabel.backgroundColor = .red
+        pushTokenLabel.adjustsFontSizeToFitWidth = true
         pushTokenLabel.textAlignment = .center
+        pushTokenLabel.isUserInteractionEnabled = true
         pushTokenLabel.forceAutoLayout()
         stackView.addArrangedSubview(pushTokenLabel)
+        
+        pushTokenLabelGR = UITapGestureRecognizer(target: self, action: #selector(pushTokenLabelTapped(sender:)))
+        pushTokenLabel.addGestureRecognizer(pushTokenLabelGR)
         
         pushChannelsAuditButton = UIButton(type: .system)
         guard let pushChannelsAuditImage = UIImage(color: .green) else {
@@ -102,6 +109,18 @@ class MainViewController: UIViewController {
     }
     
     // MARK: - Actions
+    
+    func pushTokenLabelTapped(sender: UITapGestureRecognizer) {
+        guard let pushTokenText = pushTokenLabel.text, pushTokenText != pushTokenLabelPlaceholder else {
+            return
+        }
+        copyToClipboard(text: pushTokenText)
+    }
+    
+    func copyToClipboard(text: String) {
+        UIPasteboard.general.string = text
+        navigationItem.setPrompt(with: "Copied push token to clipboard")
+    }
     
     func pushChannelsAuditButtonPressed(sender: UIButton) {
         Network.sharedNetwork.requestPushChannelsForCurrentPushToken()
@@ -141,7 +160,7 @@ class MainViewController: UIViewController {
     func pushTokenTitle() -> String {
         var finalTitle: String? = nil
         DataController.sharedController.persistentContainer.viewContext.performAndWait {
-            finalTitle = (DataController.sharedController.fetchCurrentUser().pushToken?.debugDescription ?? self.pushTokenLabelPlaceholder)
+            finalTitle = (DataController.sharedController.fetchCurrentUser().pushTokenString ?? self.pushTokenLabelPlaceholder)
         }
         return finalTitle!
     }

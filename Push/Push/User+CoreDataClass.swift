@@ -56,6 +56,14 @@ public class User: NSManagedObject {
         return pushChannels?.map { $0 }
     }
     
+    var pushTokenString: String? {
+        guard let actualPushToken = pushToken else {
+            return nil
+        }
+        let tokenString = actualPushToken.reduce("", {$0 + String(format: "%02X", $1)})
+        return tokenString.lowercased()
+    }
+    
     var pushChannelsString: String? {
         guard let actualChannels = pushChannels, !actualChannels.isEmpty else {
             return nil
