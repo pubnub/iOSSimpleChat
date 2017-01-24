@@ -198,6 +198,13 @@ class MainViewController: UIViewController {
         self.currentUser = nil
     }
     
+//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+//        super.traitCollectionDidChange(previousTraitCollection)
+//        let bounds = UIScreen.main.bounds
+//        view.frame = bounds
+//        self.view.setNeedsLayout()
+//    }
+    
     
     // KVO
     
