@@ -38,8 +38,34 @@
 		516814881E28313600A9ED89 /* PubNubExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516814871E28313600A9ED89 /* PubNubExtensions.swift */; };
 		51A56FBD1E3745DA003195BF /* Publish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FBC1E3745DA003195BF /* Publish.swift */; };
 		51A56FC01E3754F2003195BF /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FBF1E3754F2003195BF /* PushNotifications.swift */; };
+		51A56FC81E3758A1003195BF /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FC71E3758A1003195BF /* NotificationService.swift */; };
+		51A56FCC1E3758A1003195BF /* PushServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 51A56FC51E3758A1003195BF /* PushServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B3499F47BCFB2B1F55BF4F3B /* Pods_Push.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		51A56FCA1E3758A1003195BF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 510CED5C1E24343800527101 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 51A56FC41E3758A1003195BF;
+			remoteInfo = PushServiceExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		51A56FD01E3758A1003195BF /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				51A56FCC1E3758A1003195BF /* PushServiceExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2764B5C26659B7C156826A62 /* Pods-Push.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.release.xcconfig"; sourceTree = "<group>"; };
@@ -77,6 +103,9 @@
 		516814871E28313600A9ED89 /* PubNubExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PubNubExtensions.swift; sourceTree = "<group>"; };
 		51A56FBC1E3745DA003195BF /* Publish.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Publish.swift; sourceTree = "<group>"; };
 		51A56FBF1E3754F2003195BF /* PushNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
+		51A56FC51E3758A1003195BF /* PushServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		51A56FC71E3758A1003195BF /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		51A56FC91E3758A1003195BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Push.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -87,6 +116,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3499F47BCFB2B1F55BF4F3B /* Pods_Push.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51A56FC21E3758A1003195BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -105,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				510CED661E24343800527101 /* Push */,
+				51A56FC61E3758A1003195BF /* PushServiceExtension */,
 				510CED651E24343800527101 /* Products */,
 				FDAA9F1FF75C306682DFBF3E /* Pods */,
 				2A9EFB258A7E745441EC7CEC /* Frameworks */,
@@ -115,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				510CED641E24343800527101 /* Push.app */,
+				51A56FC51E3758A1003195BF /* PushServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -215,6 +253,15 @@
 			name = Objects;
 			sourceTree = "<group>";
 		};
+		51A56FC61E3758A1003195BF /* PushServiceExtension */ = {
+			isa = PBXGroup;
+			children = (
+				51A56FC71E3758A1003195BF /* NotificationService.swift */,
+				51A56FC91E3758A1003195BF /* Info.plist */,
+			);
+			path = PushServiceExtension;
+			sourceTree = "<group>";
+		};
 		FDAA9F1FF75C306682DFBF3E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -237,15 +284,34 @@
 				510CED621E24343800527101 /* Resources */,
 				792A32F8F4F3967D4D5426FC /* [CP] Embed Pods Frameworks */,
 				B14397176AA24E2282B23288 /* [CP] Copy Pods Resources */,
+				51A56FD01E3758A1003195BF /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				51A56FCB1E3758A1003195BF /* PBXTargetDependency */,
 			);
 			name = Push;
 			productName = Push;
 			productReference = 510CED641E24343800527101 /* Push.app */;
 			productType = "com.apple.product-type.application";
+		};
+		51A56FC41E3758A1003195BF /* PushServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51A56FCF1E3758A1003195BF /* Build configuration list for PBXNativeTarget "PushServiceExtension" */;
+			buildPhases = (
+				51A56FC11E3758A1003195BF /* Sources */,
+				51A56FC21E3758A1003195BF /* Frameworks */,
+				51A56FC31E3758A1003195BF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PushServiceExtension;
+			productName = PushServiceExtension;
+			productReference = 51A56FC51E3758A1003195BF /* PushServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -267,6 +333,11 @@
 							};
 						};
 					};
+					51A56FC41E3758A1003195BF = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 8XP4D6N55Z;
+						ProvisioningStyle = Automatic;
+					};
 				};
 			};
 			buildConfigurationList = 510CED5F1E24343800527101 /* Build configuration list for PBXProject "Push" */;
@@ -283,6 +354,7 @@
 			projectRoot = "";
 			targets = (
 				510CED631E24343800527101 /* Push */,
+				51A56FC41E3758A1003195BF /* PushServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -294,6 +366,13 @@
 			files = (
 				510CED751E24343900527101 /* LaunchScreen.storyboard in Resources */,
 				510CED721E24343800527101 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		51A56FC31E3758A1003195BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,7 +463,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		51A56FC11E3758A1003195BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				51A56FC81E3758A1003195BF /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		51A56FCB1E3758A1003195BF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 51A56FC41E3758A1003195BF /* PushServiceExtension */;
+			targetProxy = 51A56FCA1E3758A1003195BF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		510CED731E24343900527101 /* LaunchScreen.storyboard */ = {
@@ -495,6 +590,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
 				DEVELOPMENT_TEAM = 8XP4D6N55Z;
@@ -511,6 +607,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2764B5C26659B7C156826A62 /* Pods-Push.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
 				DEVELOPMENT_TEAM = 8XP4D6N55Z;
@@ -519,6 +616,34 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.PushExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
+		51A56FCD1E3758A1003195BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 8XP4D6N55Z;
+				INFOPLIST_FILE = PushServiceExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.PushExample.PushServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		51A56FCE1E3758A1003195BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 8XP4D6N55Z;
+				INFOPLIST_FILE = PushServiceExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.PushExample.PushServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
@@ -543,6 +668,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		51A56FCF1E3758A1003195BF /* Build configuration list for PBXNativeTarget "PushServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				51A56FCD1E3758A1003195BF /* Debug */,
+				51A56FCE1E3758A1003195BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 
