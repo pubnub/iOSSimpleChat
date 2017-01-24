@@ -2,9 +2,8 @@
 //  PublishStatus+CoreDataProperties.swift
 //  Push
 //
-//  Created by Jordan Zucker on 1/10/17.
+//  Created by Jordan Zucker on 1/20/17.
 //  Copyright © 2017 PubNub. All rights reserved.
-//  This file was automatically generated and should not be edited.
 //
 
 import Foundation
@@ -17,7 +16,7 @@ extension PublishStatus {
         return NSFetchRequest<PublishStatus>(entityName: "PublishStatus");
     }
 
-    @NSManaged public var timetoken: Int64
     @NSManaged public var information: String?
+    @NSManaged public var timetoken: Int64
 
 }

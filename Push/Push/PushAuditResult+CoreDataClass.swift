@@ -1,17 +1,18 @@
 //
-//  PublishStatus+CoreDataClass.swift
+//  PushAuditResult+CoreDataClass.swift
 //  Push
 //
 //  Created by Jordan Zucker on 1/20/17.
 //  Copyright © 2017 PubNub. All rights reserved.
+//  This file was automatically generated and should not be edited.
 //
 
 import Foundation
 import CoreData
 import PubNub
 
-@objc(PublishStatus)
-public class PublishStatus: Status {
+@objc(PushAuditResult)
+public class PushAuditResult: Result {
     
     @objc
     public override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
@@ -20,16 +21,15 @@ public class PublishStatus: Status {
     
     public required init(object: NSObject, entity: NSEntityDescription, context: NSManagedObjectContext) {
         super.init(object: object, entity: entity, context: context)
-        guard let publishStatus = object as? PNPublishStatus else {
+        guard let result = object as? PNAPNSEnabledChannelsResult else {
             fatalError()
         }
-        timetoken = publishStatus.data.timetoken.int64Value
-        information = publishStatus.data.information
+        channels = "\(result.data.channels)"
     }
     
     public override var textViewDisplayText: String {
         let superText = super.textViewDisplayText
-        return superText + "\nTimetoken: \(timetoken)\nInformation: \(information)"
+        return superText + "\nChannels: \(channels!)"
     }
 
 }

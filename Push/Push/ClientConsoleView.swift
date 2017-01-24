@@ -13,10 +13,10 @@ import CoreData
 class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControllerDelegate {
     
     let tableView: UITableView
-    let fetchRequest: NSFetchRequest<Result>
-    let fetchedResultsController: NSFetchedResultsController<Result>
+    let fetchRequest: NSFetchRequest<Event>
+    let fetchedResultsController: NSFetchedResultsController<Event>
     
-    required init(fetchRequest: NSFetchRequest<Result>) {
+    required init(fetchRequest: NSFetchRequest<Event>) {
         self.tableView = UITableView(frame: .zero, style: .plain)
         self.fetchRequest = fetchRequest
         self.fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.sharedController.persistentContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
@@ -25,7 +25,7 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         tableView.dataSource = self
         tableView.rowHeight = 100.0
         tableView.forceAutoLayout()
-        tableView.register(ResultTableViewCell.self, forCellReuseIdentifier: ResultTableViewCell.reuseIdentifier())
+        tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier())
         addSubview(tableView)
         let widthConstraint = NSLayoutConstraint(item: tableView, attribute: .width, relatedBy: .equal, toItem: self, attribute: .width, multiplier: 1.0, constant: 0.0)
         let heightConstraint = NSLayoutConstraint(item: tableView, attribute: .height, relatedBy: .equal, toItem: self, attribute: .height, multiplier: 1.0, constant: 0.0)
@@ -47,12 +47,12 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     // MARK: - UITableViewDataSource
     
     func configureCell(cell: UITableViewCell, indexPath: IndexPath) {
-        guard let resultCell = cell as? ResultTableViewCell else {
+        guard let eventCell = cell as? EventTableViewCell else {
             fatalError()
         }
-        let result = fetchedResultsController.object(at: indexPath)
+        let event = fetchedResultsController.object(at: indexPath)
         // Populate cell from the NSManagedObject instance
-        resultCell.update(with: result)
+        eventCell.update(with: event)
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -63,7 +63,7 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ResultTableViewCell.reuseIdentifier(), for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: EventTableViewCell.reuseIdentifier(), for: indexPath)
         configureCell(cell: cell, indexPath: indexPath)
         return cell
     }

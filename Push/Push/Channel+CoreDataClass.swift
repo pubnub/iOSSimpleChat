@@ -1,15 +1,15 @@
 //
 //  Channel+CoreDataClass.swift
-//  
+//  Push
 //
-//  Created by Jordan Zucker on 1/11/17.
-//
+//  Created by Jordan Zucker on 1/20/17.
+//  Copyright © 2017 PubNub. All rights reserved.
 //
 
 import Foundation
 import CoreData
 
-
+@objc(Channel)
 public class Channel: NSManagedObject {
     
     public convenience init(in context: NSManagedObjectContext, name: String, user: User? = nil) {
@@ -58,7 +58,5 @@ public class Channel: NSManagedObject {
         }
         return updatedChannel
     }
-    
-    
 
 }
