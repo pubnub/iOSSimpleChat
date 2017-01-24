@@ -19,5 +19,11 @@ class ConfigurationView: UICollectionView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    var configuration: PNConfiguration? {
+        didSet {
+            
+        }
+    }
 
 }

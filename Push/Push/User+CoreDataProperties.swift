@@ -21,7 +21,7 @@ extension User {
 //    @NSManaged public var pushChannels: NSSet?
 //    @NSManaged public var results: NSSet?
     @NSManaged public var pushChannels: Set<Channel>?
-    @NSManaged public var results: Set<Result>?
+    @NSManaged public var events: Set<Event>?
 
 }
 

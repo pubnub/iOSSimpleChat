@@ -22,6 +22,7 @@ class MainViewController: UIViewController {
     let pushChannelsAuditButtonTitle = "Get push channels for token"
     let pushChannelsButtonPlaceholder = "Tap here to add push channels"
     let pushTokenLabelPlaceholder = "No push token currently"
+    let configButtonPlaceholder = "Tap here to set pub key and sub key"
     
     var pushTokenLabelGR: UITapGestureRecognizer!
     
@@ -78,6 +79,7 @@ class MainViewController: UIViewController {
         }
         clientConfigurationButton.setBackgroundImage(clientConfigImage, for: .normal)
         clientConfigurationButton.titleLabel?.numberOfLines = 2
+        clientConfigurationButton.titleLabel?.adjustsFontSizeToFitWidth = true
         clientConfigurationButton.addTarget(self, action: #selector(clientConfigurationButtonPressed(sender:)), for: .touchUpInside)
         clientConfigurationButton.forceAutoLayout()
         stackView.addArrangedSubview(clientConfigurationButton)
@@ -123,6 +125,8 @@ class MainViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .done, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Publish", style: .plain, target: self, action: #selector(publishButtonPressed(sender:)))
+        
+        updateConfigButton()
     }
 
     override func didReceiveMemoryWarning() {
@@ -182,6 +186,13 @@ class MainViewController: UIViewController {
     
     // Properties
     
+    func configButtonTitle() -> String {
+        guard let pubKeyTitle = Network.sharedNetwork.pubKeyString, let subKeyTitle = Network.sharedNetwork.subKeyString else {
+            return configButtonPlaceholder
+        }
+        return "Pub: \(pubKeyTitle)\nSub: \(subKeyTitle)"
+    }
+    
     func pushChannelsButtonTitle() -> String {
         var finalTitle: String? = nil
         DataController.sharedController.persistentContainer.viewContext.performAndWait {
@@ -212,6 +223,14 @@ class MainViewController: UIViewController {
         DispatchQueue.main.async {
             self.pushChannelsButton.setTitle(title, for: .normal)
             self.pushChannelsButton.setNeedsLayout()
+        }
+    }
+    
+    func updateConfigButton() {
+        let title = configButtonTitle()
+        DispatchQueue.main.async {
+            self.clientConfigurationButton.setTitle(title, for: .normal)
+            self.clientConfigurationButton.setNeedsLayout()
         }
     }
     

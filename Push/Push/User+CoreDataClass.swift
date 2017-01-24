@@ -27,8 +27,8 @@ public class User: NSManagedObject {
         }
         context?.perform {
             let deleteUsers: (User) -> () = { (user) in
-                user.results?.forEach({ (result) in
-                    context?.delete(result)
+                user.events?.forEach({ (event) in
+                    context?.delete(event)
                 })
             }
             if context == self.managedObjectContext {

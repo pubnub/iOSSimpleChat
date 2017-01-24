@@ -25,7 +25,7 @@ class Network: NSObject, PNObjectEventListener {
         return config
     }
     
-    var client: PubNub!
+    var client: PubNub?
     
     private var _user: User?
     
@@ -57,7 +57,7 @@ class Network: NSObject, PNObjectEventListener {
                 }
                 let configuration = self.config(with: pubNubUUID) // can forcibly unwrap, we
                 self.client = PubNub.clientWithConfiguration(configuration, callbackQueue: self.networkQueue)
-                self.client.addListener(self)
+                self.client?.addListener(self)
             }
             networkQueue.async(execute: setItem)
         }
@@ -69,7 +69,6 @@ class Network: NSObject, PNObjectEventListener {
             }
             networkQueue.sync(execute: getItem)
             return finalUser
-            
         }
     }
     
@@ -135,7 +134,7 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     func requestPushChannels(for token: Data) {
-        client.pushNotificationEnabledChannelsForDeviceWithPushToken(token) { (result, status) in
+        client?.pushNotificationEnabledChannelsForDeviceWithPushToken(token) { (result, status) in
             self.networkContext.perform {
                 let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: result, with: self.user)
                 let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
@@ -222,16 +221,16 @@ class Network: NSObject, PNObjectEventListener {
         case (nil, nil):
             return
         case let (oldToken, nil) where oldToken != nil:
-            client.removeAllPushNotificationsFromDeviceWithPushToken(oldToken!, andCompletion: pushCompletionBlock)
+            client?.removeAllPushNotificationsFromDeviceWithPushToken(oldToken!, andCompletion: pushCompletionBlock)
         case let (oldToken, newToken):
             guard oldToken != newToken else {
                 return
             }
             if let existingOldToken = oldToken, oldToken != newToken {
-                client.removePushNotificationsFromChannels(actualChannels, withDevicePushToken: existingOldToken, andCompletion: pushCompletionBlock)
+                client?.removePushNotificationsFromChannels(actualChannels, withDevicePushToken: existingOldToken, andCompletion: pushCompletionBlock)
             }
             if let existingNewToken = newToken {
-                client.addPushNotificationsOnChannels(actualChannels, withDevicePushToken: existingNewToken, andCompletion: pushCompletionBlock)
+                client?.addPushNotificationsOnChannels(actualChannels, withDevicePushToken: existingNewToken, andCompletion: pushCompletionBlock)
             }
         }
     }
@@ -259,12 +258,12 @@ class Network: NSObject, PNObjectEventListener {
             guard let existingOldChannels = channelsArray(for: oldChannels) else {
                 return
             }
-            client.removePushNotificationsFromChannels(existingOldChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+            client?.removePushNotificationsFromChannels(existingOldChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
         case let (nil, newChannels) where newChannels != nil:
             guard let existingNewChannels = channelsArray(for: newChannels) else {
                 return
             }
-            client.addPushNotificationsOnChannels(existingNewChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+            client?.addPushNotificationsOnChannels(existingNewChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
         case let (oldChannels, newChannels):
             guard oldChannels != newChannels else {
                 print("Don't need to do anything because the channels haven't changed")
@@ -274,10 +273,10 @@ class Network: NSObject, PNObjectEventListener {
             let removingChannels = oldChannels!.subtracting(newChannels!)
             
             if let actualAddingChannels = channelsArray(for: addingChannels), !actualAddingChannels.isEmpty {
-                client.addPushNotificationsOnChannels(actualAddingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+                client?.addPushNotificationsOnChannels(actualAddingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
             }
             if let actualRemovingChannels = channelsArray(for: removingChannels), !actualRemovingChannels.isEmpty {
-                client.removePushNotificationsFromChannels(actualRemovingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+                client?.removePushNotificationsFromChannels(actualRemovingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
             }
         }
     }
