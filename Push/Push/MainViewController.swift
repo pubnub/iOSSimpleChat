@@ -33,18 +33,38 @@ class MainViewController: UIViewController {
     
     var consoleView: ClientConsoleView!
     
-    override func loadView() {
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         let bounds = UIScreen.main.bounds
         var topPadding = UIApplication.shared.statusBarFrame.height
         if let navBarHeight = navigationController?.navigationBar.frame.height {
             topPadding += navBarHeight
         }
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
-        stackView = UIStackView(frame: stackViewFrame)
+        stackView.frame = stackViewFrame
+        view.frame = bounds
+//        stackView = UIStackView(frame: stackViewFrame)
+//        stackView.axis = .vertical
+//        stackView.alignment = .fill
+//        stackView.distribution = .fill
+//        let backgroundView = UIView(frame: bounds)
+//        backgroundView.addSubview(stackView)
+//        self.view = backgroundView
+//        self.view.setNeedsLayout()
+    }
+    
+    override func loadView() {
+//        let bounds = UIScreen.main.bounds
+//        var topPadding = UIApplication.shared.statusBarFrame.height
+//        if let navBarHeight = navigationController?.navigationBar.frame.height {
+//            topPadding += navBarHeight
+//        }
+//        let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
+        stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-        let backgroundView = UIView(frame: bounds)
+        let backgroundView = UIView(frame: .zero)
         backgroundView.addSubview(stackView)
         self.view = backgroundView
         self.view.setNeedsLayout()
@@ -197,14 +217,6 @@ class MainViewController: UIViewController {
     deinit {
         self.currentUser = nil
     }
-    
-//    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-//        super.traitCollectionDidChange(previousTraitCollection)
-//        let bounds = UIScreen.main.bounds
-//        view.frame = bounds
-//        self.view.setNeedsLayout()
-//    }
-    
     
     // KVO
     
