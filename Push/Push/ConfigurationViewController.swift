@@ -12,6 +12,9 @@ import PubNub
 class ConfigurationViewController: UIViewController {
     
     var configurationView: ConfigurationView!
+    
+    
+    
     var configuration: PNConfiguration! {
         didSet {
             
@@ -57,6 +60,7 @@ class ConfigurationViewController: UIViewController {
         view.backgroundColor = .red
         navigationItem.title = "Client Configuration"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Update", style: .done, target: self, action: #selector(updateButtonPressed(sender:)))
+        configurationView.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
