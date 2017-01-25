@@ -11,16 +11,20 @@ import PubNub
 
 protocol ConfigurationViewDelegate: class {
 //    optional public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath)
-    func configurationView(_ configurationView: ConfigurationView, didSelectKeyValue: KeyValue)
+    func configurationView(_ configurationView: ConfigurationView, for configuration: PNConfiguration, didSelect keyValue: KeyValue, at indexPath: IndexPath)
 }
 
 class ConfigurationView: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
     
     struct DataSource {
-        let items: [ConfigurationProperty]
+        private var items = [ConfigurationProperty]()
+        
+        mutating func update(configuration: PNConfiguration) {
+            self.items = [.publishKey(configuration), .subscribeKey(configuration), .origin(configuration), .authKey(configuration), .uuid(configuration)]
+        }
         
         init(configuration: PNConfiguration) {
-            self.items = [.publishKey(configuration), .subscribeKey(configuration), .origin(configuration), .authKey(configuration), .uuid(configuration)]
+            update(configuration: configuration)
         }
         
         var count: Int {
@@ -81,8 +85,13 @@ class ConfigurationView: UIView, UICollectionViewDataSource, UICollectionViewDel
         collectionView.reloadData()
     }
     
+    func reloadItems(at indexPaths: [IndexPath]) {
+        collectionView.reloadItems(at: indexPaths)
+    }
+    
     var configuration: PNConfiguration {
         didSet {
+            dataSource.update(configuration: configuration)
             collectionView.reloadData()
         }
     }
@@ -112,7 +121,7 @@ class ConfigurationView: UIView, UICollectionViewDataSource, UICollectionViewDel
         let keyValueItem = dataSource[indexPath]
         print(keyValueItem.debugDescription)
         
-        delegate?.configurationView(self, didSelectKeyValue: keyValueItem)
+        delegate?.configurationView(self, for: configuration, didSelect: keyValueItem, at: indexPath)
         
     }
 

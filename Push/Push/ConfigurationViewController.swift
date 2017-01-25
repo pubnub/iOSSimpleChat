@@ -9,15 +9,13 @@
 import UIKit
 import PubNub
 
-class ConfigurationViewController: UIViewController {
+class ConfigurationViewController: UIViewController, ConfigurationViewDelegate {
     
-    var configurationView: ConfigurationView!
-    
-    
+    var configurationView: ConfigurationView?
     
     var configuration: PNConfiguration! {
         didSet {
-            
+            configurationView?.configuration = configuration
         }
     }
     
@@ -29,18 +27,14 @@ class ConfigurationViewController: UIViewController {
             topPadding += navBarHeight
         }
         let configViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
-        configurationView.frame = configViewFrame
+        configurationView?.frame = configViewFrame
         view.frame = bounds
     }
     
     override func loadView() {
-//        stackView = UIStackView(frame: .zero)
-//        stackView.axis = .vertical
-//        stackView.alignment = .fill
-//        stackView.distribution = .fill
-        configurationView = ConfigurationView(frame: .zero, config: PNConfiguration(publishKey: "demo", subscribeKey: "demo"))
+        configurationView = ConfigurationView(frame: .zero, config: configuration)
         let backgroundView = UIView(frame: .zero)
-        backgroundView.addSubview(configurationView)
+        backgroundView.addSubview(configurationView!)
         self.view = backgroundView
         self.view.setNeedsLayout()
     }
@@ -57,10 +51,11 @@ class ConfigurationViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        configurationView?.delegate = self
         view.backgroundColor = .red
         navigationItem.title = "Client Configuration"
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Update", style: .done, target: self, action: #selector(updateButtonPressed(sender:)))
-        configurationView.reloadData()
+        configurationView?.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
@@ -71,7 +66,21 @@ class ConfigurationViewController: UIViewController {
     // MARK: - Actions
     
     func updateButtonPressed(sender: UIBarButtonItem) {
-        
+        Network.sharedNetwork.client?.copyWithConfiguration(configuration, completion: { (updatedClient) in
+            Network.sharedNetwork.client = updatedClient
+        })
+    }
+    
+    // MARK: - ConfigurationViewDelegate
+    
+    func configurationView(_ configurationView: ConfigurationView, for configuration: PNConfiguration, didSelect keyValue: KeyValue, at indexPath: IndexPath) {
+        guard var alertKeyValue = keyValue as? KeyValueAlertControllerUpdates else {
+            return
+        }
+        let alertController = alertKeyValue.updateAlertController { (action, keyValue) in
+            self.configurationView?.reloadItems(at: [indexPath])
+        }
+        present(alertController, animated: true)
     }
 
 }

@@ -65,6 +65,11 @@ class MainViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateConfigButton()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -138,6 +143,7 @@ class MainViewController: UIViewController {
     
     func clientConfigurationButtonPressed(sender: UIButton) {
         let configurationController = ConfigurationViewController()
+        configurationController.configuration = Network.sharedNetwork.currentConfiguration
         navigationController?.pushViewController(configurationController, animated: true)
         
     }

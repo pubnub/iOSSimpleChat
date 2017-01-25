@@ -13,6 +13,7 @@ import PubNub
 fileprivate let publishKey = "pub-c-a9dc3f6b-98f7-4b44-97e6-4ea5a705ab2d"
 fileprivate let subscribeKey = "sub-c-93f47f52-d6b4-11e6-9102-0619f8945a4f"
 
+@objc
 class Network: NSObject, PNObjectEventListener {
     
     private var networkKVOContext = 0
@@ -25,7 +26,15 @@ class Network: NSObject, PNObjectEventListener {
         return config
     }
     
-    var client: PubNub?
+    @objc
+    dynamic var client: PubNub?
+    
+    public var currentConfiguration: PNConfiguration {
+        guard let existingConfiguration = client?.currentConfiguration() else {
+            return config(with: User.userID)
+        }
+        return existingConfiguration
+    }
     
     private var _user: User?
     

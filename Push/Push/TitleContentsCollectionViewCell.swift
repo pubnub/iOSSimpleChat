@@ -10,26 +10,38 @@ import UIKit
 import PubNub
 
 protocol KeyValueAlertControllerUpdates: KeyValue {
-    func updateAlertController() -> UIAlertController
+    mutating func updateAlertController(handler: ((UIAlertAction, KeyValue?) -> Swift.Void)?) -> UIAlertController
 }
 
 extension KeyValueAlertControllerUpdates {
-    func updateAlertController(handler: ((UIAlertAction) -> Swift.Void)? = nil) -> UIAlertController {
+    mutating func updateAlertController(handler: ((UIAlertAction, KeyValue?) -> Swift.Void)? = nil) -> UIAlertController {
         let message = displayKeyName
         let alertController = UIAlertController(title: "Update configuration", message: message, preferredStyle: .alert)
         
+        let textFieldText = displayValue
+        
+        alertController.addTextField { (textField) in
+            textField.placeholder = "Enter value ..."
+            textField.text = textFieldText
+        }
+        let valueTextField = alertController.textFields![0] // we just added above, so can forcibly unwrap
+        
+        
+        var updatedKeyValue = self
         let updateAction = UIAlertAction(title: "Update", style: .default) { (action) in
-            handler?(action)
+            updatedKeyValue.value = valueTextField.text
+            
+            handler?(action, updatedKeyValue)
         }
         alertController.addAction(updateAction)
         
         let resetAction = UIAlertAction(title: "Reset", style: .destructive) { (action) in
-            handler?(action)
+            handler?(action, nil)
         }
         alertController.addAction(resetAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
-            handler?(action)
+            handler?(action, nil)
         }
         alertController.addAction(cancelAction)
         
@@ -53,7 +65,7 @@ extension KeyValue {
     }
 }
 
-enum ConfigurationProperty: KeyValue {
+enum ConfigurationProperty: KeyValue, KeyValueAlertControllerUpdates {
     case origin(PNConfiguration)
     case publishKey(PNConfiguration)
     case subscribeKey(PNConfiguration)
