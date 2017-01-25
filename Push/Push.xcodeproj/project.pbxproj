@@ -39,9 +39,10 @@
 		51A56FBD1E3745DA003195BF /* Publish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FBC1E3745DA003195BF /* Publish.swift */; };
 		51A56FC01E3754F2003195BF /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FBF1E3754F2003195BF /* PushNotifications.swift */; };
 		51A56FD21E37DB73003195BF /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FD11E37DB73003195BF /* ConfigurationView.swift */; };
-		51A56FD41E37DBC3003195BF /* TitleContentsCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FD31E37DBC3003195BF /* TitleContentsCollectionViewCell.swift */; };
 		51A56FD71E37E20D003195BF /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FD61E37E20D003195BF /* ConfigurationViewController.swift */; };
 		51EB8E621E37F7550091FE01 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EB8E611E37F7550091FE01 /* Configuration.swift */; };
+		51EB8E641E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EB8E631E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift */; };
+		51EB8E661E3954300091FE01 /* ConfigurationProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EB8E651E3954300091FE01 /* ConfigurationProperty.swift */; };
 		B3499F47BCFB2B1F55BF4F3B /* Pods_Push.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */; };
 /* End PBXBuildFile section */
 
@@ -95,9 +96,10 @@
 		51A56FBC1E3745DA003195BF /* Publish.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Publish.swift; sourceTree = "<group>"; };
 		51A56FBF1E3754F2003195BF /* PushNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
 		51A56FD11E37DB73003195BF /* ConfigurationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
-		51A56FD31E37DBC3003195BF /* TitleContentsCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleContentsCollectionViewCell.swift; sourceTree = "<group>"; };
 		51A56FD61E37E20D003195BF /* ConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationViewController.swift; sourceTree = "<group>"; };
 		51EB8E611E37F7550091FE01 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
+		51EB8E631E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyValueLabelCollectionViewCell.swift; sourceTree = "<group>"; };
+		51EB8E651E3954300091FE01 /* ConfigurationProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationProperty.swift; sourceTree = "<group>"; };
 		8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Push.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -241,7 +243,8 @@
 			isa = PBXGroup;
 			children = (
 				51A56FD11E37DB73003195BF /* ConfigurationView.swift */,
-				51A56FD31E37DBC3003195BF /* TitleContentsCollectionViewCell.swift */,
+				51EB8E631E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift */,
+				51EB8E651E3954300091FE01 /* ConfigurationProperty.swift */,
 			);
 			name = Configuration;
 			sourceTree = "<group>";
@@ -409,13 +412,13 @@
 				5168147F1E26F05C00A9ED89 /* Channel+CoreDataClass.swift in Sources */,
 				5154E92F1E36C3B800235C0E /* EventTableViewCell.swift in Sources */,
 				510CED821E24405E00527101 /* DataController.swift in Sources */,
+				51EB8E641E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift in Sources */,
 				51481C9A1E32B4D1002FEA7C /* Event+CoreDataProperties.swift in Sources */,
 				510CED701E24343800527101 /* Push.xcdatamodeld in Sources */,
 				516814811E26F05C00A9ED89 /* User+CoreDataClass.swift in Sources */,
 				510CED9E1E25733800527101 /* PublishStatus+CoreDataProperties.swift in Sources */,
 				516814831E26F05C00A9ED89 /* Result+CoreDataClass.swift in Sources */,
 				51481C971E32B4D1002FEA7C /* PushMessage+CoreDataClass.swift in Sources */,
-				51A56FD41E37DBC3003195BF /* TitleContentsCollectionViewCell.swift in Sources */,
 				51481C991E32B4D1002FEA7C /* Event+CoreDataClass.swift in Sources */,
 				51481C9C1E32B4D1002FEA7C /* PushAuditResult+CoreDataProperties.swift in Sources */,
 				510CED861E2446E900527101 /* ManagedObjectTableViewCell.swift in Sources */,
@@ -423,6 +426,7 @@
 				510CEDA01E25733800527101 /* Status+CoreDataProperties.swift in Sources */,
 				510CED7D1E24356800527101 /* UtilityExtensions.swift in Sources */,
 				510CED881E244C4A00527101 /* MainViewController.swift in Sources */,
+				51EB8E661E3954300091FE01 /* ConfigurationProperty.swift in Sources */,
 				51EB8E621E37F7550091FE01 /* Configuration.swift in Sources */,
 				516814801E26F05C00A9ED89 /* Channel+CoreDataProperties.swift in Sources */,
 				51481C981E32B4D1002FEA7C /* PushMessage+CoreDataProperties.swift in Sources */,
