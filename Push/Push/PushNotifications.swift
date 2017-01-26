@@ -17,7 +17,7 @@ class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
     let pushContext: NSManagedObjectContext
     
     override init() {
-        self.pushContext = DataController.sharedController.persistentContainer.newBackgroundContext()
+        self.pushContext = DataController.sharedController.newBackgroundContext()
         super.init()
         pushContext.automaticallyMergesChangesFromParent = true
     }

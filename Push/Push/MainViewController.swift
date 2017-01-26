@@ -116,7 +116,7 @@ class MainViewController: UIViewController {
             fatalError("Couldn't create one color UIImage!")
         }
         pushChannelsButton.setBackgroundImage(pushBackgroundImage, for: .normal)
-        pushChannelsButton.addTarget(self, action: #selector(pushChannelsButtonPressed(sender:)), for: .touchUpInside)
+//        pushChannelsButton.addTarget(self, action: #selector(pushChannelsButtonPressed(sender:)), for: .touchUpInside)
         stackView.addArrangedSubview(pushChannelsButton)
         consoleView = ClientConsoleView(fetchRequest: fetchRequest)
         stackView.addArrangedSubview(consoleView)
@@ -128,7 +128,8 @@ class MainViewController: UIViewController {
         
         NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints, pushChannelsAuditButtonVerticalConstraints, clientConfigButtonVerticalConstraints])
         
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .done, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .done, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(optionsButtonPressed(sender:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Publish", style: .plain, target: self, action: #selector(publishButtonPressed(sender:)))
         
         updateConfigButton()
@@ -169,21 +170,13 @@ class MainViewController: UIViewController {
         Network.sharedNetwork.requestPushChannelsForCurrentPushToken()
     }
     
-    func clearConsoleButtonPressed(sender: UIBarButtonItem) {
-        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
-            self.currentUser?.removeAllResults(in: context)
-            context.perform {
-                do {
-                    try context.save()
-                } catch {
-                    fatalError(error.localizedDescription)
-                }
-            }
-        }
+    func optionsButtonPressed(sender: UIBarButtonItem) {
+        let optionsAlertController = UIAlertController.optionsAlertController()
+        present(optionsAlertController, animated: true)
     }
     
     func pushChannelsButtonPressed(sender: UIButton) {
-        let viewContext = DataController.sharedController.persistentContainer.viewContext
+        let viewContext = DataController.sharedController.viewContext
         let pushChannelsAlertController = DataController.sharedController.fetchCurrentUser().alertControllerForPushChannels(in: viewContext)
         present(pushChannelsAlertController, animated: true)
     }
@@ -201,7 +194,7 @@ class MainViewController: UIViewController {
     
     func pushChannelsButtonTitle() -> String {
         var finalTitle: String? = nil
-        DataController.sharedController.persistentContainer.viewContext.performAndWait {
+        DataController.sharedController.viewContext.performAndWait {
             guard let currentPushChannelsString = DataController.sharedController.fetchCurrentUser().pushChannelsString else {
                 finalTitle = self.pushChannelsButtonPlaceholder
                 return
@@ -213,7 +206,7 @@ class MainViewController: UIViewController {
     
     func pushTokenTitle() -> String {
         var finalTitle: String? = nil
-        DataController.sharedController.persistentContainer.viewContext.performAndWait {
+        DataController.sharedController.viewContext.performAndWait {
 //            finalTitle = (DataController.sharedController.fetchCurrentUser().pushTokenString ?? self.pushTokenLabelPlaceholder)
             guard let currentPushTokenTitle = DataController.sharedController.fetchCurrentUser().pushTokenString else {
                 finalTitle = self.pushTokenLabelPlaceholder
