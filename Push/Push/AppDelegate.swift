@@ -8,6 +8,7 @@
 
 import UIKit
 import UserNotifications
+import IdleTimer
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -16,6 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        print("Current screen state: \(IdleTimer.sharedInstance.screenState.title)")
         let viewContext = DataController.sharedController.viewContext
         let userID = User.userID
         if let currentUser = DataController.sharedController.fetchUser(for: userID, in: viewContext) {
