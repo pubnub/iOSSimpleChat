@@ -8,6 +8,7 @@
 
 import UIKit
 import UserNotifications
+import IdleTimer
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -16,7 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        let viewContext = DataController.sharedController.persistentContainer.viewContext
+        print("Current screen state: \(IdleTimer.sharedInstance.screenState.title)")
+        let viewContext = DataController.sharedController.viewContext
         let userID = User.userID
         if let currentUser = DataController.sharedController.fetchUser(for: userID, in: viewContext) {
             DataController.sharedController.currentUser = currentUser
@@ -78,7 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        DataController.sharedController.persistentContainer.performBackgroundTask { (context) in
+        DataController.sharedController.performBackgroundTask { (context) in
             print("background task")
             let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
             print("received push token: \(deviceToken.debugDescription)")

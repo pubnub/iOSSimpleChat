@@ -127,7 +127,7 @@ class Network: NSObject, PNObjectEventListener {
     
     
     override init() {
-        let context = DataController.sharedController.persistentContainer.newBackgroundContext()
+        let context = DataController.sharedController.newBackgroundContext()
         context.automaticallyMergesChangesFromParent = true
         self.networkContext = context
         super.init()

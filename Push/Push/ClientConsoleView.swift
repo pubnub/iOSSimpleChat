@@ -19,7 +19,7 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     required init(fetchRequest: NSFetchRequest<Event>) {
         self.tableView = UITableView(frame: .zero, style: .plain)
         self.fetchRequest = fetchRequest
-        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.sharedController.persistentContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
+        self.fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.sharedController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         super.init(frame: .zero)
         fetchedResultsController.delegate = self
         tableView.dataSource = self
