@@ -23,7 +23,7 @@ public class User: NSManagedObject {
     func removeAllResults(in context: NSManagedObjectContext? = nil) {
         var context = context
         if context == nil {
-            context = DataController.sharedController.persistentContainer.viewContext
+            context = DataController.sharedController.viewContext
         }
         context?.perform {
             let deleteUsers: (User) -> () = { (user) in

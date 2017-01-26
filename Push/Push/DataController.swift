@@ -25,10 +25,26 @@ class DataController: NSObject {
         }
     }
     
+    func resetResultsForCurrentUser(completion: ((Swift.Void) -> Swift.Void)? = nil) {
+        DataController.sharedController.performBackgroundTask { (context) in
+            self.currentUser?.removeAllResults(in: context)
+            context.perform {
+                do {
+                    try context.save()
+                    DispatchQueue.main.async {
+                        completion?()
+                    }
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
     public func fetchUser(for userIdentifier: String, in context: NSManagedObjectContext? = nil) -> User? {
         var context = context
         if context == nil {
-            context = persistentContainer.viewContext
+            context = viewContext
         }
         var finalUser: User? = nil
         context?.performAndWait {
@@ -47,7 +63,7 @@ class DataController: NSObject {
     func fetchUser(with objectID: NSManagedObjectID, in context: NSManagedObjectContext? = nil) -> User? {
         var context = context
         if context == nil {
-            context = persistentContainer.viewContext
+            context = viewContext
         }
         var finalUser: User? = nil
         // forcibly unwrap, we want to make sure we fail if there is no context
@@ -61,6 +77,18 @@ class DataController: NSObject {
     // view context by default if context is not supplied
     func fetchCurrentUser(in context: NSManagedObjectContext? = nil) -> User {
         return fetchUser(with: currentUserObjectID, in: context)! // forcibly unwrap for now
+    }
+    
+    var viewContext: NSManagedObjectContext {
+        return persistentContainer.viewContext
+    }
+    
+    func newBackgroundContext() -> NSManagedObjectContext {
+        return persistentContainer.newBackgroundContext()
+    }
+    
+    func performBackgroundTask(_ block: @escaping (NSManagedObjectContext) -> Swift.Void) {
+        persistentContainer.performBackgroundTask(block)
     }
     
     // MARK: - Events
@@ -93,7 +121,7 @@ class DataController: NSObject {
     
     // MARK: - Core Data stack
     
-    lazy var persistentContainer: NSPersistentContainer = {
+    private lazy var persistentContainer: NSPersistentContainer = {
         /*
          The persistent container for the application. This implementation
          creates and returns a container, having loaded the store for the
@@ -124,7 +152,7 @@ class DataController: NSObject {
     // MARK: - Core Data Saving support
     
     func saveContext () {
-        let context = persistentContainer.viewContext
+        let context = viewContext
         if context.hasChanges {
             do {
                 try context.save()
