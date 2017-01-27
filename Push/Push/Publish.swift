@@ -30,7 +30,7 @@ extension Network {
         
         alertController.addTextField { (textField) in
             textField.placeholder = "Enter mobile push dictionary"
-            textField.text = "{\"pn_apns\": {\"aps\": {\"alert\": \"Your order is ready for pickup!\",\"badge\": 1,\"payment_info\": {\"credit_card\": 987656789876,\"expiration\": \"0108\"}}},\"pn_gcm\": {\"data\": \"this is my data only for gcm devices\"},\"data_for_all\": {\"info\": \"This is data all non-APNS and non-GCM devices would receive. They would also receive the pn_apns and pn_gcm data.\"}}"
+            textField.text = "{\"pn_apns\": {\"aps\": {\"alert\": \"Your order is ready for pickup!\",\"badge\": 1,\"payment_info\": {\"credit_card\": 987656789876,\"expiration\": \"0108\"}}},\"pn_gcm\": {\"data\": \"this is my data only for gcm devices\"},\"data_for_all\": {\"info\": \"This is data all non-APNS and non-GCM devices would receive. They would also receive the pn_apns and pn_gcm data.\"},\"pn_debug\": true}"
         }
         
         let pushPayloadTextField = alertController.textFields![2]

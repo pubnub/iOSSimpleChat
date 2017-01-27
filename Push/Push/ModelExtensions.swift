@@ -49,6 +49,8 @@ enum PubNubEventType: CoreDataObjectType {
     case status
     case publishStatus
     case pushAuditResult
+    case subscribeStatus
+    case message
     
     var managedObjectType: Event.Type {
         switch self {
@@ -60,6 +62,10 @@ enum PubNubEventType: CoreDataObjectType {
             return PublishStatus.self
         case .pushAuditResult:
             return PushAuditResult.self
+        case .message:
+            return Message.self
+        case .subscribeStatus:
+            return SubscribeStatus.self
         }
     }
     
@@ -68,6 +74,10 @@ enum PubNubEventType: CoreDataObjectType {
             return nil
         }
         switch event {
+        case _ as PNSubscribeStatus:
+            self = .subscribeStatus
+        case _ as PNMessageResult:
+            self = .message
         case _ as PNPublishStatus:
             self = .publishStatus
         case _ as PNStatus:

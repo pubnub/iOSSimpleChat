@@ -52,8 +52,10 @@ class Network: NSObject, PNObjectEventListener {
                 self._user = settingUser
                 oldValue?.removeObserver(self, forKeyPath: #keyPath(User.pushToken), context: &self.networkKVOContext)
                 oldValue?.removeObserver(self, forKeyPath: #keyPath(User.pushChannels), context: &self.networkKVOContext)
+                oldValue?.removeObserver(self, forKeyPath: #keyPath(User.isSubscribingToDebug), context: &self.networkKVOContext)
                 settingUser?.addObserver(self, forKeyPath: #keyPath(User.pushToken), options: [.new, .old, .initial], context: &self.networkKVOContext)
                 settingUser?.addObserver(self, forKeyPath: #keyPath(User.pushChannels), options: [.new, .old, .initial], context: &self.networkKVOContext)
+                settingUser?.addObserver(self, forKeyPath: #keyPath(User.isSubscribingToDebug), options: [.new, .old, .initial], context: &self.networkKVOContext)
                 guard let existingUser = settingUser else {
                     return
                 }
@@ -111,6 +113,12 @@ class Network: NSObject, PNObjectEventListener {
                         finalResult = Set(actualChannels)
                     }
                     self.pushChannels = finalResult
+                }
+            case #keyPath(User.isSubscribingToDebug):
+                print("is subscribing to debug channels")
+                networkContext.perform {
+                    let updatedIsSubscribingToDebugChannels = currentUser.isSubscribingToDebug
+                    self.isSubscribingToDebugChannels = updatedIsSubscribingToDebugChannels
                 }
             default:
                 fatalError("what wrong in KVO?")
@@ -181,6 +189,36 @@ class Network: NSObject, PNObjectEventListener {
         }
     }
     
+    var _isSubscribingToDebugChannels = false
+    var isSubscribingToDebugChannels : Bool {
+        set {
+            var oldValue = false
+            let setItem = DispatchWorkItem(qos: .utility, flags: [.barrier]) {
+                oldValue = self._isSubscribingToDebugChannels
+                self._isSubscribingToDebugChannels = newValue
+                print("isSubscribingToDebugChannels: setItem with oldValue: \(oldValue) newValue: \(newValue)")
+                print("now update push channels subscribes")
+//                self.updatePush(channels: (oldValue, newValue), current: self._pushToken)
+//                self.updatePushDebugChannels(shouldSubscribe: newValue)
+                if newValue {
+                    self.updateDebugSubscription(for: self._pushChannels, with: .add)
+                } else {
+                    self.updateDebugSubscription(for: self._pushChannels, with: .remove)
+                }
+            }
+            networkQueue.async(execute: setItem)
+        }
+        
+        get {
+            var finalIsSubscribingToDebugChannels = false
+            let getItem = DispatchWorkItem(qos: .utility, flags: []) {
+                finalIsSubscribingToDebugChannels = self._isSubscribingToDebugChannels
+            }
+            networkQueue.sync(execute: getItem)
+            return finalIsSubscribingToDebugChannels
+        }
+    }
+    
     var _pushChannels: Set<String>? = nil
     
     var pushChannels: Set<String>? {
@@ -209,6 +247,36 @@ class Network: NSObject, PNObjectEventListener {
     typealias tokens = (oldToken: Data?, newToken: Data?)
     typealias channels = (oldChannels: Set<String>?, newChannels: Set<String>?)
     
+    enum SubscribeDebugOption {
+        case add
+        case remove
+    }
+    
+    func updateDebugSubscription(for pushChannels: Set<String>?, with subscribeDebugOption: SubscribeDebugOption) {
+        guard let actualClient = client else {
+            return
+        }
+
+        guard let actualPushChannelSet = pushChannels else {
+            guard actualClient.isSubscribing else {
+                return
+            }
+            actualClient.unsubscribeFromAll()
+            return
+        }
+        let pushChannelsArray = actualPushChannelSet.map { (channel) -> String in
+            return channel + "-pndebug"
+        }
+        if subscribeDebugOption == .add {
+            actualClient.subscribeToChannels(pushChannelsArray, withPresence: false)
+        } else {
+            guard actualClient.isSubscribing else {
+                return
+            }
+            actualClient.unsubscribeFromChannels(pushChannelsArray, withPresence: false)
+        }
+    }
+    
     func updatePush(tokens: tokens, current channels: Set<String>?) {
         guard let actualChannels = channelsArray(for: channels) else {
             return
@@ -216,7 +284,7 @@ class Network: NSObject, PNObjectEventListener {
         
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let pushEvent = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                let pushEvent = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self._user)
                 print("pushTokenEvent: \(pushEvent.debugDescription)")
                 do {
                     try self.networkContext.save()
@@ -230,15 +298,20 @@ class Network: NSObject, PNObjectEventListener {
         case (nil, nil):
             return
         case let (oldToken, nil) where oldToken != nil:
+            // If we no longer have a token at all, remove all push registrations for old token
             client?.removeAllPushNotificationsFromDeviceWithPushToken(oldToken!, andCompletion: pushCompletionBlock)
         case let (oldToken, newToken):
+            // Maybe skip this guard step?
             guard oldToken != newToken else {
+                print("Token stayed the same, we don't need to adjust push registration")
                 return
             }
             if let existingOldToken = oldToken, oldToken != newToken {
+                // Only remove old token if it's different from the new token
                 client?.removePushNotificationsFromChannels(actualChannels, withDevicePushToken: existingOldToken, andCompletion: pushCompletionBlock)
             }
             if let existingNewToken = newToken {
+                // add new token if it exists (not bad idea to register aggressively just in case this step got missed)
                 client?.addPushNotificationsOnChannels(actualChannels, withDevicePushToken: existingNewToken, andCompletion: pushCompletionBlock)
             }
         }
@@ -250,7 +323,7 @@ class Network: NSObject, PNObjectEventListener {
         }
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let pushEvent = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                let pushEvent = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self._user)
                 print("pushChannelEvent: \(pushEvent.debugDescription)")
                 do {
                     try self.networkContext.save()
@@ -268,11 +341,17 @@ class Network: NSObject, PNObjectEventListener {
                 return
             }
             client?.removePushNotificationsFromChannels(existingOldChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+            if self._isSubscribingToDebugChannels {
+                updateDebugSubscription(for: oldChannels, with: .remove)
+            }
         case let (nil, newChannels) where newChannels != nil:
             guard let existingNewChannels = channelsArray(for: newChannels) else {
                 return
             }
             client?.addPushNotificationsOnChannels(existingNewChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+            if self._isSubscribingToDebugChannels {
+                updateDebugSubscription(for: newChannels, with: .add)
+            }
         case let (oldChannels, newChannels):
             guard oldChannels != newChannels else {
                 print("Don't need to do anything because the channels haven't changed")
@@ -283,9 +362,15 @@ class Network: NSObject, PNObjectEventListener {
             
             if let actualAddingChannels = channelsArray(for: addingChannels), !actualAddingChannels.isEmpty {
                 client?.addPushNotificationsOnChannels(actualAddingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+                if self._isSubscribingToDebugChannels {
+                    updateDebugSubscription(for: addingChannels, with: .add)
+                }
             }
             if let actualRemovingChannels = channelsArray(for: removingChannels), !actualRemovingChannels.isEmpty {
                 client?.removePushNotificationsFromChannels(actualRemovingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+                if self._isSubscribingToDebugChannels {
+                    updateDebugSubscription(for: removingChannels, with: .remove)
+                }
             }
         }
     }
@@ -303,10 +388,29 @@ class Network: NSObject, PNObjectEventListener {
     
     func client(_ client: PubNub, didReceive status: PNStatus) {
         print("\(#function) status: \(status.debugDescription)")
+        self.networkContext.perform {
+            let status = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+            print("status: \(status.debugDescription)")
+            do {
+                try self.networkContext.save()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
     func client(_ client: PubNub, didReceiveMessage message: PNMessageResult) {
         print("\(#function) message: \(message.debugDescription)")
+        self.networkContext.perform {
+            print("creating message core data object")
+            let message = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
+            print("created message: \(message.debugDescription)")
+            do {
+                try self.networkContext.save()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
     func client(_ client: PubNub, didReceivePresenceEvent event: PNPresenceEventResult) {
