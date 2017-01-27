@@ -56,6 +56,12 @@ extension UIAlertController {
         }
         alertController.addAction(subscribeToDebugAction)
         
+        let clearBadgeCountAction = UIAlertAction(title: "Reset application badge count", style: .default) { (action) in
+            PushNotifications.sharedNotifications.clearBadgeCount()
+            handler?(action)
+        }
+        alertController.addAction(clearBadgeCountAction)
+        
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             handler?(action)
         }

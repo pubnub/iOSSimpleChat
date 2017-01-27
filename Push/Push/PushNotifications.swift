@@ -22,6 +22,10 @@ class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
         pushContext.automaticallyMergesChangesFromParent = true
     }
     
+    func clearBadgeCount() {
+        UIApplication.shared.applicationIconBadgeNumber = 0
+    }
+    
     func appDidLaunchOperations(viewController: UIViewController? = nil) {
         UNUserNotificationCenter.current().delegate = self
         UNUserNotificationCenter.current().getNotificationSettings { (settings) in
@@ -57,7 +61,6 @@ class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
     // MARK: - UNUserNotificationCenterDelegate
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("\(#function) notification: \(notification.debugDescription)")
         pushContext.perform {
             let _ = DataController.sharedController.createCoreDataEvent(in: self.pushContext, for: notification, with: DataController.sharedController.fetchCurrentUser(in: self.pushContext))
             do {

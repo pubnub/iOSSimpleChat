@@ -119,7 +119,6 @@ class ConfigurationView: UIView, UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let keyValueItem = dataSource[indexPath]
-        print(keyValueItem.debugDescription)
         
         delegate?.configurationView(self, for: configuration, didSelect: keyValueItem, at: indexPath)
         
