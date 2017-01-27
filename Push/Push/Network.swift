@@ -52,8 +52,10 @@ class Network: NSObject, PNObjectEventListener {
                 self._user = settingUser
                 oldValue?.removeObserver(self, forKeyPath: #keyPath(User.pushToken), context: &self.networkKVOContext)
                 oldValue?.removeObserver(self, forKeyPath: #keyPath(User.pushChannels), context: &self.networkKVOContext)
+                oldValue?.removeObserver(self, forKeyPath: #keyPath(User.isSubscribingToDebug), context: &self.networkKVOContext)
                 settingUser?.addObserver(self, forKeyPath: #keyPath(User.pushToken), options: [.new, .old, .initial], context: &self.networkKVOContext)
                 settingUser?.addObserver(self, forKeyPath: #keyPath(User.pushChannels), options: [.new, .old, .initial], context: &self.networkKVOContext)
+                settingUser?.addObserver(self, forKeyPath: #keyPath(User.isSubscribingToDebug), options: [.new, .old, .initial], context: &self.networkKVOContext)
                 guard let existingUser = settingUser else {
                     return
                 }
@@ -112,6 +114,9 @@ class Network: NSObject, PNObjectEventListener {
                     }
                     self.pushChannels = finalResult
                 }
+            case #keyPath(User.isSubscribingToDebug):
+                print("is subscribing to debug channels")
+                
             default:
                 fatalError("what wrong in KVO?")
             }
@@ -303,10 +308,29 @@ class Network: NSObject, PNObjectEventListener {
     
     func client(_ client: PubNub, didReceive status: PNStatus) {
         print("\(#function) status: \(status.debugDescription)")
+        self.networkContext.perform {
+            let status = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+            print("status: \(status.debugDescription)")
+            do {
+                try self.networkContext.save()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
     func client(_ client: PubNub, didReceiveMessage message: PNMessageResult) {
         print("\(#function) message: \(message.debugDescription)")
+        print("\(#function) status: \(status.debugDescription)")
+        self.networkContext.perform {
+            let message = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
+            print("message: \(message.debugDescription)")
+            do {
+                try self.networkContext.save()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+        }
     }
     
     func client(_ client: PubNub, didReceivePresenceEvent event: PNPresenceEventResult) {
