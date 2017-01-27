@@ -151,8 +151,8 @@ class Network: NSObject, PNObjectEventListener {
     func requestPushChannels(for token: Data) {
         client?.pushNotificationEnabledChannelsForDeviceWithPushToken(token) { (result, status) in
             self.networkContext.perform {
-                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: result, with: self.user)
-                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: result, with: self.user)
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
                 do {
                     try self.networkContext.save()
                 } catch {
@@ -374,7 +374,7 @@ class Network: NSObject, PNObjectEventListener {
     
     func client(_ client: PubNub, didReceive status: PNStatus) {
         self.networkContext.perform {
-            let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+            _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
             do {
                 try self.networkContext.save()
             } catch {
@@ -385,7 +385,7 @@ class Network: NSObject, PNObjectEventListener {
     
     func client(_ client: PubNub, didReceiveMessage message: PNMessageResult) {
         self.networkContext.perform {
-            let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
+            _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
             do {
                 try self.networkContext.save()
             } catch {

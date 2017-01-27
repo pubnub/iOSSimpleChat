@@ -61,9 +61,8 @@ class PushNotifications: NSObject, UNUserNotificationCenterDelegate {
     // MARK: - UNUserNotificationCenterDelegate
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        print("\(#function) notification: \(notification.debugDescription)")
         pushContext.perform {
-            let _ = DataController.sharedController.createCoreDataEvent(in: self.pushContext, for: notification, with: DataController.sharedController.fetchCurrentUser(in: self.pushContext))
+            _ = DataController.sharedController.createCoreDataEvent(in: self.pushContext, for: notification, with: DataController.sharedController.fetchCurrentUser(in: self.pushContext))
             do {
                 try self.pushContext.save()
                 DispatchQueue.main.async {

@@ -25,7 +25,7 @@ extension UIAlertController {
         let oppositeScreenStateTitle = IdleTimer.sharedInstance.screenState.oppositeState.title
         let screenStateActionTitle = "Turn idle timer \(oppositeScreenStateTitle)"
         let screenStateAction = UIAlertAction(title: screenStateActionTitle, style: .default) { (action) in
-            let _ = IdleTimer.sharedInstance.switchScreenState()
+            _ = IdleTimer.sharedInstance.switchScreenState()
             handler?(action)
         }
         alertController.addAction(screenStateAction)
