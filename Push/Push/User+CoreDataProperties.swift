@@ -18,6 +18,7 @@ extension User {
 
     @NSManaged public var identifier: String?
     @NSManaged public var pushToken: Data?
+    @NSManaged public var isSubscribingToDebug: Bool
 //    @NSManaged public var pushChannels: NSSet?
 //    @NSManaged public var results: NSSet?
     @NSManaged public var pushChannels: Set<Channel>?

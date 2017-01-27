@@ -18,6 +18,7 @@ class EventTableViewCell: ManagedObjectTableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         textView.forceAutoLayout()
         textView.isEditable = false
+        textView.isScrollEnabled = false
         contentView.addSubview(textView)
         let widthConstraint = NSLayoutConstraint(item: textView, attribute: .width, relatedBy: .equal, toItem: contentView, attribute: .width, multiplier: 1.0, constant: 0.0)
         let heightConstraint = NSLayoutConstraint(item: textView, attribute: .height, relatedBy: .equal, toItem: contentView, attribute: .height, multiplier: 1.0, constant: 0.0)
