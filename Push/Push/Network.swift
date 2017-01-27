@@ -321,7 +321,6 @@ class Network: NSObject, PNObjectEventListener {
     
     func client(_ client: PubNub, didReceiveMessage message: PNMessageResult) {
         print("\(#function) message: \(message.debugDescription)")
-        print("\(#function) status: \(status.debugDescription)")
         self.networkContext.perform {
             let message = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
             print("message: \(message.debugDescription)")

@@ -42,7 +42,7 @@ extension UIAlertController {
         
         let subscribeToDebugAction = UIAlertAction(title: isSubscribingTitle, style: .default) { (action) in
             DataController.sharedController.performBackgroundTask({ (backgroundContext) in
-                let user = DataController.sharedController.fetchCurrentUser(in: context)
+                let user = DataController.sharedController.fetchCurrentUser(in: backgroundContext)
                 user.isSubscribingToDebug = (!user.isSubscribingToDebug)
                 do {
                     try backgroundContext.save()

@@ -27,7 +27,7 @@ public class Message: Result {
         channel = messageResult.data.channel
         subscription = messageResult.data.subscription
         publisher = messageResult.data.publisher
-        guard let messageObject = messageResult.data.message as? AnyObject? else {
+        guard let messageObject = messageResult.data.message as? AnyObject else {
             message = "Cannot convert message to string"
             return
         }

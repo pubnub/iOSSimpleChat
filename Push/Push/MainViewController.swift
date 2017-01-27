@@ -171,7 +171,9 @@ class MainViewController: UIViewController {
     }
     
     func optionsButtonPressed(sender: UIBarButtonItem) {
-        let optionsAlertController = UIAlertController.optionsAlertController()
+        let optionsAlertController = UIAlertController.optionsAlertController(in: DataController.sharedController.viewContext) { (action) in
+            print("action: \(action.title)")
+        }
         present(optionsAlertController, animated: true)
     }
     
