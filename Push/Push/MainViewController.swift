@@ -116,7 +116,7 @@ class MainViewController: UIViewController {
             fatalError("Couldn't create one color UIImage!")
         }
         pushChannelsButton.setBackgroundImage(pushBackgroundImage, for: .normal)
-//        pushChannelsButton.addTarget(self, action: #selector(pushChannelsButtonPressed(sender:)), for: .touchUpInside)
+        pushChannelsButton.addTarget(self, action: #selector(pushChannelsButtonPressed(sender:)), for: .touchUpInside)
         stackView.addArrangedSubview(pushChannelsButton)
         consoleView = ClientConsoleView(fetchRequest: fetchRequest)
         stackView.addArrangedSubview(consoleView)
@@ -209,7 +209,6 @@ class MainViewController: UIViewController {
     func pushTokenTitle() -> String {
         var finalTitle: String? = nil
         DataController.sharedController.viewContext.performAndWait {
-//            finalTitle = (DataController.sharedController.fetchCurrentUser().pushTokenString ?? self.pushTokenLabelPlaceholder)
             guard let currentPushTokenTitle = DataController.sharedController.fetchCurrentUser().pushTokenString else {
                 finalTitle = self.pushTokenLabelPlaceholder
                 return
@@ -272,6 +271,7 @@ class MainViewController: UIViewController {
                 updatePushChannelsButton()
             case #keyPath(User.pushToken):
                 updatePushTokenLabel()
+                updateConfigButton()
             default:
                 fatalError("what wrong in KVO?")
             }
