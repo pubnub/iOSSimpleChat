@@ -235,15 +235,20 @@ class Network: NSObject, PNObjectEventListener {
         case (nil, nil):
             return
         case let (oldToken, nil) where oldToken != nil:
+            // If we no longer have a token at all, remove all push registrations for old token
             client?.removeAllPushNotificationsFromDeviceWithPushToken(oldToken!, andCompletion: pushCompletionBlock)
         case let (oldToken, newToken):
+            // Maybe skip this guard step?
             guard oldToken != newToken else {
+                print("Token stayed the same, we don't need to adjust push registration")
                 return
             }
             if let existingOldToken = oldToken, oldToken != newToken {
+                // Only remove old token if it's different from the new token
                 client?.removePushNotificationsFromChannels(actualChannels, withDevicePushToken: existingOldToken, andCompletion: pushCompletionBlock)
             }
             if let existingNewToken = newToken {
+                // add new token if it exists (not bad idea to register aggressively just in case this step got missed)
                 client?.addPushNotificationsOnChannels(actualChannels, withDevicePushToken: existingNewToken, andCompletion: pushCompletionBlock)
             }
         }
