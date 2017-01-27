@@ -10,7 +10,7 @@
         <attribute name="creationDate" attributeType="Date" usesScalarValueType="NO" indexed="YES" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="events" inverseEntity="User" syncable="YES"/>
     </entity>
-    <entity name="Message" representedClassName=".Message" parentEntity="Result" syncable="YES">
+    <entity name="Message" representedClassName="Message" parentEntity="Result" syncable="YES">
         <attribute name="channel" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="publisher" optional="YES" attributeType="String" syncable="YES"/>
@@ -47,7 +47,7 @@
         <attribute name="isError" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="stringifiedCategory" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="SubscribeStatus" representedClassName=".SubscribeStatus" parentEntity="Status" syncable="YES">
+    <entity name="SubscribeStatus" representedClassName="SubscribeStatus" parentEntity="Status" syncable="YES">
         <attribute name="channel" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="currentTimetoken" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="lastTimetoken" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
