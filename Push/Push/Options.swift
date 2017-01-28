@@ -25,7 +25,7 @@ extension UIAlertController {
         let oppositeScreenStateTitle = IdleTimer.sharedInstance.screenState.oppositeState.title
         let screenStateActionTitle = "Turn idle timer \(oppositeScreenStateTitle)"
         let screenStateAction = UIAlertAction(title: screenStateActionTitle, style: .default) { (action) in
-            let _ = IdleTimer.sharedInstance.switchScreenState()
+            _ = IdleTimer.sharedInstance.switchScreenState()
             handler?(action)
         }
         alertController.addAction(screenStateAction)
@@ -55,6 +55,12 @@ extension UIAlertController {
             })
         }
         alertController.addAction(subscribeToDebugAction)
+        
+        let clearBadgeCountAction = UIAlertAction(title: "Reset application badge count", style: .default) { (action) in
+            PushNotifications.sharedNotifications.clearBadgeCount()
+            handler?(action)
+        }
+        alertController.addAction(clearBadgeCountAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             handler?(action)

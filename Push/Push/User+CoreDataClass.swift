@@ -52,6 +52,13 @@ public class User: NSManagedObject {
         }
     }
     
+    static func updateUserID(identifier: String?) {
+        guard let existingID = identifier else {
+            return
+        }
+        UserDefaults.standard.set(existingID, forKey: UserIdentifierKey)
+    }
+    
     var pushChannelsArray: [Channel]? {
         return pushChannels?.map { $0 }
     }
@@ -99,7 +106,6 @@ public class User: NSManagedObject {
             defer {
                 context.perform {
                     do {
-                        print("Save push channels change!")
                         try context.save()
                     } catch {
                         fatalError(error.localizedDescription)
@@ -129,7 +135,6 @@ public class User: NSManagedObject {
                 })
                 let channelsSet: Set<Channel> = Set(channelsObjectArray) // we can forcibly unwrap because we checked for channels above
                 if !channelsSet.isEmpty {
-                    print("user: \(currentUser.debugDescription)")
                     let pushChannelsKeyPath = #keyPath(User.pushChannels)
                     currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).union(channelsSet)
                     currentUser.mutableSetValue(forKeyPath: pushChannelsKeyPath).intersect(channelsSet)
@@ -143,7 +148,6 @@ public class User: NSManagedObject {
             defer {
                 context.perform {
                     do {
-                        print("Save push channels change!")
                         try context.save()
                     } catch {
                         fatalError(error.localizedDescription)

@@ -18,6 +18,10 @@ extension User {
 
     @NSManaged public var identifier: String?
     @NSManaged public var pushToken: Data?
+    @NSManaged public var subscribeKey: String?
+    @NSManaged public var publishKey: String?
+    @NSManaged public var origin: String?
+    @NSManaged public var authKey: String?
     @NSManaged public var isSubscribingToDebug: Bool
 //    @NSManaged public var pushChannels: NSSet?
 //    @NSManaged public var results: NSSet?

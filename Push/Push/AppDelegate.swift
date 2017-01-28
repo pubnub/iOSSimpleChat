@@ -25,7 +25,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         } else {
             viewContext.performAndWait {
                 let user = User(context: viewContext)
-                print("Create user for identifier: \(userID)")
                 user.identifier = userID
                 do {
                     try viewContext.save()
@@ -81,9 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         DataController.sharedController.performBackgroundTask { (context) in
-            print("background task")
             let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
-            print("received push token: \(deviceToken.debugDescription)")
             currentUser.pushToken = deviceToken
             do {
                 try context.save()
@@ -92,14 +89,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
     }
-    
-    func application(_ application: UIApplication,
-                     didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("didFail! with error: \(error)")
-    }
-    
-//    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-//    }
 
 }
 

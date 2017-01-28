@@ -27,11 +27,11 @@ public class Message: Result {
         channel = messageResult.data.channel
         subscription = messageResult.data.subscription
         publisher = messageResult.data.publisher
-        guard let messageObject = messageResult.data.message as? AnyObject else {
-            message = "Cannot convert message to string"
+        guard let actualMessage = messageResult.data.message else {
+            message = "There is not message"
             return
         }
-        message = messageObject.debugDescription
+        message = (actualMessage as AnyObject).debugDescription
     }
     
     public override var textViewDisplayText: String {
