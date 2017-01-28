@@ -52,6 +52,13 @@ public class User: NSManagedObject {
         }
     }
     
+    static func updateUserID(identifier: String?) {
+        guard let existingID = identifier else {
+            return
+        }
+        UserDefaults.standard.set(existingID, forKey: UserIdentifierKey)
+    }
+    
     var pushChannelsArray: [Channel]? {
         return pushChannels?.map { $0 }
     }

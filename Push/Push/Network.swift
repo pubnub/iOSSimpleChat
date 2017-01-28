@@ -10,9 +10,6 @@ import UIKit
 import CoreData
 import PubNub
 
-fileprivate let publishKey = "pub-c-a9dc3f6b-98f7-4b44-97e6-4ea5a705ab2d"
-fileprivate let subscribeKey = "sub-c-93f47f52-d6b4-11e6-9102-0619f8945a4f"
-
 @objc
 class Network: NSObject, PNObjectEventListener {
     
@@ -20,20 +17,37 @@ class Network: NSObject, PNObjectEventListener {
     
     private let networkQueue = DispatchQueue(label: "Network", qos: .utility, attributes: [.concurrent])
     
-    func config(with identifier: String) -> PNConfiguration {
-        let config = PNConfiguration(publishKey: publishKey, subscribeKey: subscribeKey)
-        config.uuid = identifier
-        return config
+//    func config(with identifier: String, pubKey: String, subKey: String) -> PNConfiguration {
+//        let config = PNConfiguration(publishKey: pubKey, subscribeKey: subKey)
+//        config.uuid = identifier
+//        return config
+//    }
+    
+    var client: PubNub? {
+        didSet {
+            guard let existingClient = client else {
+                return
+            }
+            networkContext.perform {
+                self.user?.publishKey = existingClient.currentConfiguration().publishKey
+                self.user?.subscribeKey = existingClient.currentConfiguration().subscribeKey
+                self.user?.identifier = existingClient.currentConfiguration().uuid
+                self.user?.authKey = existingClient.currentConfiguration().authKey
+                self.user?.origin = existingClient.currentConfiguration().origin
+                if self.networkContext.hasChanges {
+                    User.updateUserID(identifier: self.user?.identifier)
+                    do {
+                        try self.networkContext.save()
+                    } catch {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
+        }
     }
     
-    @objc
-    dynamic var client: PubNub?
-    
     public var currentConfiguration: PNConfiguration {
-        guard let existingConfiguration = client?.currentConfiguration() else {
-            return config(with: User.userID)
-        }
-        return existingConfiguration
+        return client!.currentConfiguration()
     }
     
     private var _user: User?
@@ -59,15 +73,14 @@ class Network: NSObject, PNObjectEventListener {
                 guard let existingUser = settingUser else {
                     return
                 }
-                var userID: String? = nil
+                var config: PNConfiguration? = nil
                 self.networkContext.performAndWait {
-                    userID = existingUser.identifier!
+                    config = PNConfiguration(publishKey: existingUser.publishKey!, subscribeKey: existingUser.subscribeKey!)
+                    config?.uuid = existingUser.identifier!
+                    config?.authKey = existingUser.authKey
+                    config?.origin = existingUser.origin!
                 }
-                guard let pubNubUUID = userID else {
-                    fatalError("How did we not get an identifier from existingUser: \(existingUser)")
-                }
-                let configuration = self.config(with: pubNubUUID) // can forcibly unwrap, we
-                self.client = PubNub.clientWithConfiguration(configuration, callbackQueue: self.networkQueue)
+                self.client = PubNub.clientWithConfiguration(config!, callbackQueue: self.networkQueue)
                 self.client?.addListener(self)
             }
             networkQueue.async(execute: setItem)
