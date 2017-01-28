@@ -61,6 +61,12 @@ class ConfigurationView: UIView, UICollectionViewDataSource, UICollectionViewDel
     
     private let collectionView: UICollectionView!
     
+    dynamic var hasChanges = false
+    
+    func resetChanges() {
+        hasChanges = false
+    }
+    
     required init(frame: CGRect, config: PNConfiguration) {
         self.configuration = config
         let layout = UICollectionViewFlowLayout()
@@ -119,7 +125,8 @@ class ConfigurationView: UIView, UICollectionViewDataSource, UICollectionViewDel
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let keyValueItem = dataSource[indexPath]
-        print(keyValueItem.debugDescription)
+        
+        hasChanges = true
         
         delegate?.configurationView(self, for: configuration, didSelect: keyValueItem, at: indexPath)
         

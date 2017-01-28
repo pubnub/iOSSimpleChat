@@ -10,9 +10,6 @@ import UIKit
 import CoreData
 import PubNub
 
-fileprivate let publishKey = "pub-c-a9dc3f6b-98f7-4b44-97e6-4ea5a705ab2d"
-fileprivate let subscribeKey = "sub-c-93f47f52-d6b4-11e6-9102-0619f8945a4f"
-
 @objc
 class Network: NSObject, PNObjectEventListener {
     
@@ -20,20 +17,37 @@ class Network: NSObject, PNObjectEventListener {
     
     private let networkQueue = DispatchQueue(label: "Network", qos: .utility, attributes: [.concurrent])
     
-    func config(with identifier: String) -> PNConfiguration {
-        let config = PNConfiguration(publishKey: publishKey, subscribeKey: subscribeKey)
-        config.uuid = identifier
-        return config
+//    func config(with identifier: String, pubKey: String, subKey: String) -> PNConfiguration {
+//        let config = PNConfiguration(publishKey: pubKey, subscribeKey: subKey)
+//        config.uuid = identifier
+//        return config
+//    }
+    
+    var client: PubNub? {
+        didSet {
+            guard let existingClient = client else {
+                return
+            }
+            networkContext.perform {
+                self.user?.publishKey = existingClient.currentConfiguration().publishKey
+                self.user?.subscribeKey = existingClient.currentConfiguration().subscribeKey
+                self.user?.identifier = existingClient.currentConfiguration().uuid
+                self.user?.authKey = existingClient.currentConfiguration().authKey
+                self.user?.origin = existingClient.currentConfiguration().origin
+                if self.networkContext.hasChanges {
+                    User.updateUserID(identifier: self.user?.identifier)
+                    do {
+                        try self.networkContext.save()
+                    } catch {
+                        fatalError(error.localizedDescription)
+                    }
+                }
+            }
+        }
     }
     
-    @objc
-    dynamic var client: PubNub?
-    
     public var currentConfiguration: PNConfiguration {
-        guard let existingConfiguration = client?.currentConfiguration() else {
-            return config(with: User.userID)
-        }
-        return existingConfiguration
+        return client!.currentConfiguration()
     }
     
     private var _user: User?
@@ -59,15 +73,14 @@ class Network: NSObject, PNObjectEventListener {
                 guard let existingUser = settingUser else {
                     return
                 }
-                var userID: String? = nil
+                var config: PNConfiguration? = nil
                 self.networkContext.performAndWait {
-                    userID = existingUser.identifier!
+                    config = PNConfiguration(publishKey: existingUser.publishKey!, subscribeKey: existingUser.subscribeKey!)
+                    config?.uuid = existingUser.identifier!
+                    config?.authKey = existingUser.authKey
+                    config?.origin = existingUser.origin!
                 }
-                guard let pubNubUUID = userID else {
-                    fatalError("How did we not get an identifier from existingUser: \(existingUser)")
-                }
-                let configuration = self.config(with: pubNubUUID) // can forcibly unwrap, we
-                self.client = PubNub.clientWithConfiguration(configuration, callbackQueue: self.networkQueue)
+                self.client = PubNub.clientWithConfiguration(config!, callbackQueue: self.networkQueue)
                 self.client?.addListener(self)
             }
             networkQueue.async(execute: setItem)
@@ -115,7 +128,6 @@ class Network: NSObject, PNObjectEventListener {
                     self.pushChannels = finalResult
                 }
             case #keyPath(User.isSubscribingToDebug):
-                print("is subscribing to debug channels")
                 networkContext.perform {
                     let updatedIsSubscribingToDebugChannels = currentUser.isSubscribingToDebug
                     self.isSubscribingToDebugChannels = updatedIsSubscribingToDebugChannels
@@ -123,7 +135,6 @@ class Network: NSObject, PNObjectEventListener {
             default:
                 fatalError("what wrong in KVO?")
             }
-            print("======================================")
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
@@ -153,8 +164,8 @@ class Network: NSObject, PNObjectEventListener {
     func requestPushChannels(for token: Data) {
         client?.pushNotificationEnabledChannelsForDeviceWithPushToken(token) { (result, status) in
             self.networkContext.perform {
-                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: result, with: self.user)
-                let _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: result, with: self.user)
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
                 do {
                     try self.networkContext.save()
                 } catch {
@@ -170,10 +181,8 @@ class Network: NSObject, PNObjectEventListener {
         set {
             var oldValue: Data? = nil
             let setItem = DispatchWorkItem(qos: .utility, flags: [.barrier]) {
-                print("pushToken: setItem")
                 oldValue = self._pushToken
                 self._pushToken = newValue
-                print("now update push token with \(newValue)")
                 self.updatePush(tokens: (oldValue, newValue), current: self._pushChannels)
             }
             networkQueue.async(execute: setItem)
@@ -192,14 +201,8 @@ class Network: NSObject, PNObjectEventListener {
     var _isSubscribingToDebugChannels = false
     var isSubscribingToDebugChannels : Bool {
         set {
-            var oldValue = false
             let setItem = DispatchWorkItem(qos: .utility, flags: [.barrier]) {
-                oldValue = self._isSubscribingToDebugChannels
                 self._isSubscribingToDebugChannels = newValue
-                print("isSubscribingToDebugChannels: setItem with oldValue: \(oldValue) newValue: \(newValue)")
-                print("now update push channels subscribes")
-//                self.updatePush(channels: (oldValue, newValue), current: self._pushToken)
-//                self.updatePushDebugChannels(shouldSubscribe: newValue)
                 if newValue {
                     self.updateDebugSubscription(for: self._pushChannels, with: .add)
                 } else {
@@ -227,8 +230,6 @@ class Network: NSObject, PNObjectEventListener {
             let setItem = DispatchWorkItem(qos: .utility, flags: [.barrier]) {
                 oldValue = self._pushChannels
                 self._pushChannels = newValue
-                print("pushChannels: setItem with oldValue: \(oldValue) newValue: \(newValue)")
-                print("now update push channels")
                 self.updatePush(channels: (oldValue, newValue), current: self._pushToken)
             }
             networkQueue.async(execute: setItem)
@@ -284,8 +285,7 @@ class Network: NSObject, PNObjectEventListener {
         
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let pushEvent = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self._user)
-                print("pushTokenEvent: \(pushEvent.debugDescription)")
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self._user)
                 do {
                     try self.networkContext.save()
                 } catch {
@@ -323,8 +323,7 @@ class Network: NSObject, PNObjectEventListener {
         }
         let pushCompletionBlock: PNPushNotificationsStateModificationCompletionBlock = { (status) in
             self.networkContext.perform {
-                let pushEvent = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self._user)
-                print("pushChannelEvent: \(pushEvent.debugDescription)")
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self._user)
                 do {
                     try self.networkContext.save()
                 } catch {
@@ -387,10 +386,8 @@ class Network: NSObject, PNObjectEventListener {
     // MARK: - PNObjectEventListener
     
     func client(_ client: PubNub, didReceive status: PNStatus) {
-        print("\(#function) status: \(status.debugDescription)")
         self.networkContext.perform {
-            let status = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
-            print("status: \(status.debugDescription)")
+            _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
             do {
                 try self.networkContext.save()
             } catch {
@@ -400,21 +397,14 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     func client(_ client: PubNub, didReceiveMessage message: PNMessageResult) {
-        print("\(#function) message: \(message.debugDescription)")
         self.networkContext.perform {
-            print("creating message core data object")
-            let message = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
-            print("created message: \(message.debugDescription)")
+            _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
             do {
                 try self.networkContext.save()
             } catch {
                 fatalError(error.localizedDescription)
             }
         }
-    }
-    
-    func client(_ client: PubNub, didReceivePresenceEvent event: PNPresenceEventResult) {
-        print("\(#function) event: \(event.debugDescription)")
     }
 
 }
