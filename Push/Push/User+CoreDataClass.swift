@@ -10,14 +10,22 @@ import Foundation
 import CoreData
 import PubNub
 
-let UserIdentifierKey = "UserIdentifierKey"
+fileprivate let defaultPublishKey = "pub-c-a9dc3f6b-98f7-4b44-97e6-4ea5a705ab2d"
+fileprivate let defaultSubscribeKey = "sub-c-93f47f52-d6b4-11e6-9102-0619f8945a4f"
+fileprivate let UserIdentifierKey = "UserIdentifierKey"
 
 @objc(User)
 public class User: NSManagedObject {
     
+    static var defaultConfiguration: PNConfiguration {
+        return PNConfiguration(publishKey: defaultPublishKey, subscribeKey: defaultSubscribeKey)
+    }
+    
     public override func awakeFromInsert() {
         super.awakeFromInsert()
         identifier = UUID().uuidString
+        subscribeKey = defaultSubscribeKey
+        publishKey = defaultPublishKey
     }
     
     func removeAllResults(in context: NSManagedObjectContext? = nil) {

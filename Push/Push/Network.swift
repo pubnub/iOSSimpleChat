@@ -23,17 +23,25 @@ class Network: NSObject, PNObjectEventListener {
 //        return config
 //    }
     
-    var client: PubNub? {
-        didSet {
-            guard let existingClient = client else {
-                return
+    func updateClient(with configuration: PNConfiguration, completion: ((PubNub) -> Swift.Void)? = nil) {
+        client.copyWithConfiguration(configuration, callbackQueue: networkQueue) { (updatedClient) in
+            self.client = updatedClient
+            DispatchQueue.main.async {
+                completion?(updatedClient)
             }
+        }
+    }
+    
+    var client: PubNub {
+        didSet {
+            print("\(#function) client: \(client.debugDescription)")
+            let configuredConfig = currentConfiguration
             networkContext.perform {
-                self.user?.publishKey = existingClient.currentConfiguration().publishKey
-                self.user?.subscribeKey = existingClient.currentConfiguration().subscribeKey
-                self.user?.identifier = existingClient.currentConfiguration().uuid
-                self.user?.authKey = existingClient.currentConfiguration().authKey
-                self.user?.origin = existingClient.currentConfiguration().origin
+                self.user?.publishKey = configuredConfig.publishKey
+                self.user?.subscribeKey = configuredConfig.subscribeKey
+                self.user?.identifier = configuredConfig.uuid
+                self.user?.authKey = configuredConfig.authKey
+                self.user?.origin = configuredConfig.origin
                 if self.networkContext.hasChanges {
                     User.updateUserID(identifier: self.user?.identifier)
                     do {
@@ -47,7 +55,7 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     public var currentConfiguration: PNConfiguration {
-        return client!.currentConfiguration()
+        return client.currentConfiguration()
     }
     
     private var _user: User?
@@ -81,7 +89,7 @@ class Network: NSObject, PNObjectEventListener {
                     config?.origin = existingUser.origin!
                 }
                 self.client = PubNub.clientWithConfiguration(config!, callbackQueue: self.networkQueue)
-                self.client?.addListener(self)
+                self.client.addListener(self)
             }
             networkQueue.async(execute: setItem)
         }
@@ -145,7 +153,10 @@ class Network: NSObject, PNObjectEventListener {
     static let sharedNetwork = Network()
     
     
+    
     override init() {
+        let config = User.defaultConfiguration
+        self.client = PubNub.clientWithConfiguration(config)
         let context = DataController.sharedController.newBackgroundContext()
         context.automaticallyMergesChangesFromParent = true
         self.networkContext = context
@@ -162,7 +173,7 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     func requestPushChannels(for token: Data) {
-        client?.pushNotificationEnabledChannelsForDeviceWithPushToken(token) { (result, status) in
+        client.pushNotificationEnabledChannelsForDeviceWithPushToken(token) { (result, status) in
             self.networkContext.perform {
                 _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: result, with: self.user)
                 _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
@@ -254,27 +265,23 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     func updateDebugSubscription(for pushChannels: Set<String>?, with subscribeDebugOption: SubscribeDebugOption) {
-        guard let actualClient = client else {
-            return
-        }
-
         guard let actualPushChannelSet = pushChannels else {
-            guard actualClient.isSubscribing else {
+            guard client.isSubscribing else {
                 return
             }
-            actualClient.unsubscribeFromAll()
+            client.unsubscribeFromAll()
             return
         }
         let pushChannelsArray = actualPushChannelSet.map { (channel) -> String in
             return channel + "-pndebug"
         }
         if subscribeDebugOption == .add {
-            actualClient.subscribeToChannels(pushChannelsArray, withPresence: false)
+            client.subscribeToChannels(pushChannelsArray, withPresence: false)
         } else {
-            guard actualClient.isSubscribing else {
+            guard client.isSubscribing else {
                 return
             }
-            actualClient.unsubscribeFromChannels(pushChannelsArray, withPresence: false)
+            client.unsubscribeFromChannels(pushChannelsArray, withPresence: false)
         }
     }
     
@@ -299,7 +306,7 @@ class Network: NSObject, PNObjectEventListener {
             return
         case let (oldToken, nil) where oldToken != nil:
             // If we no longer have a token at all, remove all push registrations for old token
-            client?.removeAllPushNotificationsFromDeviceWithPushToken(oldToken!, andCompletion: pushCompletionBlock)
+            client.removeAllPushNotificationsFromDeviceWithPushToken(oldToken!, andCompletion: pushCompletionBlock)
         case let (oldToken, newToken):
             // Maybe skip this guard step?
             guard oldToken != newToken else {
@@ -308,11 +315,11 @@ class Network: NSObject, PNObjectEventListener {
             }
             if let existingOldToken = oldToken, oldToken != newToken {
                 // Only remove old token if it's different from the new token
-                client?.removePushNotificationsFromChannels(actualChannels, withDevicePushToken: existingOldToken, andCompletion: pushCompletionBlock)
+                client.removePushNotificationsFromChannels(actualChannels, withDevicePushToken: existingOldToken, andCompletion: pushCompletionBlock)
             }
             if let existingNewToken = newToken {
                 // add new token if it exists (not bad idea to register aggressively just in case this step got missed)
-                client?.addPushNotificationsOnChannels(actualChannels, withDevicePushToken: existingNewToken, andCompletion: pushCompletionBlock)
+                client.addPushNotificationsOnChannels(actualChannels, withDevicePushToken: existingNewToken, andCompletion: pushCompletionBlock)
             }
         }
     }
@@ -339,7 +346,7 @@ class Network: NSObject, PNObjectEventListener {
             guard let existingOldChannels = channelsArray(for: oldChannels) else {
                 return
             }
-            client?.removePushNotificationsFromChannels(existingOldChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+            client.removePushNotificationsFromChannels(existingOldChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
             if self._isSubscribingToDebugChannels {
                 updateDebugSubscription(for: oldChannels, with: .remove)
             }
@@ -347,7 +354,7 @@ class Network: NSObject, PNObjectEventListener {
             guard let existingNewChannels = channelsArray(for: newChannels) else {
                 return
             }
-            client?.addPushNotificationsOnChannels(existingNewChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+            client.addPushNotificationsOnChannels(existingNewChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
             if self._isSubscribingToDebugChannels {
                 updateDebugSubscription(for: newChannels, with: .add)
             }
@@ -360,13 +367,13 @@ class Network: NSObject, PNObjectEventListener {
             let removingChannels = oldChannels!.subtracting(newChannels!)
             
             if let actualAddingChannels = channelsArray(for: addingChannels), !actualAddingChannels.isEmpty {
-                client?.addPushNotificationsOnChannels(actualAddingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+                client.addPushNotificationsOnChannels(actualAddingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
                 if self._isSubscribingToDebugChannels {
                     updateDebugSubscription(for: addingChannels, with: .add)
                 }
             }
             if let actualRemovingChannels = channelsArray(for: removingChannels), !actualRemovingChannels.isEmpty {
-                client?.removePushNotificationsFromChannels(actualRemovingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
+                client.removePushNotificationsFromChannels(actualRemovingChannels, withDevicePushToken: actualToken, andCompletion: pushCompletionBlock)
                 if self._isSubscribingToDebugChannels {
                     updateDebugSubscription(for: removingChannels, with: .remove)
                 }
