@@ -13,11 +13,11 @@ import CoreData
 extension Network {
     
     var pubKeyString: String? {
-        return client?.currentConfiguration().publishKey
+        return currentConfiguration.publishKey
     }
     
     var subKeyString: String? {
-        return client?.currentConfiguration().subscribeKey
+        return currentConfiguration.subscribeKey
     }
     
     

@@ -92,10 +92,13 @@ class ConfigurationViewController: UIViewController, ConfigurationViewDelegate {
     // MARK: - Actions
     
     func updateButtonPressed(sender: UIBarButtonItem) {
-        Network.sharedNetwork.client?.copyWithConfiguration(configuration, completion: { (updatedClient) in
-            Network.sharedNetwork.client = updatedClient
+//        Network.sharedNetwork.client.copyWithConfiguration(configuration, completion: { (updatedClient) in
+//            Network.sharedNetwork.client = updatedClient
+//            self.configurationView?.resetChanges()
+//        })
+        Network.sharedNetwork.updateClient(with: configuration) { (_) in
             self.configurationView?.resetChanges()
-        })
+        }
     }
     
     func updateUpdateButton() {
