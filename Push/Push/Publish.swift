@@ -45,7 +45,7 @@ extension Network {
         }
         
         let publishAction = UIAlertAction(title: "Publish", style: .destructive) { (action) in
-            self.client?.publish(payloadTextField.text, toChannel: channelsTextField.text!, mobilePushPayload: finalPushPayload, withCompletion: { (status) in
+            self.client.publish(payloadTextField.text, toChannel: channelsTextField.text!, mobilePushPayload: finalPushPayload, withCompletion: { (status) in
                 self.networkContext.perform {
                     _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
                     do {

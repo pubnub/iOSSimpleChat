@@ -61,9 +61,9 @@
         <attribute name="identifier" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="isSubscribingToDebug" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="origin" attributeType="String" defaultValueString="ps.pndsn.com" syncable="YES"/>
-        <attribute name="publishKey" attributeType="String" defaultValueString="pub-c-a9dc3f6b-98f7-4b44-97e6-4ea5a705ab2d" syncable="YES"/>
+        <attribute name="publishKey" attributeType="String" syncable="YES"/>
         <attribute name="pushToken" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="subscribeKey" attributeType="String" defaultValueString="sub-c-93f47f52-d6b4-11e6-9102-0619f8945a4f" syncable="YES"/>
+        <attribute name="subscribeKey" attributeType="String" syncable="YES"/>
         <relationship name="events" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Event" inverseName="user" inverseEntity="Event" syncable="YES"/>
         <relationship name="pushChannels" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Channel" inverseName="user" inverseEntity="Channel" syncable="YES"/>
     </entity>

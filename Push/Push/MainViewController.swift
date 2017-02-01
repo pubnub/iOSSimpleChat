@@ -68,7 +68,12 @@ class MainViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        updateConfigButton()
+        Network.sharedNetwork.addObserver(self, forKeyPath: #keyPath(Network.client), options: [.new, .old, .initial], context: &mainViewContext)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        Network.sharedNetwork.removeObserver(self, forKeyPath: #keyPath(Network.client), context: &mainViewContext)
     }
 
     override func viewDidLoad() {
@@ -131,8 +136,6 @@ class MainViewController: UIViewController {
 //        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .done, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(optionsButtonPressed(sender:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Publish", style: .plain, target: self, action: #selector(publishButtonPressed(sender:)))
-        
-        updateConfigButton()
     }
 
     override func didReceiveMemoryWarning() {
@@ -269,6 +272,7 @@ class MainViewController: UIViewController {
                 updatePushChannelsButton()
             case #keyPath(User.pushToken):
                 updatePushTokenLabel()
+            case #keyPath(Network.client):
                 updateConfigButton()
             default:
                 fatalError("what wrong in KVO?")
