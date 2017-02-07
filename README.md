@@ -1,17 +1,9 @@
-# iOSPush
+# iOSSimpleChat
 
-This app is a debug tool for developing iOS applications using [PubNub Push](https://www.pubnub.com/solutions/push-notifications/). It is used internally and is now available for all developers. These links have more information about getting started with PubNub Push in [Objective-C](https://www.pubnub.com/docs/ios-objective-c/mobile-gateway-sdk-v4) and [Swift](https://www.pubnub.com/docs/swift/mobile-gateway).
+This app is a simple demo for showing the power of developing iOS applications using [PubNub](https://www.pubnub.com/). These links have more information about getting started with PubNub on iOS in [Objective-C](https://www.pubnub.com/docs/ios-objective-c/ and [Swift](https://www.pubnub.com/docs/swift/).
 
 ## Features
-* Handles requesting and storing device push tokens
-* Properly adds and removes device push tokens from PubNub channels
-* Publishes messages via PubNub (with sample APNS formats)
-* Can automatically subscribe to "-pndebug" channels to track PubNub push debug messages
-* Can fetch all channels for current device token
-* Works with provided debug pub and sub keys
-* Configurable, persisted PubNub client
-* Can keep screen awake to ensure realtime logging
-* Stores all results from actions unless reset by user
+* Simple chat
 
 ## Requirements
 
@@ -38,7 +30,7 @@ After provisioning and uploading to PubNub, you should have an account page that
 
 ### More Information
 
-For troubleshooting with push, please try [our support article](https://support.pubnub.com/support/discussions/topics/14000006344) or contact us at support@pubnub.com
+For troubleshooting with this app, please contact us at support@pubnub.com
 
 ## Tasks
 

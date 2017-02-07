@@ -1,5 +1,5 @@
 PODS:
-  - IdleTimer (0.5.0)
+  - IdleTimer (0.8.0)
   - PubNub (4.5.13):
     - PubNub/Core (= 4.5.13)
   - PubNub/Core (4.5.13)
@@ -9,9 +9,9 @@ DEPENDENCIES:
   - PubNub
 
 SPEC CHECKSUMS:
-  IdleTimer: 979cdfb7bb08a49fe185d651b7da5e23c978d43d
+  IdleTimer: e38c59b6b7dca0d000901dfccbe0be7906e09b60
   PubNub: 53711c37f9bcd8f927f154ca91774910a6b552ed
 
 PODFILE CHECKSUM: 76c3064786ad05f18cbcd1b09666d59b0cbc9dd2
 
-COCOAPODS: 1.2.0.beta.3
+COCOAPODS: 1.2.0
