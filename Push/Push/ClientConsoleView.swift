@@ -10,11 +10,18 @@ import UIKit
 import PubNub
 import CoreData
 
-class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControllerDelegate {
+protocol ClientConsoleViewDelegate: NSObjectProtocol {
+    // func scrollViewDidScroll(_ scrollView: UIScrollView)
+    func consoleViewDidMove(_ consoleView: ClientConsoleView)
+}
+
+class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControllerDelegate, UITableViewDelegate, UIScrollViewDelegate {
     
     let tableView: UITableView
     let fetchRequest: NSFetchRequest<Event>
     let fetchedResultsController: NSFetchedResultsController<Event>
+    
+    weak var delegate: ClientConsoleViewDelegate?
     
     required init(fetchRequest: NSFetchRequest<Event>) {
         self.tableView = UITableView(frame: .zero, style: .plain)
@@ -24,6 +31,7 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         fetchedResultsController.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = 150.0
+        tableView.delegate = self
         tableView.forceAutoLayout()
 //        tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier())
         tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier())
@@ -110,7 +118,13 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         let sectionInfo = sections[section]
         return sectionInfo.numberOfObjects
     }
+    
+    // MARK: - UIScrollViewDelegate
 
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        delegate?.consoleViewDidMove(self)
+    }
+    
     // MARK: - NSFetchedResultsControllerDelegate
     
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {

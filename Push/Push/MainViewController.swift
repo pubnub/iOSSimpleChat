@@ -10,7 +10,19 @@ import UIKit
 import PubNub
 import CoreData
 
-class MainViewController: UIViewController, UITextFieldDelegate {
+class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleViewDelegate {
+    
+    class ProfileView: UIView {
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+        }
+        
+        required init?(coder aDecoder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+        
+        
+    }
     
     private var mainViewContext = 0
         
@@ -139,6 +151,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(optionsButtonPressed(sender:)))
         view.setNeedsLayout()
         consoleView.scrollToBottom()
+        consoleView.delegate = self
     }
     
     func optionsButtonPressed(sender: UIBarButtonItem) {
@@ -173,6 +186,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         currentUser = nil
+        inputAccessoryView?.resignFirstResponder()
     }
     
     deinit {
@@ -202,5 +216,11 @@ class MainViewController: UIViewController, UITextFieldDelegate {
 //            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
 //        }
 //    }
+    
+    // MARK: - ClientConsoleViewDelegate
+    
+    func consoleViewDidMove(_ consoleView: ClientConsoleView) {
+        inputAccessoryView?.resignFirstResponder()
+    }
 
 }
