@@ -19,7 +19,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
     let fetchRequest: NSFetchRequest<Event> = {
         let request: NSFetchRequest<Event> = Event.fetchRequest()
         request.predicate = NSPredicate(format: "self.entity == %@", Message.entity())
-        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Event.creationDate), ascending: false)
+        let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Event.creationDate), ascending: true)
         request.sortDescriptors = [creationDateSortDescriptor]
         return request
     }()
@@ -56,13 +56,15 @@ class MainViewController: UIViewController, UITextFieldDelegate {
     
     internal lazy var customAccessoryView: PublishInputAccessoryView = {
         let bounds = UIScreen.main.bounds
-        let frame = CGRect(x: 0, y: 0, width: bounds.width, height: 50.0)
+        let frame = CGRect(x: 0, y: 0, width: bounds.width, height: self.inputAccessoryHeight)
         let publishView = PublishInputAccessoryView(target: self, action: #selector(publishButtonTapped(sender:)), frame: frame)
         publishView.delegate = self
         return publishView
     }()
     
     var consoleView: ClientConsoleView!
+    
+    let inputAccessoryHeight = CGFloat(integerLiteral: 50)
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -71,10 +73,10 @@ class MainViewController: UIViewController, UITextFieldDelegate {
         if let navBarHeight = navigationController?.navigationBar.frame.height {
             topPadding += navBarHeight
         }
-        let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
+        let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding - inputAccessoryHeight)
         stackView.frame = stackViewFrame
         view.frame = bounds
-        let accessorySize = CGSize(width: bounds.size.width, height: 100.0)
+        let accessorySize = CGSize(width: bounds.size.width, height: inputAccessoryHeight)
 //        accessoryView.frame = CGRect(origin: bounds.origin, size: accessorySize)
     }
     
@@ -113,7 +115,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
 
         // Do any additional setup after loading the view.
         navigationItem.title = "Push!"
-        
+        view.backgroundColor = .white
         colorSegmentedControl = ColorSegmentedControl()
         stackView.addArrangedSubview(colorSegmentedControl)
         colorSegmentedControl.forceAutoLayout()
@@ -131,6 +133,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Profile", style: .done, target: self, action: #selector(updateUserButtonPressed(sender:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(optionsButtonPressed(sender:)))
         view.setNeedsLayout()
+        consoleView.scrollToBottom()
     }
     
     func optionsButtonPressed(sender: UIBarButtonItem) {

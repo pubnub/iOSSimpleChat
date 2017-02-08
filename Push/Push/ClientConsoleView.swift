@@ -71,6 +71,15 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
             eventCell.update(with: update)
         }
     }
+    
+    func scrollToBottom(animated: Bool = false) {
+        guard let sectionCount = fetchedResultsController.sections?.count, let lastSection = fetchedResultsController.sections?[sectionCount - 1] else {
+            return
+        }
+        let lastRow = lastSection.numberOfObjects
+        let lastIndexPath = IndexPath(row: lastRow - 1, section: sectionCount - 1)
+        tableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: animated)
+    }
 
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -121,7 +130,13 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
-            tableView.insertRows(at: [newIndexPath!], with: .automatic)
+            let insertedIndexPath = newIndexPath!
+            tableView.insertRows(at: [insertedIndexPath], with: .automatic)
+            if insertedIndexPath.row == (controller.sections![insertedIndexPath.section].numberOfObjects - 1) {
+                DispatchQueue.main.async {
+                    self.tableView.scrollToRow(at: insertedIndexPath, at: .bottom, animated: true)
+                }
+            }
         case .delete:
             tableView.deleteRows(at: [indexPath!], with: .automatic)
         case .update:

@@ -244,7 +244,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
         let context = DataController.sharedController.viewContext
         context.perform {
-            self.currentUser?.thumbnail = image
+            DataController.sharedController.currentUser?.thumbnail = image
             DataController.sharedController.save(context: context)
         }
     }
