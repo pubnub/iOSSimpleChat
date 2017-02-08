@@ -6,7 +6,7 @@
 //  Copyright © 2017 PubNub. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreData
 
 
@@ -23,11 +23,12 @@ extension User {
     @NSManaged public var origin: String?
     @NSManaged public var authKey: String?
     @NSManaged public var isSubscribingToDebug: Bool
-//    @NSManaged public var pushChannels: NSSet?
-//    @NSManaged public var results: NSSet?
     @NSManaged public var pushChannels: Set<Channel>?
     @NSManaged public var events: Set<Event>?
-
+    @NSManaged public var name: String?
+    @NSManaged public var thumbnail: UIImage?
+    @NSManaged public var showDebug: Bool
+    @NSManaged public var rawBackgroundColor: Int16
 }
 
 // MARK: Generated accessors for pushChannels

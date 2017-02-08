@@ -10,27 +10,55 @@ import UIKit
 import PubNub
 import CoreData
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, UITextFieldDelegate {
     
     private var mainViewContext = 0
         
     var stackView: UIStackView!
-    var pushTokenLabel: UILabel!
-    var pushChannelsButton: UIButton!
-    var clientConfigurationButton: UIButton!
-    var pushChannelsAuditButton: UIButton!
-    let pushChannelsAuditButtonTitle = "Get push channels for token"
-    let pushChannelsButtonPlaceholder = "Tap here to add push channels"
-    let pushTokenLabelPlaceholder = "No push token currently"
-    let configButtonPlaceholder = "Tap here to set pub key and sub key"
-    
-    var pushTokenLabelGR: UITapGestureRecognizer!
-    
+        
     let fetchRequest: NSFetchRequest<Event> = {
         let request: NSFetchRequest<Event> = Event.fetchRequest()
         let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Event.creationDate), ascending: false)
         request.sortDescriptors = [creationDateSortDescriptor]
         return request
+    }()
+    
+    func publishButtonTapped(sender: UIButton) {
+        publish()
+    }
+    
+    // MARK: - Publish Action
+    
+    func publish() {
+        inputAccessoryView?.resignFirstResponder()
+        // TODO: Should we show anything to the user if there is nothing to publish?
+        guard let publishTextField = inputAccessoryView as? PublishInputAccessoryView else {
+            fatalError("Expected to find text field")
+        }
+        publishTextField.resignFirstResponder()
+        guard let message = publishTextField.text else {
+            navigationItem.setPrompt(with: "There is nothing to publish")
+            return
+        }
+        print("message: \(message)")
+        Network.sharedNetwork.publishChat(message: message)
+//        let alertController = UIAlertController.publishAlertController(withCurrent: message) { (action, channel) -> (Void) in
+//            // TODO: This should probably throw an error
+//            guard let actualChannel = channel else {
+//                self.navigationItem.setPrompt(with: "Must enter a channel to publish")
+//                return
+//            }
+//            self.console.publish(message, toChannel: actualChannel)
+//        }
+//        present(alertController, animated: true)
+    }
+    
+    internal lazy var customAccessoryView: PublishInputAccessoryView = {
+        let bounds = UIScreen.main.bounds
+        let frame = CGRect(x: 0, y: 0, width: bounds.width, height: 50.0)
+        let publishView = PublishInputAccessoryView(target: self, action: #selector(publishButtonTapped(sender:)), frame: frame)
+        publishView.delegate = self
+        return publishView
     }()
     
     var consoleView: ClientConsoleView!
@@ -45,6 +73,16 @@ class MainViewController: UIViewController {
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
         stackView.frame = stackViewFrame
         view.frame = bounds
+        let accessorySize = CGSize(width: bounds.size.width, height: 100.0)
+//        accessoryView.frame = CGRect(origin: bounds.origin, size: accessorySize)
+    }
+    
+    public override var inputAccessoryView: UIView? {
+        return customAccessoryView
+    }
+    
+    public override var canBecomeFirstResponder: Bool {
+        return true
     }
     
     override func loadView() {
@@ -52,6 +90,7 @@ class MainViewController: UIViewController {
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
+//        stackView.distribution = .fillProportionally
         let backgroundView = UIView(frame: .zero)
         backgroundView.addSubview(stackView)
         self.view = backgroundView
@@ -66,15 +105,7 @@ class MainViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        Network.sharedNetwork.addObserver(self, forKeyPath: #keyPath(Network.client), options: [.new, .old, .initial], context: &mainViewContext)
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        Network.sharedNetwork.removeObserver(self, forKeyPath: #keyPath(Network.client), context: &mainViewContext)
-    }
+    var colorSegmentedControl: ColorSegmentedControl!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,60 +113,35 @@ class MainViewController: UIViewController {
         // Do any additional setup after loading the view.
         navigationItem.title = "Push!"
         
-        clientConfigurationButton = UIButton(type: .system)
-        clientConfigurationButton.setTitle("Client info", for: .normal)
-        guard let clientConfigImage = UIImage(color: .yellow) else {
-            fatalError("Couldn't create one color UIImage!")
-        }
-        clientConfigurationButton.setBackgroundImage(clientConfigImage, for: .normal)
-        clientConfigurationButton.titleLabel?.numberOfLines = 2
-        clientConfigurationButton.titleLabel?.adjustsFontSizeToFitWidth = true
-        clientConfigurationButton.addTarget(self, action: #selector(clientConfigurationButtonPressed(sender:)), for: .touchUpInside)
-        clientConfigurationButton.forceAutoLayout()
-        stackView.addArrangedSubview(clientConfigurationButton)
+        colorSegmentedControl = ColorSegmentedControl()
+        stackView.addArrangedSubview(colorSegmentedControl)
+        colorSegmentedControl.forceAutoLayout()
+//        colorSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+//        colorSegmentedControl.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+//        let colorSegmentedControlHeightConstant = CGFloat(floatLiteral: 100.0)
+//        colorSegmentedControl.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.0, constant: colorSegmentedControlHeightConstant)
+        let colorSegmentedControlVerticalConstraints = NSLayoutConstraint(item: colorSegmentedControl, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.10, constant: 0)
+        NSLayoutConstraint.activate([colorSegmentedControlVerticalConstraints])
         
-        pushTokenLabel = UILabel(frame: .zero)
-        pushTokenLabel.backgroundColor = .red
-        pushTokenLabel.adjustsFontSizeToFitWidth = true
-        pushTokenLabel.textAlignment = .center
-        pushTokenLabel.numberOfLines = 2
-        pushTokenLabel.isUserInteractionEnabled = true
-        pushTokenLabel.forceAutoLayout()
-        stackView.addArrangedSubview(pushTokenLabel)
-        
-        pushTokenLabelGR = UITapGestureRecognizer(target: self, action: #selector(pushTokenLabelTapped(sender:)))
-        pushTokenLabel.addGestureRecognizer(pushTokenLabelGR)
-        
-        pushChannelsAuditButton = UIButton(type: .system)
-        guard let pushChannelsAuditImage = UIImage(color: .green) else {
-            fatalError("Couldn't create one color UIImage!")
-        }
-        pushChannelsAuditButton.setTitle(pushChannelsAuditButtonTitle, for: .normal)
-        pushChannelsAuditButton.setBackgroundImage(pushChannelsAuditImage, for: .normal)
-        pushChannelsAuditButton.addTarget(self, action: #selector(pushChannelsAuditButtonPressed(sender:)), for: .touchUpInside)
-        pushChannelsAuditButton.forceAutoLayout()
-        stackView.addArrangedSubview(pushChannelsAuditButton)
-        
-        pushChannelsButton = UIButton(type: .custom)
-        guard let pushBackgroundImage = UIImage(color: .cyan) else {
-            fatalError("Couldn't create one color UIImage!")
-        }
-        pushChannelsButton.setBackgroundImage(pushBackgroundImage, for: .normal)
-        pushChannelsButton.addTarget(self, action: #selector(pushChannelsButtonPressed(sender:)), for: .touchUpInside)
-        stackView.addArrangedSubview(pushChannelsButton)
         consoleView = ClientConsoleView(fetchRequest: fetchRequest)
         stackView.addArrangedSubview(consoleView)
-        
-        let pushTokenLabelVerticalConstraints = NSLayoutConstraint(item: pushTokenLabel, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.10, constant: 0)
-        let pushChannelsButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.20, constant: 0)
-        let pushChannelsAuditButtonVerticalConstraints = NSLayoutConstraint(item: pushChannelsAuditButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.15, constant: 0)
-        let clientConfigButtonVerticalConstraints = NSLayoutConstraint(item: clientConfigurationButton, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.125, constant: 0)
-        
-        NSLayoutConstraint.activate([pushChannelsButtonVerticalConstraints, pushTokenLabelVerticalConstraints, pushChannelsAuditButtonVerticalConstraints, clientConfigButtonVerticalConstraints])
-        
-//        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Clear", style: .done, target: self, action: #selector(clearConsoleButtonPressed(sender:)))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(optionsButtonPressed(sender:)))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Publish", style: .plain, target: self, action: #selector(publishButtonPressed(sender:)))
+//        consoleView.forceAutoLayout()
+//        consoleView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 1.0, constant: -colorSegmentedControlHeightConstant).isActive = true
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Profile", style: .done, target: self, action: #selector(updateUserButtonPressed(sender:)))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(optionsButtonPressed(sender:)))
+        view.setNeedsLayout()
+    }
+    
+    func optionsButtonPressed(sender: UIBarButtonItem) {
+        let optionsAlertController = UIAlertController.optionsAlertController(in: DataController.sharedController.viewContext) { (action) in
+            
+        }
+        present(optionsAlertController, animated: true)
+    }
+    
+    func updateUserButtonPressed(sender: UIBarButtonItem) {
+        let profileViewController = ProfileViewController()
+        navigationController?.pushViewController(profileViewController, animated: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -143,124 +149,44 @@ class MainViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    // MARK: - Actions
+    // MARK: - UITextFieldDelegate
     
-    func clientConfigurationButtonPressed(sender: UIButton) {
-        let configurationController = ConfigurationViewController()
-        configurationController.configuration = Network.sharedNetwork.currentConfiguration
-        navigationController?.pushViewController(configurationController, animated: true)
-        
+    public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        publish()
+        return true
     }
     
-    func pushTokenLabelTapped(sender: UITapGestureRecognizer) {
-        guard let pushTokenText = pushTokenLabel.text, pushTokenText != pushTokenLabelPlaceholder else {
-            return
-        }
-        copyToClipboard(text: pushTokenText)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        currentUser = DataController.sharedController.fetchCurrentUser()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        currentUser = nil
     }
     
-    func copyToClipboard(text: String) {
-        UIPasteboard.general.string = text
-        navigationItem.setPrompt(with: "Copied push token to clipboard")
-    }
-    
-    func publishButtonPressed(sender: UIBarButtonItem) {
-        let alertController = Network.sharedNetwork.publishAlertController()
-        present(alertController, animated: true)
-    }
-    
-    func pushChannelsAuditButtonPressed(sender: UIButton) {
-        Network.sharedNetwork.requestPushChannelsForCurrentPushToken()
-    }
-    
-    func optionsButtonPressed(sender: UIBarButtonItem) {
-        let optionsAlertController = UIAlertController.optionsAlertController(in: DataController.sharedController.viewContext)
-        present(optionsAlertController, animated: true)
-    }
-    
-    func pushChannelsButtonPressed(sender: UIButton) {
-        let viewContext = DataController.sharedController.viewContext
-        let pushChannelsAlertController = DataController.sharedController.fetchCurrentUser().alertControllerForPushChannels(in: viewContext)
-        present(pushChannelsAlertController, animated: true)
-    }
-    
-    // MARK: - KVO
-    
-    // Properties
-    
-    func configButtonTitle() -> String {
-        guard let pubKeyTitle = Network.sharedNetwork.pubKeyString, let subKeyTitle = Network.sharedNetwork.subKeyString else {
-            return configButtonPlaceholder
-        }
-        return "Pub: \(pubKeyTitle)\nSub: \(subKeyTitle)"
-    }
-    
-    func pushChannelsButtonTitle() -> String {
-        var finalTitle: String? = nil
-        DataController.sharedController.viewContext.performAndWait {
-            guard let currentPushChannelsString = DataController.sharedController.fetchCurrentUser().pushChannelsString else {
-                finalTitle = self.pushChannelsButtonPlaceholder
-                return
-            }
-            finalTitle = "Push channels: \(currentPushChannelsString)"
-        }
-        return finalTitle!
-    }
-    
-    func pushTokenTitle() -> String {
-        var finalTitle: String? = nil
-        DataController.sharedController.viewContext.performAndWait {
-            guard let currentPushTokenTitle = DataController.sharedController.fetchCurrentUser().pushTokenString else {
-                finalTitle = self.pushTokenLabelPlaceholder
-                return
-            }
-            finalTitle = "Push Device Token\n\(currentPushTokenTitle)"
-        }
-        return finalTitle!
-    }
-    
-    func updatePushChannelsButton() {
-        let title = pushChannelsButtonTitle()
-        DispatchQueue.main.async {
-            self.pushChannelsButton.setTitle(title, for: .normal)
-            self.pushChannelsButton.setNeedsLayout()
-        }
-    }
-    
-    func updateConfigButton() {
-        let title = configButtonTitle()
-        DispatchQueue.main.async {
-            self.clientConfigurationButton.setTitle(title, for: .normal)
-            self.clientConfigurationButton.setNeedsLayout()
-        }
-    }
-    
-    func updatePushTokenLabel() {
-        let title = pushTokenTitle()
-        DispatchQueue.main.async {
-            self.pushTokenLabel.text = title
-            self.pushTokenLabel.setNeedsLayout()
-        }
+    deinit {
+        currentUser = nil
     }
     
     var currentUser: User? {
         didSet {
-            if let existingOldValue = oldValue {
-                existingOldValue.removeObserver(self, forKeyPath: #keyPath(User.pushChannels), context: &mainViewContext)
-                existingOldValue.removeObserver(self, forKeyPath: #keyPath(User.pushToken), context: &mainViewContext)
-            }
-            currentUser?.addObserver(self, forKeyPath: #keyPath(User.pushToken), options: [.new, .old, .initial], context: &mainViewContext)
-            currentUser?.addObserver(self, forKeyPath: #keyPath(User.pushChannels), options: [.new, .old, .initial], context: &mainViewContext)
+            let observingKeyPath = #keyPath(User.showDebug)
+            oldValue?.removeObserver(self, forKeyPath: observingKeyPath, context: &mainViewContext)
+            currentUser?.addObserver(self, forKeyPath: observingKeyPath, options: [.new, .old, .initial], context: &mainViewContext)
         }
     }
     
-    // Deinit
-    
-    deinit {
-        self.currentUser = nil
+    func updateShowDebug() {
+        guard let actualUser = currentUser else {
+            return
+        }
+        DataController.sharedController.viewContext.perform {
+            let showDebug = actualUser.showDebug
+            self.consoleView.showDebug = showDebug
+        }
     }
-    
-    // KVO
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if context == &mainViewContext {
@@ -268,12 +194,8 @@ class MainViewController: UIViewController {
                 return
             }
             switch existingKeyPath {
-            case #keyPath(User.pushChannels):
-                updatePushChannelsButton()
-            case #keyPath(User.pushToken):
-                updatePushTokenLabel()
-            case #keyPath(Network.client):
-                updateConfigButton()
+            case #keyPath(User.showDebug):
+                updateShowDebug()
             default:
                 fatalError("what wrong in KVO?")
             }
@@ -281,6 +203,5 @@ class MainViewController: UIViewController {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
-    
 
 }

@@ -2,7 +2,7 @@ project 'Push/Push'
 workspace 'PubNubPush'
 use_frameworks!
 
-target 'Push' do
+target 'SimpleChat' do
 	pod 'PubNub'
     pod 'IdleTimer'
 end

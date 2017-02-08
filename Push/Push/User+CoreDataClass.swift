@@ -18,7 +18,9 @@ fileprivate let UserIdentifierKey = "UserIdentifierKey"
 public class User: NSManagedObject {
     
     static var defaultConfiguration: PNConfiguration {
-        return PNConfiguration(publishKey: defaultPublishKey, subscribeKey: defaultSubscribeKey)
+        let config = PNConfiguration(publishKey: defaultPublishKey, subscribeKey: defaultSubscribeKey)
+        config.stripMobilePayload = false
+        return config
     }
     
     public override func awakeFromInsert() {
@@ -26,6 +28,19 @@ public class User: NSManagedObject {
         identifier = UUID().uuidString
         subscribeKey = defaultSubscribeKey
         publishKey = defaultPublishKey
+        showDebug = false
+        thumbnail = UIImage(named: "pubnub.png")
+        backgroundColor = .red
+    }
+    
+    var backgroundColor: Color {
+        set {
+            self.rawBackgroundColor = newValue.rawValue
+        }
+        get {
+//            return Source(rawValue: rawCategory)! // forcibly unwrap so we can catch errors in debug
+            return Color(rawValue: rawBackgroundColor)! // forcibly unwrap so we can catch errors in debug
+        }
     }
     
     func removeAllResults(in context: NSManagedObjectContext? = nil) {

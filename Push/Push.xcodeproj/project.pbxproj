@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		510A2F5E1E4A8E14001A1DB3 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510A2F5D1E4A8E14001A1DB3 /* ProfileViewController.swift */; };
+		510A2F601E4A99C5001A1DB3 /* PublishInputAccessoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510A2F5F1E4A99C5001A1DB3 /* PublishInputAccessoryView.swift */; };
+		510A2F621E4A9C09001A1DB3 /* ColorSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510A2F611E4A9C09001A1DB3 /* ColorSegmentedControl.swift */; };
+		510A2F641E4AB2E6001A1DB3 /* pubnub.png in Resources */ = {isa = PBXBuildFile; fileRef = 510A2F631E4AB2E6001A1DB3 /* pubnub.png */; };
+		510A2F661E4AB587001A1DB3 /* UserExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510A2F651E4AB587001A1DB3 /* UserExtensions.swift */; };
 		510CED681E24343800527101 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED671E24343800527101 /* AppDelegate.swift */; };
 		510CED701E24343800527101 /* Push.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 510CED6E1E24343800527101 /* Push.xcdatamodeld */; };
 		510CED721E24343800527101 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 510CED711E24343800527101 /* Assets.xcassets */; };
@@ -43,12 +48,8 @@
 		516814881E28313600A9ED89 /* PubNubExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516814871E28313600A9ED89 /* PubNubExtensions.swift */; };
 		51A56FBD1E3745DA003195BF /* Publish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FBC1E3745DA003195BF /* Publish.swift */; };
 		51A56FC01E3754F2003195BF /* PushNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FBF1E3754F2003195BF /* PushNotifications.swift */; };
-		51A56FD21E37DB73003195BF /* ConfigurationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FD11E37DB73003195BF /* ConfigurationView.swift */; };
-		51A56FD71E37E20D003195BF /* ConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51A56FD61E37E20D003195BF /* ConfigurationViewController.swift */; };
 		51EB8E621E37F7550091FE01 /* Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EB8E611E37F7550091FE01 /* Configuration.swift */; };
-		51EB8E641E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EB8E631E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift */; };
-		51EB8E661E3954300091FE01 /* ConfigurationProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51EB8E651E3954300091FE01 /* ConfigurationProperty.swift */; };
-		B3499F47BCFB2B1F55BF4F3B /* Pods_Push.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */; };
+		9E6F57A57FCDFD9410AFCBCC /* Pods_SimpleChat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6D0569FD1239FA3A6F69D09E /* Pods_SimpleChat.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -65,8 +66,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2764B5C26659B7C156826A62 /* Pods-Push.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.release.xcconfig"; sourceTree = "<group>"; };
-		510CED641E24343800527101 /* Push.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Push.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3943DE023507A54BA0C51F05 /* Pods-SimpleChat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleChat.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-SimpleChat/Pods-SimpleChat.debug.xcconfig"; sourceTree = "<group>"; };
+		4405B41AC5CF96DC1823F5AC /* Pods-SimpleChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SimpleChat.release.xcconfig"; path = "../Pods/Target Support Files/Pods-SimpleChat/Pods-SimpleChat.release.xcconfig"; sourceTree = "<group>"; };
+		510A2F5D1E4A8E14001A1DB3 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		510A2F5F1E4A99C5001A1DB3 /* PublishInputAccessoryView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublishInputAccessoryView.swift; sourceTree = "<group>"; };
+		510A2F611E4A9C09001A1DB3 /* ColorSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorSegmentedControl.swift; sourceTree = "<group>"; };
+		510A2F631E4AB2E6001A1DB3 /* pubnub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pubnub.png; sourceTree = "<group>"; };
+		510A2F651E4AB587001A1DB3 /* UserExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserExtensions.swift; sourceTree = "<group>"; };
+		510CED641E24343800527101 /* SimpleChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		510CED671E24343800527101 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		510CED6F1E24343800527101 /* Push.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Push.xcdatamodel; sourceTree = "<group>"; };
 		510CED711E24343800527101 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -105,13 +112,8 @@
 		516814871E28313600A9ED89 /* PubNubExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PubNubExtensions.swift; sourceTree = "<group>"; };
 		51A56FBC1E3745DA003195BF /* Publish.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Publish.swift; sourceTree = "<group>"; };
 		51A56FBF1E3754F2003195BF /* PushNotifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PushNotifications.swift; sourceTree = "<group>"; };
-		51A56FD11E37DB73003195BF /* ConfigurationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationView.swift; sourceTree = "<group>"; };
-		51A56FD61E37E20D003195BF /* ConfigurationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationViewController.swift; sourceTree = "<group>"; };
 		51EB8E611E37F7550091FE01 /* Configuration.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configuration.swift; sourceTree = "<group>"; };
-		51EB8E631E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyValueLabelCollectionViewCell.swift; sourceTree = "<group>"; };
-		51EB8E651E3954300091FE01 /* ConfigurationProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationProperty.swift; sourceTree = "<group>"; };
-		8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Push.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Push.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Push/Pods-Push.debug.xcconfig"; sourceTree = "<group>"; };
+		6D0569FD1239FA3A6F69D09E /* Pods_SimpleChat.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SimpleChat.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,7 +121,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3499F47BCFB2B1F55BF4F3B /* Pods_Push.framework in Frameworks */,
+				9E6F57A57FCDFD9410AFCBCC /* Pods_SimpleChat.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,7 +131,7 @@
 		2A9EFB258A7E745441EC7CEC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				8DDF9E1B5E5B2A5B9DFD5525 /* Pods_Push.framework */,
+				6D0569FD1239FA3A6F69D09E /* Pods_SimpleChat.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -147,7 +149,7 @@
 		510CED651E24343800527101 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				510CED641E24343800527101 /* Push.app */,
+				510CED641E24343800527101 /* SimpleChat.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -189,6 +191,7 @@
 		5142CA1C1E258388005FBAD8 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				510A2F631E4AB2E6001A1DB3 /* pubnub.png */,
 				51EB8E5F1E37E4160091FE01 /* View Controllers */,
 				51EB8E601E37E41F0091FE01 /* Elements */,
 			);
@@ -212,6 +215,7 @@
 			children = (
 				510CED7C1E24356800527101 /* UtilityExtensions.swift */,
 				516814871E28313600A9ED89 /* PubNubExtensions.swift */,
+				510A2F651E4AB587001A1DB3 /* UserExtensions.swift */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -253,21 +257,11 @@
 			name = Objects;
 			sourceTree = "<group>";
 		};
-		51A56FD51E37DBE0003195BF /* Configuration */ = {
-			isa = PBXGroup;
-			children = (
-				51A56FD11E37DB73003195BF /* ConfigurationView.swift */,
-				51EB8E631E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift */,
-				51EB8E651E3954300091FE01 /* ConfigurationProperty.swift */,
-			);
-			name = Configuration;
-			sourceTree = "<group>";
-		};
 		51EB8E5F1E37E4160091FE01 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				510CED871E244C4A00527101 /* MainViewController.swift */,
-				51A56FD61E37E20D003195BF /* ConfigurationViewController.swift */,
+				510A2F5D1E4A8E14001A1DB3 /* ProfileViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -275,9 +269,10 @@
 		51EB8E601E37E41F0091FE01 /* Elements */ = {
 			isa = PBXGroup;
 			children = (
-				51A56FD51E37DBE0003195BF /* Configuration */,
 				51481C8C1E319A24002FEA7C /* Console */,
 				513FD88F1E39C48B00ADEC31 /* Options.swift */,
+				510A2F5F1E4A99C5001A1DB3 /* PublishInputAccessoryView.swift */,
+				510A2F611E4A9C09001A1DB3 /* ColorSegmentedControl.swift */,
 			);
 			name = Elements;
 			sourceTree = "<group>";
@@ -285,8 +280,8 @@
 		FDAA9F1FF75C306682DFBF3E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */,
-				2764B5C26659B7C156826A62 /* Pods-Push.release.xcconfig */,
+				3943DE023507A54BA0C51F05 /* Pods-SimpleChat.debug.xcconfig */,
+				4405B41AC5CF96DC1823F5AC /* Pods-SimpleChat.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -294,9 +289,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		510CED631E24343800527101 /* Push */ = {
+		510CED631E24343800527101 /* SimpleChat */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 510CED791E24343900527101 /* Build configuration list for PBXNativeTarget "Push" */;
+			buildConfigurationList = 510CED791E24343900527101 /* Build configuration list for PBXNativeTarget "SimpleChat" */;
 			buildPhases = (
 				B2EF914A0580AE4511E172D4 /* [CP] Check Pods Manifest.lock */,
 				510CED601E24343800527101 /* Sources */,
@@ -310,9 +305,9 @@
 			);
 			dependencies = (
 			);
-			name = Push;
+			name = SimpleChat;
 			productName = Push;
-			productReference = 510CED641E24343800527101 /* Push.app */;
+			productReference = 510CED641E24343800527101 /* SimpleChat.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -353,7 +348,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				510CED631E24343800527101 /* Push */,
+				510CED631E24343800527101 /* SimpleChat */,
 			);
 		};
 /* End PBXProject section */
@@ -364,6 +359,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				510CED751E24343900527101 /* LaunchScreen.storyboard in Resources */,
+				510A2F641E4AB2E6001A1DB3 /* pubnub.png in Resources */,
 				510CED721E24343800527101 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,7 +379,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Push/Pods-Push-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-SimpleChat/Pods-SimpleChat-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B14397176AA24E2282B23288 /* [CP] Copy Pods Resources */ = {
@@ -398,7 +394,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-Push/Pods-Push-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-SimpleChat/Pods-SimpleChat-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B2EF914A0580AE4511E172D4 /* [CP] Check Pods Manifest.lock */ = {
@@ -424,15 +420,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				510CED7F1E24360D00527101 /* Network.swift in Sources */,
-				51A56FD21E37DB73003195BF /* ConfigurationView.swift in Sources */,
 				510CEDA41E25789900527101 /* ModelExtensions.swift in Sources */,
 				510CED9F1E25733800527101 /* Status+CoreDataClass.swift in Sources */,
 				5168147F1E26F05C00A9ED89 /* Channel+CoreDataClass.swift in Sources */,
+				510A2F661E4AB587001A1DB3 /* UserExtensions.swift in Sources */,
 				5154E92F1E36C3B800235C0E /* EventTableViewCell.swift in Sources */,
 				510CED821E24405E00527101 /* DataController.swift in Sources */,
-				51EB8E641E3953F00091FE01 /* KeyValueLabelCollectionViewCell.swift in Sources */,
 				51481C9A1E32B4D1002FEA7C /* Event+CoreDataProperties.swift in Sources */,
 				513FD8BA1E3AC0D000ADEC31 /* Message+CoreDataClass.swift in Sources */,
+				510A2F621E4A9C09001A1DB3 /* ColorSegmentedControl.swift in Sources */,
 				510CED701E24343800527101 /* Push.xcdatamodeld in Sources */,
 				516814811E26F05C00A9ED89 /* User+CoreDataClass.swift in Sources */,
 				510CED9E1E25733800527101 /* PublishStatus+CoreDataProperties.swift in Sources */,
@@ -445,16 +441,16 @@
 				51481C9C1E32B4D1002FEA7C /* PushAuditResult+CoreDataProperties.swift in Sources */,
 				510CED861E2446E900527101 /* ManagedObjectTableViewCell.swift in Sources */,
 				516814841E26F05C00A9ED89 /* Result+CoreDataProperties.swift in Sources */,
+				510A2F5E1E4A8E14001A1DB3 /* ProfileViewController.swift in Sources */,
 				510CEDA01E25733800527101 /* Status+CoreDataProperties.swift in Sources */,
+				510A2F601E4A99C5001A1DB3 /* PublishInputAccessoryView.swift in Sources */,
 				510CED7D1E24356800527101 /* UtilityExtensions.swift in Sources */,
 				510CED881E244C4A00527101 /* MainViewController.swift in Sources */,
-				51EB8E661E3954300091FE01 /* ConfigurationProperty.swift in Sources */,
 				51EB8E621E37F7550091FE01 /* Configuration.swift in Sources */,
 				516814801E26F05C00A9ED89 /* Channel+CoreDataProperties.swift in Sources */,
 				51481C981E32B4D1002FEA7C /* PushMessage+CoreDataProperties.swift in Sources */,
 				516814821E26F05C00A9ED89 /* User+CoreDataProperties.swift in Sources */,
 				51481C9B1E32B4D1002FEA7C /* PushAuditResult+CoreDataClass.swift in Sources */,
-				51A56FD71E37E20D003195BF /* ConfigurationViewController.swift in Sources */,
 				513FD8BB1E3AC0D000ADEC31 /* Message+CoreDataProperties.swift in Sources */,
 				510CED9D1E25733800527101 /* PublishStatus+CoreDataClass.swift in Sources */,
 				516814881E28313600A9ED89 /* PubNubExtensions.swift in Sources */,
@@ -574,7 +570,7 @@
 		};
 		510CED7A1E24343900527101 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A93D17A43D72F959CB381F2E /* Pods-Push.debug.xcconfig */;
+			baseConfigurationReference = 3943DE023507A54BA0C51F05 /* Pods-SimpleChat.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
@@ -582,7 +578,7 @@
 				INFOPLIST_FILE = Push/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.PushExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.SimpleChatExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -590,7 +586,7 @@
 		};
 		510CED7B1E24343900527101 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2764B5C26659B7C156826A62 /* Pods-Push.release.xcconfig */;
+			baseConfigurationReference = 4405B41AC5CF96DC1823F5AC /* Pods-SimpleChat.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
@@ -598,7 +594,7 @@
 				INFOPLIST_FILE = Push/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.PushExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.SimpleChatExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -616,7 +612,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		510CED791E24343900527101 /* Build configuration list for PBXNativeTarget "Push" */ = {
+		510CED791E24343900527101 /* Build configuration list for PBXNativeTarget "SimpleChat" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				510CED7A1E24343900527101 /* Debug */,

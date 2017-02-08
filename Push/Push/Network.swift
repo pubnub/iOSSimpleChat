@@ -10,8 +10,19 @@ import UIKit
 import CoreData
 import PubNub
 
+fileprivate let PrivateChatChannel = "chat"
+fileprivate let PrivateColorChannel = "color"
+
 @objc
 class Network: NSObject, PNObjectEventListener {
+    
+    var chatChannel: String {
+        return PrivateChatChannel
+    }
+    
+    var colorChannel: String {
+        return PrivateColorChannel
+    }
     
     private var networkKVOContext = 0
     
@@ -29,6 +40,23 @@ class Network: NSObject, PNObjectEventListener {
             DispatchQueue.main.async {
                 completion?(updatedClient)
             }
+        }
+    }
+    
+    
+    let subscribedChannels = [PrivateChatChannel, PrivateColorChannel]
+    
+    enum SubscriptionOperation {
+        case subscribe
+        case unsubscribe
+    }
+    
+    func updateSubscription(with operation: SubscriptionOperation) {
+        switch operation {
+        case .subscribe:
+            client.subscribeToChannels(subscribedChannels, withPresence: true)
+        case .unsubscribe:
+            client.unsubscribeFromAll()
         }
     }
     
@@ -84,6 +112,7 @@ class Network: NSObject, PNObjectEventListener {
                 var config: PNConfiguration? = nil
                 self.networkContext.performAndWait {
                     config = PNConfiguration(publishKey: existingUser.publishKey!, subscribeKey: existingUser.subscribeKey!)
+                    config?.stripMobilePayload = false
                     config?.uuid = existingUser.identifier!
                     config?.authKey = existingUser.authKey
                     config?.origin = existingUser.origin!
@@ -262,6 +291,26 @@ class Network: NSObject, PNObjectEventListener {
     enum SubscribeDebugOption {
         case add
         case remove
+    }
+    
+    func publishChat(message: String?) {
+        publish(payload: message, toChannel: chatChannel)
+    }
+    
+    private func publish(payload: Any?, toChannel: String) {
+        guard let actualPayload = payload else {
+            return
+        }
+        client.publish(actualPayload, toChannel: toChannel) { (status) in
+            self.networkContext.perform {
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
+                do {
+                    try self.networkContext.save()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+            }
+        }
     }
     
     func updateDebugSubscription(for pushChannels: Set<String>?, with subscribeDebugOption: SubscribeDebugOption) {

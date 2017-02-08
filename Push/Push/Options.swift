@@ -30,20 +30,40 @@ extension UIAlertController {
         }
         alertController.addAction(screenStateAction)
         
-        var isSubscribing = false
+        var showDebug = false
         context.performAndWait {
-            isSubscribing = DataController.sharedController.fetchCurrentUser(in: context).isSubscribingToDebug
+            let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
+            showDebug = currentUser.showDebug
         }
         
-        var isSubscribingTitle = "Subscribe to debug channels"
-        if isSubscribing {
-            isSubscribingTitle = "Stop subscribing to debug channels"
-        }
+//        var isSubscribingTitle = "Subscribe to debug channels"
+//        if isSubscribing {
+//            isSubscribingTitle = "Stop subscribing to debug channels"
+//        }
         
-        let subscribeToDebugAction = UIAlertAction(title: isSubscribingTitle, style: .default) { (action) in
+//        let subscribeToDebugAction = UIAlertAction(title: isSubscribingTitle, style: .default) { (action) in
+//            DataController.sharedController.performBackgroundTask({ (backgroundContext) in
+//                let user = DataController.sharedController.fetchCurrentUser(in: backgroundContext)
+//                user.isSubscribingToDebug = (!user.isSubscribingToDebug)
+//                do {
+//                    try backgroundContext.save()
+//                } catch {
+//                    fatalError(error.localizedDescription)
+//                }
+//                DispatchQueue.main.async {
+//                    handler?(action)
+//                }
+//            })
+//        }
+//        alertController.addAction(subscribeToDebugAction)
+        var toggleDebugTitle = "Show debug messages"
+        if showDebug {
+            toggleDebugTitle = "Hide debug messages"
+        }
+        let toggleDebug = UIAlertAction(title: toggleDebugTitle, style: .default) { (action) in
             DataController.sharedController.performBackgroundTask({ (backgroundContext) in
                 let user = DataController.sharedController.fetchCurrentUser(in: backgroundContext)
-                user.isSubscribingToDebug = (!user.isSubscribingToDebug)
+                user.showDebug = (!user.showDebug)
                 do {
                     try backgroundContext.save()
                 } catch {
@@ -54,7 +74,7 @@ extension UIAlertController {
                 }
             })
         }
-        alertController.addAction(subscribeToDebugAction)
+        alertController.addAction(toggleDebug)
         
         let clearBadgeCountAction = UIAlertAction(title: "Reset application badge count", style: .default) { (action) in
             PushNotifications.sharedNotifications.clearBadgeCount()

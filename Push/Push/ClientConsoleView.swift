@@ -16,7 +16,30 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     let fetchRequest: NSFetchRequest<Event>
     let fetchedResultsController: NSFetchedResultsController<Event>
     
+    var showDebug: Bool {
+        didSet {
+            var finalPredicate: NSPredicate? = nil
+            switch showDebug {
+            case true:
+                finalPredicate = nil
+            case false:
+                //self isKindOfClass: %@", [NSNumber class]
+                finalPredicate = NSPredicate(format: "self.entity == %@", Message.entity())
+            }
+            DataController.sharedController.viewContext.perform {
+                self.fetchedResultsController.fetchRequest.predicate = finalPredicate
+                do {
+                    try self.fetchedResultsController.performFetch()
+                } catch {
+                    fatalError(error.localizedDescription)
+                }
+                self.tableView.reloadData()
+            }
+        }
+    }
+    
     required init(fetchRequest: NSFetchRequest<Event>) {
+        self.showDebug = true
         self.tableView = UITableView(frame: .zero, style: .plain)
         self.fetchRequest = fetchRequest
         self.fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.sharedController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
