@@ -29,7 +29,6 @@ public class User: NSManagedObject {
         subscribeKey = defaultSubscribeKey
         publishKey = defaultPublishKey
         showDebug = false
-        name = "Rick Deckard"
         thumbnail = UIImage(named: "pubnub.png")
         backgroundColor = .red
     }

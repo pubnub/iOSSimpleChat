@@ -20,9 +20,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         print("Current screen state: \(IdleTimer.sharedInstance.screenState.title)")
         let viewContext = DataController.sharedController.viewContext
         let userID = User.userID
+        var shouldForceProfileView = false
         if let currentUser = DataController.sharedController.fetchUser(for: userID, in: viewContext) {
             DataController.sharedController.currentUser = currentUser
+            viewContext.performAndWait {
+                if currentUser.name == nil {
+                    shouldForceProfileView = true
+                }
+            }
         } else {
+            shouldForceProfileView = true
             viewContext.performAndWait {
                 let user = User(context: viewContext)
                 user.identifier = userID
@@ -44,6 +51,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         self.window?.rootViewController = navController
         self.window?.makeKeyAndVisible()
+        
+        if shouldForceProfileView {
+            let profileViewController = ProfileViewController()
+            profileViewController.canSave = false
+            profileViewController.navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .done, target: profileViewController, action: #selector(ProfileViewController.dismiss(sender:)))
+            let profileNavController = UINavigationController(rootViewController: profileViewController)
+            profileNavController.modalTransitionStyle = .coverVertical
+            profileNavController.modalPresentationStyle = .overFullScreen
+            rootViewController.present(profileNavController, animated: true)
+        }
         
         PushNotifications.sharedNotifications.appDidLaunchOperations(viewController: self.window?.rootViewController)
         

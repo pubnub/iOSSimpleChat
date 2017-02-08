@@ -325,7 +325,7 @@
 				TargetAttributes = {
 					510CED631E24343800527101 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 8XP4D6N55Z;
+						DevelopmentTeam = 3E4X4H44B4;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
@@ -578,11 +578,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
-				DEVELOPMENT_TEAM = 8XP4D6N55Z;
+				DEVELOPMENT_TEAM = 3E4X4H44B4;
 				INFOPLIST_FILE = Push/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.SimpleChatExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.SimpleChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -594,11 +594,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = Push/Push.entitlements;
-				DEVELOPMENT_TEAM = 8XP4D6N55Z;
+				DEVELOPMENT_TEAM = 3E4X4H44B4;
 				INFOPLIST_FILE = Push/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.SimpleChatExample;
+				PRODUCT_BUNDLE_IDENTIFIER = com.PubNub.SimpleChat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

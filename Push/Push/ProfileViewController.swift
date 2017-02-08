@@ -15,6 +15,15 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     var profileImageButton: UIButton!
     var profileNameButton: UIButton!
     
+    func dismiss(sender: UIBarButtonItem) {
+        guard let mainNavController = parent?.presentingViewController as? UINavigationController, let mainViewController = mainNavController.topViewController as? MainViewController else {
+            return
+        }
+        dismiss(animated: true) { 
+            mainViewController.becomeFirstResponder()
+        }
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let bounds = UIScreen.main.bounds
@@ -141,6 +150,14 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         present(imageAlertController, animated: true)
     }
     
+    var canSave: Bool = false {
+        didSet {
+            DispatchQueue.main.async {
+                self.navigationItem.rightBarButtonItem?.isEnabled = self.canSave
+            }
+        }
+    }
+    
     var currentUser: User? {
         didSet {
             let observingKeyPath = #keyPath(User.name)
@@ -172,6 +189,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     func updateName() {
         guard let actualUser = currentUser else {
+            canSave = false
             return
         }
         DataController.sharedController.viewContext.perform {
@@ -179,10 +197,12 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
                 self.profileNameButton.setNeedsLayout()
             }
             guard let name = actualUser.name else {
+                self.canSave = false
                 self.profileNameButton.setTitle(nil, for: .selected)
                 self.profileNameButton.isSelected = false
                 return
             }
+            self.canSave = true
             self.profileNameButton.setTitle(name, for: .selected)
             self.profileNameButton.isSelected = true
         }
