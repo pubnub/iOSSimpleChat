@@ -294,14 +294,29 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     func publishChat(message: String?) {
-        publish(payload: message, toChannel: chatChannel)
+        networkContext.perform {
+            var payload = [String: String]()
+            if let actualMessage = message {
+                payload["text"] = actualMessage
+            }
+            if let actualThumbnail = self.user?.thumbnailString {
+                payload["image"] = actualThumbnail
+            }
+            if let actualName = self.user?.name {
+                payload["name"] = actualName
+            }
+            guard payload.count > 0 else {
+                return
+            }
+            self.publish(payload: payload, toChannel: self.chatChannel)
+        }
     }
     
     private func publish(payload: Any?, toChannel: String) {
         guard let actualPayload = payload else {
             return
         }
-        client.publish(actualPayload, toChannel: toChannel) { (status) in
+        client.publish(actualPayload, toChannel: toChannel, compressed: true) { (status) in
             self.networkContext.perform {
                 _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
                 do {

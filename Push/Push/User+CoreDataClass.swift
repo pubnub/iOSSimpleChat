@@ -29,6 +29,7 @@ public class User: NSManagedObject {
         subscribeKey = defaultSubscribeKey
         publishKey = defaultPublishKey
         showDebug = false
+        name = "Rick Deckard"
         thumbnail = UIImage(named: "pubnub.png")
         backgroundColor = .red
     }
@@ -73,6 +74,14 @@ public class User: NSManagedObject {
             UserDefaults.standard.set(uuidString, forKey: UserIdentifierKey)
             return uuidString
         }
+    }
+    
+    var thumbnailString: String? {
+        guard let actualThumbnail = thumbnail else {
+            return nil
+        }
+        let resizedImage = ImageHandler.resizedImage(actualThumbnail, targetWidth: 100.0)
+        return ImageHandler.base64String(for: resizedImage, compressed: true)
     }
     
     static func updateUserID(identifier: String?) {

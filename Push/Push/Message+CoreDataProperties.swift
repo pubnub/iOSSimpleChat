@@ -6,7 +6,7 @@
 //  Copyright © 2017 PubNub. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreData
 
 
@@ -21,5 +21,7 @@ extension Message {
     @NSManaged public var channel: String?
     @NSManaged public var subscription: String?
     @NSManaged public var timetoken: Int64
+    @NSManaged public var thumbnail: UIImage?
+    @NSManaged public var publisherName: String?
 
 }

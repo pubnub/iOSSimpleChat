@@ -18,6 +18,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
         
     let fetchRequest: NSFetchRequest<Event> = {
         let request: NSFetchRequest<Event> = Event.fetchRequest()
+        request.predicate = NSPredicate(format: "self.entity == %@", Message.entity())
         let creationDateSortDescriptor = NSSortDescriptor(key: #keyPath(Event.creationDate), ascending: false)
         request.sortDescriptors = [creationDateSortDescriptor]
         return request
@@ -172,36 +173,26 @@ class MainViewController: UIViewController, UITextFieldDelegate {
     
     var currentUser: User? {
         didSet {
-            let observingKeyPath = #keyPath(User.showDebug)
-            oldValue?.removeObserver(self, forKeyPath: observingKeyPath, context: &mainViewContext)
-            currentUser?.addObserver(self, forKeyPath: observingKeyPath, options: [.new, .old, .initial], context: &mainViewContext)
+//            let observingKeyPath = #keyPath(User.showDebug)
+//            oldValue?.removeObserver(self, forKeyPath: observingKeyPath, context: &mainViewContext)
+//            currentUser?.addObserver(self, forKeyPath: observingKeyPath, options: [.new, .old, .initial], context: &mainViewContext)
         }
     }
     
-    func updateShowDebug() {
-        guard let actualUser = currentUser else {
-            return
-        }
-        DataController.sharedController.viewContext.perform {
-            let showDebug = actualUser.showDebug
-            self.consoleView.showDebug = showDebug
-        }
-    }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if context == &mainViewContext {
-            guard let existingKeyPath = keyPath else {
-                return
-            }
-            switch existingKeyPath {
-            case #keyPath(User.showDebug):
-                updateShowDebug()
-            default:
-                fatalError("what wrong in KVO?")
-            }
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
-    }
+//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+//        if context == &mainViewContext {
+//            guard let existingKeyPath = keyPath else {
+//                return
+//            }
+//            switch existingKeyPath {
+//            case #keyPath(User.showDebug):
+//                updateShowDebug()
+//            default:
+//                fatalError("what wrong in KVO?")
+//            }
+//        } else {
+//            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+//        }
+//    }
 
 }

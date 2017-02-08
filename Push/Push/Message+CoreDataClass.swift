@@ -10,6 +10,27 @@ import Foundation
 import CoreData
 import PubNub
 
+class ImageHandler: NSObject {
+    
+    static func resizedImage(_ image: UIImage, targetWidth: CGFloat) -> UIImage {
+        
+        let scale = targetWidth / image.size.width
+        let targetHeight = image.size.height * scale
+        UIGraphicsBeginImageContext(CGSize(width: targetWidth, height: targetHeight))
+        image.draw(in: CGRect(x: 0, y: 0, width: targetWidth, height: targetHeight))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
+    }
+    
+    static func base64String(for image: UIImage, compressed: Bool = true) -> String? {
+        let compressedImage = UIImageJPEGRepresentation(image, 0.25)
+        return compressedImage?.base64EncodedString(options: Data.Base64EncodingOptions(rawValue: UInt(0)))
+    }
+    
+}
+
 @objc(Message)
 public class Message: Result {
     
@@ -27,11 +48,24 @@ public class Message: Result {
         channel = messageResult.data.channel
         subscription = messageResult.data.subscription
         publisher = messageResult.data.publisher
-        guard let actualMessage = messageResult.data.message else {
+        guard let actualMessage = messageResult.data.message as? [String: Any] else {
             message = "There is not message"
             return
         }
-        message = (actualMessage as AnyObject).debugDescription
+        if let thumbnailDataString = actualMessage["image"] as? String {
+            if let imageData = Data(base64Encoded: thumbnailDataString, options: []) {
+                
+                thumbnail = UIImage(data: imageData)
+            }
+        }
+        if let messageText = actualMessage["text"] as? String {
+            message = messageText
+        } else {
+            message = "There is no text!"
+        }
+        if let senderName = actualMessage["name"] as? String {
+            publisherName = senderName
+        }
     }
     
     public override var textViewDisplayText: String {

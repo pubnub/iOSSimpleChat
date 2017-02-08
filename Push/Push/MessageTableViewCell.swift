@@ -1,0 +1,53 @@
+//
+//  MessageTableViewCell.swift
+//  Push
+//
+//  Created by Jordan Zucker on 2/7/17.
+//  Copyright © 2017 PubNub. All rights reserved.
+//
+
+import UIKit
+
+struct MessageCellUpdate {
+    let name: String
+    let image: UIImage?
+    let message: String?
+}
+
+class MessageTableViewCell: UITableViewCell {
+    
+    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+        super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+
+        // Configure the view for the selected state
+    }
+    
+    func update(with update: MessageCellUpdate) {
+        imageView?.image = update.image
+        textLabel?.text = update.message
+        detailTextLabel?.text = update.name
+        detailTextLabel?.isHidden = false
+        setNeedsLayout()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView?.image = nil
+        textLabel?.text = nil
+        detailTextLabel?.text = nil
+    }
+
+}

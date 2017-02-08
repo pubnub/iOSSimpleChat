@@ -12,6 +12,7 @@
 		510A2F621E4A9C09001A1DB3 /* ColorSegmentedControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510A2F611E4A9C09001A1DB3 /* ColorSegmentedControl.swift */; };
 		510A2F641E4AB2E6001A1DB3 /* pubnub.png in Resources */ = {isa = PBXBuildFile; fileRef = 510A2F631E4AB2E6001A1DB3 /* pubnub.png */; };
 		510A2F661E4AB587001A1DB3 /* UserExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510A2F651E4AB587001A1DB3 /* UserExtensions.swift */; };
+		510A2F681E4ACEA2001A1DB3 /* MessageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510A2F671E4ACEA2001A1DB3 /* MessageTableViewCell.swift */; };
 		510CED681E24343800527101 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED671E24343800527101 /* AppDelegate.swift */; };
 		510CED701E24343800527101 /* Push.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 510CED6E1E24343800527101 /* Push.xcdatamodeld */; };
 		510CED721E24343800527101 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 510CED711E24343800527101 /* Assets.xcassets */; };
@@ -73,6 +74,7 @@
 		510A2F611E4A9C09001A1DB3 /* ColorSegmentedControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorSegmentedControl.swift; sourceTree = "<group>"; };
 		510A2F631E4AB2E6001A1DB3 /* pubnub.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pubnub.png; sourceTree = "<group>"; };
 		510A2F651E4AB587001A1DB3 /* UserExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserExtensions.swift; sourceTree = "<group>"; };
+		510A2F671E4ACEA2001A1DB3 /* MessageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageTableViewCell.swift; sourceTree = "<group>"; };
 		510CED641E24343800527101 /* SimpleChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		510CED671E24343800527101 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		510CED6F1E24343800527101 /* Push.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Push.xcdatamodel; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 				510CED831E2446D200527101 /* ClientConsoleView.swift */,
 				510CED851E2446E900527101 /* ManagedObjectTableViewCell.swift */,
 				5154E92E1E36C3B800235C0E /* EventTableViewCell.swift */,
+				510A2F671E4ACEA2001A1DB3 /* MessageTableViewCell.swift */,
 			);
 			name = Console;
 			sourceTree = "<group>";
@@ -432,6 +435,7 @@
 				510CED701E24343800527101 /* Push.xcdatamodeld in Sources */,
 				516814811E26F05C00A9ED89 /* User+CoreDataClass.swift in Sources */,
 				510CED9E1E25733800527101 /* PublishStatus+CoreDataProperties.swift in Sources */,
+				510A2F681E4ACEA2001A1DB3 /* MessageTableViewCell.swift in Sources */,
 				516814831E26F05C00A9ED89 /* Result+CoreDataClass.swift in Sources */,
 				513FD8901E39C48B00ADEC31 /* Options.swift in Sources */,
 				51481C971E32B4D1002FEA7C /* PushMessage+CoreDataClass.swift in Sources */,
