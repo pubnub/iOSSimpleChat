@@ -31,16 +31,21 @@ class MainViewController: UIViewController, UITextFieldDelegate {
     // MARK: - Publish Action
     
     func publish() {
+        // resign responder here?
+        // TODO: address firstResponder
         inputAccessoryView?.resignFirstResponder()
         // TODO: Should we show anything to the user if there is nothing to publish?
         guard let publishTextField = inputAccessoryView as? PublishInputAccessoryView else {
             fatalError("Expected to find text field")
         }
+        // TODO: address firstResponder
+        // resign responder here?
         publishTextField.resignFirstResponder()
         guard let message = publishTextField.text else {
             navigationItem.setPrompt(with: "There is nothing to publish")
             return
         }
+        publishTextField.text = nil
         print("message: \(message)")
         Network.sharedNetwork.publishChat(message: message)
 //        let alertController = UIAlertController.publishAlertController(withCurrent: message) { (action, channel) -> (Void) in

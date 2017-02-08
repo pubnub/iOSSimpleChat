@@ -111,7 +111,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     }
     
     func imageSourceAlertController() -> UIAlertController {
-        let alertController = UIAlertController(title: "Choose a source", message: "Select a source below", preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: "Choose a source", message: "Select a source below", preferredStyle: .alert)
         let cameraTitle = "Camera"
         let photosTitle = "Photo Library"
 //        let imagePickerController = UIImagePickerController()
@@ -131,7 +131,9 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             }
             imagePickerController.sourceType = sourceType
             imagePickerController.delegate = self
-            self.present(imagePickerController, animated: true)
+            DispatchQueue.main.async {
+                self.present(imagePickerController, animated: true)
+            }
         }
         
         let cameraAction = UIAlertAction(title: cameraTitle, style: .default, handler: handler)

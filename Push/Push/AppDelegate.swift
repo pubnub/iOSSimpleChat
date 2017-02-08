@@ -59,7 +59,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             let profileNavController = UINavigationController(rootViewController: profileViewController)
             profileNavController.modalTransitionStyle = .coverVertical
             profileNavController.modalPresentationStyle = .overFullScreen
-            rootViewController.present(profileNavController, animated: true)
+            DispatchQueue.main.async {
+                rootViewController.present(profileNavController, animated: true)
+            }
         }
         
         return true
