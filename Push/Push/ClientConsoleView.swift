@@ -77,6 +77,9 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
             return
         }
         let lastRow = lastSection.numberOfObjects
+        guard lastRow != 0 else {
+            return
+        }
         let lastIndexPath = IndexPath(row: lastRow - 1, section: sectionCount - 1)
         tableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: animated)
     }
