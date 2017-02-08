@@ -102,7 +102,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         }
         // TODO: address firstResponder
         // resign responder here?
-        publishTextField.resignFirstResponder()
+//        publishTextField.resignFirstResponder()
         guard let message = publishTextField.text else {
             navigationItem.setPrompt(with: "There is nothing to publish")
             return
@@ -125,6 +125,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         let bounds = UIScreen.main.bounds
         let frame = CGRect(x: 0, y: 0, width: bounds.width, height: self.inputAccessoryHeight)
         let publishView = PublishInputAccessoryView(target: self, action: #selector(publishButtonTapped(sender:)), frame: frame)
+//        publishView.forceAutolayout()
         publishView.delegate = self
         return publishView
     }()
@@ -145,7 +146,10 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         stackView.frame = stackViewFrame
         view.frame = bounds
 //        let accessorySize = CGSize(width: bounds.size.width, height: inputAccessoryHeight)
-//        accessoryView.frame = CGRect(origin: bounds.origin, size: accessorySize)
+//        customAccessoryView.frame.size = accessorySize
+//        if let inputConstraint = inputAccessoryView?.constraints[0] {
+//            inputConstraint.constant = inputAccessoryHeight
+//        }
     }
     
     public override var inputAccessoryView: UIView? {
