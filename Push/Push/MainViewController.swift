@@ -12,13 +12,63 @@ import CoreData
 
 class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleViewDelegate {
     
+    struct ProfileViewUpdate {
+        let name: String?
+        let image: UIImage?
+    }
+    
     class ProfileView: UIView {
+        
+        let nameLabel: UILabel
+        let profileImageView: UIImageView
+        let stackView: UIStackView
+        
         override init(frame: CGRect) {
+            self.stackView = UIStackView(frame: .zero)
+            self.nameLabel = UILabel(frame: .zero)
+            self.profileImageView = UIImageView(frame: .zero)
             super.init(frame: frame)
+            stackView.forceAutoLayout()
+            addSubview(stackView)
+            stackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+            stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+            stackView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
+            stackView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+            stackView.axis = .horizontal
+            stackView.alignment = .fill
+            stackView.distribution = .fill
+            stackView.addArrangedSubview(profileImageView)
+            stackView.addArrangedSubview(nameLabel)
+            profileImageView.forceAutoLayout()
+            nameLabel.forceAutoLayout()
+            profileImageView.leftAnchor.constraint(equalTo: stackView.leftAnchor).isActive = true
+            
+            let heightConstraints: (UIView) -> () = { (constrainingView) in
+                constrainingView.heightAnchor.constraint(equalTo: self.stackView.heightAnchor).isActive = true
+            }
+            heightConstraints(profileImageView)
+            heightConstraints(nameLabel)
+            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor).isActive = true
+            nameLabel.adjustsFontSizeToFitWidth = true
+            nameLabel.textAlignment = .center
         }
         
         required init?(coder aDecoder: NSCoder) {
             fatalError("init(coder:) has not been implemented")
+        }
+        
+        override func layoutSubviews() {
+            super.layoutSubviews()
+        }
+        
+        func update(with update: ProfileViewUpdate) {
+            if let updatedName = update.name {
+                nameLabel.text = updatedName
+            }
+            if let updatedImage = update.image {
+                profileImageView.image = updatedImage
+            }
+            setNeedsLayout()
         }
         
         
@@ -80,6 +130,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     }()
     
     var consoleView: ClientConsoleView!
+    var profileView: ProfileView!
     
     let inputAccessoryHeight = CGFloat(integerLiteral: 50)
     
@@ -133,6 +184,9 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         // Do any additional setup after loading the view.
         navigationItem.title = "Push!"
         view.backgroundColor = .white
+        profileView = ProfileView()
+        profileView.forceAutoLayout()
+        stackView.addArrangedSubview(profileView)
         colorSegmentedControl = ColorSegmentedControl()
         stackView.addArrangedSubview(colorSegmentedControl)
         colorSegmentedControl.forceAutoLayout()
@@ -141,7 +195,8 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
 //        let colorSegmentedControlHeightConstant = CGFloat(floatLiteral: 100.0)
 //        colorSegmentedControl.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.0, constant: colorSegmentedControlHeightConstant)
         let colorSegmentedControlVerticalConstraints = NSLayoutConstraint(item: colorSegmentedControl, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.10, constant: 0)
-        NSLayoutConstraint.activate([colorSegmentedControlVerticalConstraints])
+        let profileViewVerticalConstraints = NSLayoutConstraint(item: profileView, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.20, constant: 0)
+        NSLayoutConstraint.activate([profileViewVerticalConstraints, colorSegmentedControlVerticalConstraints])
         
         consoleView = ClientConsoleView(fetchRequest: fetchRequest)
         stackView.addArrangedSubview(consoleView)
@@ -195,27 +250,45 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     
     var currentUser: User? {
         didSet {
-//            let observingKeyPath = #keyPath(User.showDebug)
-//            oldValue?.removeObserver(self, forKeyPath: observingKeyPath, context: &mainViewContext)
-//            currentUser?.addObserver(self, forKeyPath: observingKeyPath, options: [.new, .old, .initial], context: &mainViewContext)
+            let observingKeyPaths = [#keyPath(User.name), #keyPath(User.thumbnail)]
+            observingKeyPaths.forEach { (keyPath) in
+                oldValue?.removeObserver(self, forKeyPath: keyPath, context: &mainViewContext)
+                self.currentUser?.addObserver(self, forKeyPath: keyPath, options: [.new, .old, .initial], context: &mainViewContext)
+            }
         }
     }
     
-//    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-//        if context == &mainViewContext {
-//            guard let existingKeyPath = keyPath else {
-//                return
-//            }
-//            switch existingKeyPath {
-//            case #keyPath(User.showDebug):
-//                updateShowDebug()
-//            default:
-//                fatalError("what wrong in KVO?")
-//            }
-//        } else {
-//            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-//        }
-//    }
+    func updateProfileView() {
+        DataController.sharedController.viewContext.perform {
+            guard let actualUser = self.currentUser else {
+                return
+            }
+            let update = ProfileViewUpdate(name: actualUser.name, image: actualUser.thumbnail)
+            DispatchQueue.main.async {
+                self.profileView.update(with: update)
+            }
+        }
+    }
+    
+    // MARK: - KVO
+    
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
+        if context == &mainViewContext {
+            guard let existingKeyPath = keyPath else {
+                return
+            }
+            switch existingKeyPath {
+            case #keyPath(User.name):
+                fallthrough
+            case #keyPath(User.thumbnail):
+                updateProfileView()
+            default:
+                fatalError("what wrong in KVO?")
+            }
+        } else {
+            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+        }
+    }
     
     // MARK: - ClientConsoleViewDelegate
     
