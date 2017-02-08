@@ -10,6 +10,17 @@ import UIKit
 import CoreData
 import IdleTimer
 
+extension IdleTimer {
+    var optionsTitleForCurrentScreenState: String {
+        switch screenState {
+        case .awake:
+            return "Let screen sleep when idle"
+        case .sleepy:
+            return "Keep screen awake"
+        }
+    }
+}
+
 extension UIAlertController {
     
     static func optionsAlertController(in context: NSManagedObjectContext, handler: ((UIAlertAction) -> Swift.Void)? = nil) -> UIAlertController {
@@ -22,19 +33,18 @@ extension UIAlertController {
         }
         alertController.addAction(clearConsoleAction)
         
-        let oppositeScreenStateTitle = IdleTimer.sharedInstance.screenState.oppositeState.title
-        let screenStateActionTitle = "Turn idle timer \(oppositeScreenStateTitle)"
+        let screenStateActionTitle = IdleTimer.sharedInstance.optionsTitleForCurrentScreenState
         let screenStateAction = UIAlertAction(title: screenStateActionTitle, style: .default) { (action) in
             _ = IdleTimer.sharedInstance.switchScreenState()
             handler?(action)
         }
         alertController.addAction(screenStateAction)
         
-        var showDebug = false
-        context.performAndWait {
-            let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
-            showDebug = currentUser.showDebug
-        }
+//        var showDebug = false
+//        context.performAndWait {
+//            let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
+//            showDebug = currentUser.showDebug
+//        }
         
 //        var isSubscribingTitle = "Subscribe to debug channels"
 //        if isSubscribing {
@@ -56,31 +66,31 @@ extension UIAlertController {
 //            })
 //        }
 //        alertController.addAction(subscribeToDebugAction)
-        var toggleDebugTitle = "Show debug messages"
-        if showDebug {
-            toggleDebugTitle = "Hide debug messages"
-        }
-        let toggleDebug = UIAlertAction(title: toggleDebugTitle, style: .default) { (action) in
-            DataController.sharedController.performBackgroundTask({ (backgroundContext) in
-                let user = DataController.sharedController.fetchCurrentUser(in: backgroundContext)
-                user.showDebug = (!user.showDebug)
-                do {
-                    try backgroundContext.save()
-                } catch {
-                    fatalError(error.localizedDescription)
-                }
-                DispatchQueue.main.async {
-                    handler?(action)
-                }
-            })
-        }
-        alertController.addAction(toggleDebug)
+//        var toggleDebugTitle = "Show debug messages"
+//        if showDebug {
+//            toggleDebugTitle = "Hide debug messages"
+//        }
+//        let toggleDebug = UIAlertAction(title: toggleDebugTitle, style: .default) { (action) in
+//            DataController.sharedController.performBackgroundTask({ (backgroundContext) in
+//                let user = DataController.sharedController.fetchCurrentUser(in: backgroundContext)
+//                user.showDebug = (!user.showDebug)
+//                do {
+//                    try backgroundContext.save()
+//                } catch {
+//                    fatalError(error.localizedDescription)
+//                }
+//                DispatchQueue.main.async {
+//                    handler?(action)
+//                }
+//            })
+//        }
+//        alertController.addAction(toggleDebug)
         
-        let clearBadgeCountAction = UIAlertAction(title: "Reset application badge count", style: .default) { (action) in
-            PushNotifications.sharedNotifications.clearBadgeCount()
-            handler?(action)
-        }
-        alertController.addAction(clearBadgeCountAction)
+//        let clearBadgeCountAction = UIAlertAction(title: "Reset application badge count", style: .default) { (action) in
+//            PushNotifications.sharedNotifications.clearBadgeCount()
+//            handler?(action)
+//        }
+//        alertController.addAction(clearBadgeCountAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             handler?(action)

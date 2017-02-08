@@ -81,7 +81,7 @@ class MainViewController: UIViewController, UITextFieldDelegate {
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding - inputAccessoryHeight)
         stackView.frame = stackViewFrame
         view.frame = bounds
-        let accessorySize = CGSize(width: bounds.size.width, height: inputAccessoryHeight)
+//        let accessorySize = CGSize(width: bounds.size.width, height: inputAccessoryHeight)
 //        accessoryView.frame = CGRect(origin: bounds.origin, size: accessorySize)
     }
     

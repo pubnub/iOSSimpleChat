@@ -63,7 +63,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 rootViewController.present(profileNavController, animated: true)
             }
         }
-        
+        IdleTimer.sharedInstance.isEnabled = true
         return true
     }
 
