@@ -30,7 +30,8 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         super.init(frame: .zero)
         fetchedResultsController.delegate = self
         tableView.dataSource = self
-        tableView.rowHeight = 150.0
+        tableView.rowHeight = 100.0
+        tableView.allowsSelection = false
         tableView.delegate = self
         tableView.forceAutoLayout()
 //        tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier())

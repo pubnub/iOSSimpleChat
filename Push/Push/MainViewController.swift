@@ -32,23 +32,19 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
             addSubview(stackView)
             stackView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
             stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-            stackView.widthAnchor.constraint(equalTo: self.widthAnchor).isActive = true
-            stackView.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
+            stackView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.85).isActive = true
+            stackView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.85).isActive = true
             stackView.axis = .horizontal
-            stackView.alignment = .fill
+            stackView.alignment = .center
             stackView.distribution = .fill
             stackView.addArrangedSubview(profileImageView)
             stackView.addArrangedSubview(nameLabel)
             profileImageView.forceAutoLayout()
+            profileImageView.layer.masksToBounds = true
+            profileImageView.layer.cornerRadius = 5.0
             nameLabel.forceAutoLayout()
-            profileImageView.leftAnchor.constraint(equalTo: stackView.leftAnchor).isActive = true
-            
-            let heightConstraints: (UIView) -> () = { (constrainingView) in
-                constrainingView.heightAnchor.constraint(equalTo: self.stackView.heightAnchor).isActive = true
-            }
-            heightConstraints(profileImageView)
-            heightConstraints(nameLabel)
-            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor).isActive = true
+            let constraint = profileImageView.widthAnchor.constraint(lessThanOrEqualTo: heightAnchor)
+            constraint.isActive = true
             nameLabel.adjustsFontSizeToFitWidth = true
             nameLabel.textAlignment = .center
         }
@@ -70,8 +66,12 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
             }
             setNeedsLayout()
         }
-        
-        
+    }
+    
+    var dismissInputAccessoryGR: UITapGestureRecognizer!
+    
+    func dismissInputAccessoryTapped(sender: UITapGestureRecognizer) {
+        inputAccessoryView?.resignFirstResponder()
     }
     
     private var mainViewContext = 0
@@ -93,16 +93,11 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     // MARK: - Publish Action
     
     func publish() {
-        // resign responder here?
-        // TODO: address firstResponder
         inputAccessoryView?.resignFirstResponder()
         // TODO: Should we show anything to the user if there is nothing to publish?
         guard let publishTextField = inputAccessoryView as? PublishInputAccessoryView else {
             fatalError("Expected to find text field")
         }
-        // TODO: address firstResponder
-        // resign responder here?
-//        publishTextField.resignFirstResponder()
         guard let message = publishTextField.text else {
             navigationItem.setPrompt(with: "There is nothing to publish")
             return
@@ -110,22 +105,12 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         publishTextField.text = nil
         print("message: \(message)")
         Network.sharedNetwork.publishChat(message: message)
-//        let alertController = UIAlertController.publishAlertController(withCurrent: message) { (action, channel) -> (Void) in
-//            // TODO: This should probably throw an error
-//            guard let actualChannel = channel else {
-//                self.navigationItem.setPrompt(with: "Must enter a channel to publish")
-//                return
-//            }
-//            self.console.publish(message, toChannel: actualChannel)
-//        }
-//        present(alertController, animated: true)
     }
     
     internal lazy var customAccessoryView: PublishInputAccessoryView = {
         let bounds = UIScreen.main.bounds
         let frame = CGRect(x: 0, y: 0, width: bounds.width, height: self.inputAccessoryHeight)
         let publishView = PublishInputAccessoryView(target: self, action: #selector(publishButtonTapped(sender:)), frame: frame)
-//        publishView.forceAutolayout()
         publishView.delegate = self
         return publishView
     }()
@@ -145,11 +130,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding - inputAccessoryHeight)
         stackView.frame = stackViewFrame
         view.frame = bounds
-//        let accessorySize = CGSize(width: bounds.size.width, height: inputAccessoryHeight)
-//        customAccessoryView.frame.size = accessorySize
-//        if let inputConstraint = inputAccessoryView?.constraints[0] {
-//            inputConstraint.constant = inputAccessoryHeight
-//        }
     }
     
     public override var inputAccessoryView: UIView? {
@@ -165,7 +145,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-//        stackView.distribution = .fillProportionally
         let backgroundView = UIView(frame: .zero)
         backgroundView.addSubview(stackView)
         self.view = backgroundView
@@ -181,6 +160,10 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     }
     
     var colorSegmentedControl: ColorSegmentedControl!
+    
+    func colorSegmentedControlValueChanged(sender: ColorSegmentedControl) {
+        inputAccessoryView?.resignFirstResponder()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -188,24 +171,23 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         // Do any additional setup after loading the view.
         navigationItem.title = "Push!"
         view.backgroundColor = .white
+        
+        dismissInputAccessoryGR = UITapGestureRecognizer(target: self, action: #selector(dismissInputAccessoryTapped(sender:)))
         profileView = ProfileView()
+        profileView.isUserInteractionEnabled = true
+        profileView.addGestureRecognizer(dismissInputAccessoryGR)
         profileView.forceAutoLayout()
         stackView.addArrangedSubview(profileView)
         colorSegmentedControl = ColorSegmentedControl()
+        colorSegmentedControl.addTarget(self, action: #selector(colorSegmentedControlValueChanged(sender:)), for: .valueChanged)
         stackView.addArrangedSubview(colorSegmentedControl)
         colorSegmentedControl.forceAutoLayout()
-//        colorSegmentedControl.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-//        colorSegmentedControl.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-//        let colorSegmentedControlHeightConstant = CGFloat(floatLiteral: 100.0)
-//        colorSegmentedControl.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.0, constant: colorSegmentedControlHeightConstant)
         let colorSegmentedControlVerticalConstraints = NSLayoutConstraint(item: colorSegmentedControl, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.10, constant: 0)
         let profileViewVerticalConstraints = NSLayoutConstraint(item: profileView, attribute: .height, relatedBy: .equal, toItem: stackView, attribute: .height, multiplier: 0.20, constant: 0)
         NSLayoutConstraint.activate([profileViewVerticalConstraints, colorSegmentedControlVerticalConstraints])
         
         consoleView = ClientConsoleView(fetchRequest: fetchRequest)
         stackView.addArrangedSubview(consoleView)
-//        consoleView.forceAutoLayout()
-//        consoleView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 1.0, constant: -colorSegmentedControlHeightConstant).isActive = true
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Profile", style: .done, target: self, action: #selector(updateUserButtonPressed(sender:)))
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Options", style: .plain, target: self, action: #selector(optionsButtonPressed(sender:)))
         view.setNeedsLayout()

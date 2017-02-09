@@ -16,6 +16,8 @@ class PublishInputAccessoryView: UIView {
         }
     }
     
+    let stackView = UIStackView(frame: .zero)
+    let publishButton = UIButton(type: .custom)
     let textField = UITextField(frame: .zero)
     
     var text: String? {
@@ -44,29 +46,51 @@ class PublishInputAccessoryView: UIView {
     
     required init(target: Any, action: Selector, frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .red
-        addSubview(textField)
+        let spacing = CGFloat(integerLiteral: 5)
+        backgroundColor = .darkGray
+        addSubview(stackView)
+        stackView.forceAutoLayout()
+        stackView.axis = .horizontal
+        stackView.alignment = .fill
+        stackView.distribution = .equalSpacing
+        stackView.spacing = spacing
+        stackView.addArrangedSubview(textField)
+        stackView.layoutMargins = UIEdgeInsetsMake(spacing, spacing, spacing, spacing)
+        stackView.isLayoutMarginsRelativeArrangement = true
         textField.borderStyle = .roundedRect
         textField.backgroundColor = .white
         textField.clearButtonMode = .whileEditing
         let publishFrame = CGRect(x: 0, y: 0, width: frame.width/5.0, height: frame.height)
         textField.placeholder = "Enter message ..."
-        let publishButton = UIButton(frame: publishFrame)
+//        publishButton = UIButton(frame: publishFrame)
+        publishButton.forceAutoLayout()
         //let publishButton = UIButton(type: .system)
         publishButton.setTitle("Publish", for: .normal)
-        let normalImage = UIImage(color: .red, size: publishFrame.size)
-        let highlightedImage = UIImage(color: .darkGray, size: publishFrame.size)
+        publishButton.layer.cornerRadius = 5.0
+        publishButton.layer.masksToBounds = true
+        let normalImage = UIImage(color: .blue, size: publishFrame.size)
+        let highlightedImage = UIImage(color: .lightGray, size: publishFrame.size)
         publishButton.setBackgroundImage(normalImage, for: .normal)
         publishButton.setBackgroundImage(highlightedImage, for: .highlighted)
         publishButton.addTarget(target, action: action, for: .touchUpInside)
-        textField.rightView = publishButton
-        textField.rightViewMode = .unlessEditing
+//        textField.rightView = publishButton
+        textField.adjustsFontSizeToFitWidth = true
+//        textField.rightViewMode = .unlessEditing
+        textField.clearButtonMode = .always
+//        textField.rightViewMode = .always
         textField.returnKeyType = .send
         textField.forceAutoLayout()
-        textField.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        textField.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        textField.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        textField.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+//        textField.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+//        textField.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+//        textField.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+//        publishButton.forceAutoLayout()
+        stackView.addArrangedSubview(publishButton)
+        stackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        stackView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+        stackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        stackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        textField.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.75).isActive = true
+//        textField.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.9).isActive = true
         
     }
     

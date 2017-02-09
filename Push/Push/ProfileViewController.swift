@@ -14,6 +14,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     var profileImageButton: UIButton!
     var profileNameButton: UIButton!
+    var profileImageInstructionsLabel: UILabel!
+    var profileNameInstructionsLabel: UILabel!
     
     func dismiss(sender: UIBarButtonItem) {
         guard let mainNavController = parent?.presentingViewController as? UINavigationController, let mainViewController = mainNavController.topViewController as? MainViewController else {
@@ -52,7 +54,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
         stackView.alignment = .fill
-        stackView.distribution = .fill
+        stackView.distribution = .equalSpacing
         //        stackView.distribution = .fillProportionally
         let backgroundView = UIView(frame: .zero)
         backgroundView.backgroundColor = .white
@@ -63,25 +65,49 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         // Do any additional setup after loading the view.
+        profileNameInstructionsLabel = UILabel(frame: .zero)
+        profileNameInstructionsLabel.forceAutoLayout()
+        profileNameInstructionsLabel.adjustsFontSizeToFitWidth = true
+        profileNameInstructionsLabel.text = "Tap below to set your name"
+        profileNameInstructionsLabel.textAlignment = .center
+        profileNameInstructionsLabel.textColor = .darkGray
+        stackView.addArrangedSubview(profileNameInstructionsLabel)
+        
         profileNameButton = UIButton(type: .system)
         profileNameButton.forceAutoLayout()
-        profileNameButton.setTitle("Tap here to enter name ...", for: .normal)
+        profileNameButton.setTitle("Enter name here ...", for: .normal)
         profileNameButton.addTarget(self, action: #selector(profileNameButtonTapped(sender:)), for: .touchUpInside)
         stackView.addArrangedSubview(profileNameButton)
         
+        profileImageInstructionsLabel = UILabel(frame: .zero)
+        profileImageInstructionsLabel.forceAutoLayout()
+        profileImageInstructionsLabel.textColor = .darkGray
+        profileImageInstructionsLabel.adjustsFontSizeToFitWidth = true
+        profileImageInstructionsLabel.text = "Tap below to set your avatar image"
+        profileImageInstructionsLabel.textAlignment = .center
+        stackView.addArrangedSubview(profileImageInstructionsLabel)
+        
         profileImageButton = UIButton(type: .custom)
+        profileImageButton.layer.masksToBounds = true
+        profileImageButton.layer.cornerRadius = 5.0
+        profileImageButton.autoresizesSubviews = false
         profileImageButton.forceAutoLayout()
-        profileImageButton.setTitle("Tap to set an image", for: .normal)
-        profileImageButton.titleLabel?.textAlignment = .center
-        profileImageButton.setTitleColor(.black, for: .normal)
         profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped(sender:)), for: .touchUpInside)
         profileImageButton.setImage(UIImage(named: "pubnub.png"), for: .normal)
         stackView.addArrangedSubview(profileImageButton)
     
-        profileNameButton.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.25).isActive = true
+//        profileNameButton.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.5).isActive = true
+//        profileNameButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 100).isActive = true
+//        profileNameInstructionsLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 20.0).isActive = true
+//        profileNameInstructionsLabel.heightAnchor.constraint(equalToConstant: 20.0).isActive = true
+//        profileNameButton.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.20).isActive = true
+//        profileImageInstructionsLabel.heightAnchor.constraint(equalToConstant: 20.0).isActive = true
         
+        stackView.isLayoutMarginsRelativeArrangement = true
+        stackView.layoutMargins = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
+        
+        view.setNeedsLayout()
     }
     
     override func viewWillAppear(_ animated: Bool) {

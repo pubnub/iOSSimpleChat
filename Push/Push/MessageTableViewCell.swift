@@ -37,8 +37,10 @@ class MessageTableViewCell: UITableViewCell {
     
     func update(with update: MessageCellUpdate) {
         imageView?.image = update.image
+        imageView?.layer.masksToBounds = true
+        imageView?.layer.cornerRadius = 5.0
         textLabel?.text = update.message
-        detailTextLabel?.text = update.name
+        detailTextLabel?.text = "from \(update.name)"
         detailTextLabel?.isHidden = false
         setNeedsLayout()
     }
