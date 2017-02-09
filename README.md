@@ -28,3 +28,7 @@ For troubleshooting with this app, please contact us at support@pubnub.com
 
 - [ ] Add color changing
 - [ ] Branch for Push Notifications
+- [ ] Format current user vs. all others (left vs. right align)
+- [ ] Fix formatting for UISegmentedControl
+- [ ] Add history call to update when launching
+- [ ] Explain that color updates go through PubNub's system, so the slight delay is an around the world trip (with delays to update User Interface)
