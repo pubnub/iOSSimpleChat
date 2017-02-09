@@ -209,7 +209,24 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         view.setNeedsLayout()
         consoleView.scrollToBottom()
         consoleView.delegate = self
+        defer {
+            view.setNeedsLayout()
+        }
+        guard let navBar = navigationController?.navigationBar else {
+            return
+        }
+        navigationTitleView = ColorTitleView(name: nil, image: nil)
+        navigationItem.titleView = navigationTitleView
+        var updatedTitleViewFrame = navBar.frame
+        updatedTitleViewFrame.size = CGSize(width: navBar.frame.size.width/2.0, height: navBar.frame.size.height - 5.0)
+        navigationTitleView.frame = updatedTitleViewFrame
+        navigationTitleView.center = navBar.center
+        navigationController?.navigationBar.setNeedsLayout()
     }
+    
+    var navigationTitleView: ColorTitleView!
+    
+    
     
     func optionsButtonPressed(sender: UIBarButtonItem) {
         let optionsAlertController = UIAlertController.optionsAlertController(in: DataController.sharedController.viewContext) { (action) in
@@ -272,26 +289,56 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         }
     }
     
+//    func updateNavigationTitle() {
+//        DataController.sharedController.viewContext.perform {
+//            guard let actualUser = self.currentUser else {
+//                return
+//            }
+//            let updatedTitleView = ColorTitleView(name: actualUser.lastColorUpdaterName, image: actualUser.lastColorUpdaterThumbnail)
+//            DispatchQueue.main.async {
+//                guard let navBar = self.navigationController?.navigationBar else {
+//                    return
+//                }
+//                
+//                var updatedSize = navBar.frame.size
+//                updatedSize.width = updatedSize.width / 2.0
+//                updatedSize.height -= 5.0
+//                let titleViewFrame = CGRect(origin: navBar.frame.origin, size: updatedSize)
+//                updatedTitleView.frame = titleViewFrame
+//                print(titleViewFrame.debugDescription)
+//                updatedTitleView.center = navBar.center
+//                updatedTitleView.layoutIfNeeded()
+//                self.navigationItem.titleView = updatedTitleView
+//            }
+//        }
+//    }
     func updateNavigationTitle() {
         DataController.sharedController.viewContext.perform {
             guard let actualUser = self.currentUser else {
                 return
             }
-            let updatedTitleView = ColorTitleView(name: actualUser.lastColorUpdaterName, image: actualUser.lastColorUpdaterThumbnail)
+            //            let updatedTitleView = ColorTitleView(name: actualUser.lastColorUpdaterName, image: actualUser.lastColorUpdaterThumbnail)
             DispatchQueue.main.async {
-                guard let navBar = self.navigationController?.navigationBar else {
-                    return
-                }
+                let update = ColorTitleUpdate(image: actualUser.lastColorUpdaterThumbnail, name: actualUser.lastColorUpdaterName)
+                self.navigationTitleView.update(with: update)
+                //                guard let navBar = self.navigationController?.navigationBar else {
+                //                    return
+                //                }
                 
-                var updatedSize = navBar.frame.size
-                updatedSize.width = updatedSize.width / 2.0
-                updatedSize.height -= 5.0
-                let titleViewFrame = CGRect(origin: navBar.frame.origin, size: updatedSize)
-                updatedTitleView.frame = titleViewFrame
-                print(titleViewFrame.debugDescription)
-                updatedTitleView.center = navBar.center
-                updatedTitleView.layoutIfNeeded()
-                self.navigationItem.titleView = updatedTitleView
+                //                var updatedSize = navBar.frame.size
+                //                updatedSize.width = updatedSize.width / 2.0
+                //                updatedSize.height -= 5.0
+                //                let titleViewFrame = CGRect(origin: navBar.frame.origin, size: updatedSize)
+                //                print(titleViewFrame.debugDescription)
+                //                updatedTitleView.frame = titleViewFrame
+                //                updatedTitleView.center = navBar.center
+                //                updatedTitleView.layoutIfNeeded()
+                //                self.navigationItem.titleView = updatedTitleView
+                //                self.navigationItem.titleView = updatedTitleView
+                //                updatedTitleView.forceAutoLayout()
+                //                updatedTitleView.center(in: navBar)
+                //                updatedTitleView.widthAnchor.constraint(equalTo: navBar.widthAnchor, multiplier: 0.5).isActive = true
+                //                updatedTitleView.heightAnchor.constraint(equalTo: navBar.heightAnchor, constant: -5.0).isActive = true
             }
         }
     }

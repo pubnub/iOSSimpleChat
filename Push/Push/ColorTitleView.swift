@@ -8,10 +8,10 @@
 
 import UIKit
 
-//struct ColorTitleUpdate {
-//    let image: UIImage?
-//    let name: String?
-//}
+struct ColorTitleUpdate {
+    let image: UIImage?
+    let name: String?
+}
 
 class ColorTitleView: UIView {
     
@@ -44,24 +44,27 @@ class ColorTitleView: UIView {
         imageView.layer.cornerRadius = 5.0
         imageView.widthAnchor.constraint(lessThanOrEqualTo: stackView.heightAnchor).isActive = true
         imageView.heightAnchor.constraint(lessThanOrEqualTo: imageView.widthAnchor).isActive = true
-        
+        update(with: ColorTitleUpdate(image: image, name: name))
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    func update(with update: ColorTitleUpdate) {
         var titleText = "Color changed by: "
         defer {
             titleLabel.text = titleText
             setNeedsLayout()
         }
-        if let actualName = name {
+        if let actualName = update.name {
             titleText += "\(actualName)"
         }
-        if let actualImage = image {
+        if let actualImage = update.image {
             imageView.image = actualImage
         } else {
             imageView.image = nil
         }
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
 }
