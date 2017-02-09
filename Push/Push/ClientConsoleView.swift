@@ -10,6 +10,13 @@ import UIKit
 import PubNub
 import CoreData
 
+extension UIColor {
+    static var fakeClear: UIColor {
+        // [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]
+        return UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.5)
+    }
+}
+
 protocol ClientConsoleViewDelegate: NSObjectProtocol {
     // func scrollViewDidScroll(_ scrollView: UIScrollView)
     func consoleViewDidMove(_ consoleView: ClientConsoleView)
@@ -28,8 +35,8 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         self.fetchRequest = fetchRequest
         self.fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.sharedController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         super.init(frame: .zero)
-        backgroundColor = .clear
-        tableView.backgroundColor = .clear
+//        backgroundColor = UIColor.fakeClear
+//        tableView.backgroundColor = UIColor.fakeClear
         fetchedResultsController.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = 100.0

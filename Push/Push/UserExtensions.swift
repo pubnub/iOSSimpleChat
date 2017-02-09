@@ -13,11 +13,11 @@ import CoreData
 public enum Color: Int16 {
     case white = -1
     case red = 0
-    case blue
-    case green
-    case purple
-    case yellow
     case orange
+    case yellow
+    case green
+    case blue
+    case purple
     
     var uiColor: UIColor {
         switch self {
@@ -68,7 +68,7 @@ public enum Color: Int16 {
     }
     
     static var selectableColors: [Color] {
-        return [.red, .orange, .yellow, .green, .purple, .blue]
+        return [.red, .orange, .yellow, .green, .blue, .purple]
     }
     
     static var segmentedControlImages: [Any] {

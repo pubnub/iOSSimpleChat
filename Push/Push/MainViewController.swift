@@ -104,7 +104,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         }
         publishTextField.text = nil
         print("message: \(message)")
-        Network.sharedNetwork.publishChat(message: message)
+        Network.sharedNetwork.publish(chat: message)
     }
     
     internal lazy var customAccessoryView: PublishInputAccessoryView = {
@@ -181,6 +181,8 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     
     func colorSegmentedControlValueChanged(sender: ColorSegmentedControl) {
         inputAccessoryView?.resignFirstResponder()
+        Network.sharedNetwork.publish(color: sender.selectedColor)
+        
     }
 
     override func viewDidLoad() {
@@ -197,6 +199,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         profileView.forceAutoLayout()
         stackView.addArrangedSubview(profileView)
         colorSegmentedControl = ColorSegmentedControl()
+        colorSegmentedControl.isUserInteractionEnabled = true
         colorSegmentedControl.addTarget(self, action: #selector(colorSegmentedControlValueChanged(sender:)), for: .valueChanged)
         stackView.addArrangedSubview(colorSegmentedControl)
         colorSegmentedControl.forceAutoLayout()

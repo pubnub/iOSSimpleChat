@@ -30,5 +30,9 @@ class ColorSegmentedControl: UISegmentedControl {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    var selectedColor: Color {
+        return Color(rawValue: Int16(selectedSegmentIndex))!
+    }
 
 }

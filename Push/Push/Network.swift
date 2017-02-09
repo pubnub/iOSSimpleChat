@@ -293,10 +293,10 @@ class Network: NSObject, PNObjectEventListener {
         case remove
     }
     
-    func publishChat(message: String?) {
+    func publish(chat: String?) {
         networkContext.perform {
             var payload = [String: String]()
-            if let actualMessage = message {
+            if let actualMessage = chat {
                 payload["text"] = actualMessage
             }
             if let actualThumbnail = self.user?.thumbnailString {
@@ -310,6 +310,10 @@ class Network: NSObject, PNObjectEventListener {
             }
             self.publish(payload: payload, toChannel: self.chatChannel)
         }
+    }
+    
+    func publish(color: Color) {
+        
     }
     
     private func publish(payload: Any?, toChannel: String) {

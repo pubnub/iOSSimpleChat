@@ -18,7 +18,7 @@ class MessageTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
-        backgroundColor = .clear
+//        backgroundColor = UIColor.fakeClear
     }
     
     required init?(coder aDecoder: NSCoder) {
