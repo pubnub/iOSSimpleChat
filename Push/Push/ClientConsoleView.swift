@@ -13,7 +13,8 @@ import CoreData
 extension UIColor {
     static var fakeClear: UIColor {
         // [UIColor colorWithRed:0 green:0 blue:0 alpha:0.1]
-        return UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.5)
+//        return UIColor(red: 0.0, green: 0.0, blue: 0.5, alpha: 0.5)
+        return UIColor.clear
     }
 }
 
@@ -35,9 +36,11 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         self.fetchRequest = fetchRequest
         self.fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.sharedController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         super.init(frame: .zero)
-//        backgroundColor = UIColor.fakeClear
-//        tableView.backgroundColor = UIColor.fakeClear
+        backgroundColor = UIColor.fakeClear
+        tableView.backgroundColor = UIColor.fakeClear
         fetchedResultsController.delegate = self
+        isUserInteractionEnabled = true
+        tableView.isUserInteractionEnabled = true
         tableView.dataSource = self
         tableView.rowHeight = 100.0
         tableView.allowsSelection = false

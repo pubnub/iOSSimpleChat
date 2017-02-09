@@ -313,7 +313,7 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     func publish(color: Color) {
-        
+        publish(payload: ["color": color.rawValue], toChannel: colorChannel)
     }
     
     private func publish(payload: Any?, toChannel: String) {
