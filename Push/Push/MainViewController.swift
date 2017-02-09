@@ -163,7 +163,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         stackView.distribution = .fill
         backgroundView = UIImageView(frame: .zero)
         backgroundView.isUserInteractionEnabled = true
-//        backgroundView.addSubview(stackView)
         let baseView = UIView(frame: .zero)
         baseView.addSubview(backgroundView)
         baseView.addSubview(stackView)
