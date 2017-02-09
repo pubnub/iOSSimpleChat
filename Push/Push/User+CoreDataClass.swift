@@ -30,7 +30,18 @@ public class User: NSManagedObject {
         publishKey = defaultPublishKey
         showDebug = false
         thumbnail = UIImage(named: "pubnub.png")
-        backgroundColor = .red
+        backgroundColor = .white
+        colorUpdateTimetoken = .min
+    }
+    
+    // true if valid update, false if update is too old
+    func update(color: Color?, with timetoken: Int64) -> Bool {
+        guard let actualColor = color, timetoken > colorUpdateTimetoken else {
+            return false
+        }
+        colorUpdateTimetoken = timetoken
+        backgroundColor = actualColor
+        return true
     }
     
 //    let backgroundColorKeyPath = #keyPath(User.backgroundColor)

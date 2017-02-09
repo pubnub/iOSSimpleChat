@@ -129,7 +129,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         }
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding - inputAccessoryHeight)
         stackView.frame = stackViewFrame
-//        backgroundView.frame = bounds
         view.frame = bounds
     }
     

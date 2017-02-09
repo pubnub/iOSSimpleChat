@@ -28,12 +28,6 @@ class Network: NSObject, PNObjectEventListener {
     
     private let networkQueue = DispatchQueue(label: "Network", qos: .utility, attributes: [.concurrent])
     
-//    func config(with identifier: String, pubKey: String, subKey: String) -> PNConfiguration {
-//        let config = PNConfiguration(publishKey: pubKey, subscribeKey: subKey)
-//        config.uuid = identifier
-//        return config
-//    }
-    
     func updateClient(with configuration: PNConfiguration, completion: ((PubNub) -> Swift.Void)? = nil) {
         client.copyWithConfiguration(configuration, callbackQueue: networkQueue) { (updatedClient) in
             self.client = updatedClient
@@ -41,6 +35,49 @@ class Network: NSObject, PNObjectEventListener {
                 completion?(updatedClient)
             }
         }
+    }
+    
+    func getNewestColorInHistory(completion: @escaping (Color?, Int64?) -> ()) {
+        client.historyForChannel(colorChannel, start: nil, end: nil, limit: 1, includeTimeToken: true) { (result, error) in
+            if let actualError = error {
+                print(actualError.errorData.information)
+                completion(nil, nil)
+                return
+            }
+            guard let newestResult = result?.data.messages.first as? [String: Any] else {
+                completion(nil, nil)
+                return
+            }
+            guard let timetoken = newestResult["timetoken"] as? Int64 else {
+                completion(nil, nil)
+                return
+            }
+            guard let message = newestResult["message"] as? [String: Int16], let color = message["color"] else {
+                completion(nil, nil)
+                return
+            }
+            completion(Color(rawValue: color), timetoken)
+            print(newestResult)
+//            completion(colo)
+        }
+    }
+    
+    func didReceiveAppStateChange(notification: Notification) {
+        guard notification.name == .UIApplicationDidBecomeActive else {
+            return
+        }
+        getNewestColorInHistory { (updatedColor, updatedTimetoken) in
+            guard let actualColor = updatedColor, let actualTimetoken = updatedTimetoken else {
+                return
+            }
+            self.networkContext.perform {
+                if let _ = self.user?.update(color: actualColor, with: actualTimetoken) {
+                    DataController.sharedController.save(context: self.networkContext)
+                }
+            }
+        }
+        // search history to update color
+        
     }
     
     
@@ -181,8 +218,6 @@ class Network: NSObject, PNObjectEventListener {
     
     static let sharedNetwork = Network()
     
-    
-    
     override init() {
         let config = User.defaultConfiguration
         self.client = PubNub.clientWithConfiguration(config)
@@ -190,6 +225,7 @@ class Network: NSObject, PNObjectEventListener {
         context.automaticallyMergesChangesFromParent = true
         self.networkContext = context
         super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceiveAppStateChange(notification:)), name: .UIApplicationDidBecomeActive, object: nil)
     }
     
     // MARK: - APNS
@@ -476,7 +512,8 @@ class Network: NSObject, PNObjectEventListener {
                 guard let payload = message.data.message as? [String: Int16], let color = payload["color"] else {
                     return
                 }
-                self.user?.backgroundColor = Color(rawValue: color)!
+                _ = self.user?.update(color: Color(rawValue: color), with: message.data.timetoken.int64Value)
+//                self.user?.backgroundColor = Color(rawValue: color)!
             default:
                 print("We can't handle other types of messages!")
                 return

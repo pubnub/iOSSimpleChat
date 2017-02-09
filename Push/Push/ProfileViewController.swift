@@ -76,6 +76,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        self.backgroundView.image = UIImage(color: .white)
+        
         profileNameInstructionsLabel = UILabel(frame: .zero)
         profileNameInstructionsLabel.forceAutoLayout()
         profileNameInstructionsLabel.adjustsFontSizeToFitWidth = true
