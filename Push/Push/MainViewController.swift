@@ -129,7 +129,21 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         }
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding - inputAccessoryHeight)
         stackView.frame = stackViewFrame
+        backgroundView.frame = bounds
         view.frame = bounds
+    }
+    
+    func updateBackgroundView() {
+        DataController.sharedController.viewContext.perform {
+            guard let actualUser = self.currentUser else {
+                return
+            }
+            let backgroundColor = actualUser.backgroundColor.uiColor
+            DispatchQueue.main.async {
+                self.backgroundView.image = UIImage(color: backgroundColor)
+                self.backgroundView.setNeedsLayout()
+            }
+        }
     }
     
     public override var inputAccessoryView: UIView? {
@@ -140,14 +154,18 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         return true
     }
     
+    var backgroundView: UIImageView!
+    
     override func loadView() {
         stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-        let backgroundView = UIView(frame: .zero)
+        backgroundView = UIImageView(frame: .zero)
         backgroundView.addSubview(stackView)
-        self.view = backgroundView
+        let baseView = UIView(frame: .zero)
+        baseView.addSubview(backgroundView)
+        self.view = baseView
         self.view.setNeedsLayout()
     }
     
@@ -236,7 +254,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     
     var currentUser: User? {
         didSet {
-            let observingKeyPaths = [#keyPath(User.name), #keyPath(User.thumbnail)]
+            let observingKeyPaths = [#keyPath(User.name), #keyPath(User.thumbnail), #keyPath(User.rawBackgroundColor)]
             observingKeyPaths.forEach { (keyPath) in
                 oldValue?.removeObserver(self, forKeyPath: keyPath, context: &mainViewContext)
                 self.currentUser?.addObserver(self, forKeyPath: keyPath, options: [.new, .old, .initial], context: &mainViewContext)
@@ -260,6 +278,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if context == &mainViewContext {
+            print("KVO: \(keyPath)")
             guard let existingKeyPath = keyPath else {
                 return
             }
@@ -268,6 +287,8 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
                 fallthrough
             case #keyPath(User.thumbnail):
                 updateProfileView()
+            case #keyPath(User.rawBackgroundColor):
+                updateBackgroundView()
             default:
                 fatalError("what wrong in KVO?")
             }

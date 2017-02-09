@@ -33,13 +33,19 @@ public class User: NSManagedObject {
         backgroundColor = .red
     }
     
+//    let backgroundColorKeyPath = #keyPath(User.backgroundColor)
     var backgroundColor: Color {
         set {
+//            willChangeValue(forKey: backgroundColorKeyPath)
             self.rawBackgroundColor = newValue.rawValue
+//            didChangeValue(forKey: backgroundColorKeyPath)
         }
         get {
 //            return Source(rawValue: rawCategory)! // forcibly unwrap so we can catch errors in debug
-            return Color(rawValue: rawBackgroundColor)! // forcibly unwrap so we can catch errors in debug
+//            willAccessValue(forKey: backgroundColorKeyPath)
+            let returningColor = Color(rawValue: rawBackgroundColor)! // forcibly unwrap so we can catch errors in debug
+//            didAccessValue(forKey: backgroundColorKeyPath)
+            return returningColor
         }
     }
     

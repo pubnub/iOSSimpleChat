@@ -28,6 +28,8 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         self.fetchRequest = fetchRequest
         self.fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: DataController.sharedController.viewContext, sectionNameKeyPath: nil, cacheName: nil)
         super.init(frame: .zero)
+        backgroundColor = .clear
+        tableView.backgroundColor = .clear
         fetchedResultsController.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = 100.0

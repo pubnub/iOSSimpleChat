@@ -459,22 +459,25 @@ class Network: NSObject, PNObjectEventListener {
     func client(_ client: PubNub, didReceive status: PNStatus) {
         self.networkContext.perform {
             _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
-            do {
-                try self.networkContext.save()
-            } catch {
-                fatalError(error.localizedDescription)
-            }
+            DataController.sharedController.save(context: self.networkContext)
         }
     }
     
     func client(_ client: PubNub, didReceiveMessage message: PNMessageResult) {
         self.networkContext.perform {
-            _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
-            do {
-                try self.networkContext.save()
-            } catch {
-                fatalError(error.localizedDescription)
+            switch message.data.channel {
+            case self.chatChannel:
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
+            case self.colorChannel:
+                guard let payload = message.data.message as? [String: Int16], let color = payload["color"] else {
+                    return
+                }
+                self.user?.backgroundColor = Color(rawValue: color)!
+            default:
+                print("We can't handle other types of messages!")
+                return
             }
+            DataController.sharedController.save(context: self.networkContext)
         }
     }
 
