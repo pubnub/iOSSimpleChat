@@ -11,10 +11,13 @@ import CoreData
 
 @objc(Color)
 public enum Color: Int16 {
+    case white = -1
     case red = 0
     case blue
     case green
     case purple
+    case yellow
+    case orange
     
     var uiColor: UIColor {
         switch self {
@@ -26,11 +29,19 @@ public enum Color: Int16 {
             return UIColor.green
         case .purple:
             return UIColor.purple
+        case .white:
+            return UIColor.white
+        case .yellow:
+            return UIColor.yellow
+        case .orange:
+            return UIColor.orange
         }
     }
     
     var title: String {
         switch self {
+        case .white:
+            return "White"
         case .red:
             return "Red"
         case .blue:
@@ -39,6 +50,10 @@ public enum Color: Int16 {
             return "Green"
         case .purple:
             return "Purple"
+        case .orange:
+            return "Orange"
+        case .yellow:
+            return "Yellow"
         }
     }
     
@@ -49,15 +64,19 @@ public enum Color: Int16 {
     }
     
     static var allColors: [Color] {
-        return [.red, .blue, .green, .purple]
+        return [.white, .red, .blue, .green, .purple, .orange, .yellow]
+    }
+    
+    static var selectableColors: [Color] {
+        return [.red, .orange, .yellow, .green, .purple, .blue]
     }
     
     static var segmentedControlImages: [Any] {
-        return allColors.map { $0.image }
+        return selectableColors.map { $0.image }
     }
     
     static var segmentedControlTitles: [String] {
-        return allColors.map { $0.title }
+        return selectableColors.map { $0.title }
     }
 }
 
