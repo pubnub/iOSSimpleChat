@@ -104,7 +104,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         }
         publishTextField.text = nil
         print("message: \(message)")
-        Network.sharedNetwork.publishChat(message: message)
+        Network.sharedNetwork.publish(chat: message)
     }
     
     internal lazy var customAccessoryView: PublishInputAccessoryView = {
@@ -132,6 +132,19 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         view.frame = bounds
     }
     
+    func updateBackgroundView() {
+        DataController.sharedController.viewContext.perform {
+            guard let actualUser = self.currentUser else {
+                return
+            }
+            let backgroundColor = actualUser.backgroundColor.uiColor
+            DispatchQueue.main.async {
+                self.backgroundView.image = UIImage(color: backgroundColor)
+                self.backgroundView.setNeedsLayout()
+            }
+        }
+    }
+    
     public override var inputAccessoryView: UIView? {
         return customAccessoryView
     }
@@ -140,14 +153,20 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         return true
     }
     
+    var backgroundView: UIImageView!
+    
     override func loadView() {
         stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
-        let backgroundView = UIView(frame: .zero)
-        backgroundView.addSubview(stackView)
-        self.view = backgroundView
+        backgroundView = UIImageView(frame: .zero)
+        let baseView = UIView(frame: .zero)
+        baseView.addSubview(backgroundView)
+        backgroundView.sizeAndCenter(to: baseView)
+        baseView.addSubview(stackView)
+        baseView.bringSubview(toFront: stackView)
+        self.view = baseView
         self.view.setNeedsLayout()
     }
     
@@ -163,6 +182,8 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     
     func colorSegmentedControlValueChanged(sender: ColorSegmentedControl) {
         inputAccessoryView?.resignFirstResponder()
+        Network.sharedNetwork.publish(color: sender.selectedColor)
+        
     }
 
     override func viewDidLoad() {
@@ -236,7 +257,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     
     var currentUser: User? {
         didSet {
-            let observingKeyPaths = [#keyPath(User.name), #keyPath(User.thumbnail)]
+            let observingKeyPaths = [#keyPath(User.name), #keyPath(User.thumbnail), #keyPath(User.rawBackgroundColor)]
             observingKeyPaths.forEach { (keyPath) in
                 oldValue?.removeObserver(self, forKeyPath: keyPath, context: &mainViewContext)
                 self.currentUser?.addObserver(self, forKeyPath: keyPath, options: [.new, .old, .initial], context: &mainViewContext)
@@ -268,6 +289,8 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
                 fallthrough
             case #keyPath(User.thumbnail):
                 updateProfileView()
+            case #keyPath(User.rawBackgroundColor):
+                updateBackgroundView()
             default:
                 fatalError("what wrong in KVO?")
             }

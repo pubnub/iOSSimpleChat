@@ -28,17 +28,50 @@ class Network: NSObject, PNObjectEventListener {
     
     private let networkQueue = DispatchQueue(label: "Network", qos: .utility, attributes: [.concurrent])
     
-//    func config(with identifier: String, pubKey: String, subKey: String) -> PNConfiguration {
-//        let config = PNConfiguration(publishKey: pubKey, subscribeKey: subKey)
-//        config.uuid = identifier
-//        return config
-//    }
-    
     func updateClient(with configuration: PNConfiguration, completion: ((PubNub) -> Swift.Void)? = nil) {
         client.copyWithConfiguration(configuration, callbackQueue: networkQueue) { (updatedClient) in
             self.client = updatedClient
             DispatchQueue.main.async {
                 completion?(updatedClient)
+            }
+        }
+    }
+    
+    func getNewestColorInHistory(completion: @escaping (Color?, Int64?) -> ()) {
+        client.historyForChannel(colorChannel, start: nil, end: nil, limit: 1, includeTimeToken: true) { (result, error) in
+            if let actualError = error {
+                print(actualError.errorData.information)
+                completion(nil, nil)
+                return
+            }
+            guard let newestResult = result?.data.messages.first as? [String: Any] else {
+                completion(nil, nil)
+                return
+            }
+            guard let timetoken = newestResult["timetoken"] as? Int64 else {
+                completion(nil, nil)
+                return
+            }
+            guard let message = newestResult["message"] as? [String: Any], let color = message["color"] as? Int16 else {
+                completion(nil, nil)
+                return
+            }
+            completion(Color(rawValue: color), timetoken)
+        }
+    }
+    
+    func didReceiveAppStateChange(notification: Notification) {
+        guard notification.name == .UIApplicationDidBecomeActive else {
+            return
+        }
+        getNewestColorInHistory { (updatedColor, updatedTimetoken) in
+            guard let actualColor = updatedColor, let actualTimetoken = updatedTimetoken else {
+                return
+            }
+            self.networkContext.perform {
+                if let _ = self.user?.update(color: actualColor, with: actualTimetoken) {
+                    DataController.sharedController.save(context: self.networkContext)
+                }
             }
         }
     }
@@ -181,8 +214,6 @@ class Network: NSObject, PNObjectEventListener {
     
     static let sharedNetwork = Network()
     
-    
-    
     override init() {
         let config = User.defaultConfiguration
         self.client = PubNub.clientWithConfiguration(config)
@@ -190,6 +221,7 @@ class Network: NSObject, PNObjectEventListener {
         context.automaticallyMergesChangesFromParent = true
         self.networkContext = context
         super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceiveAppStateChange(notification:)), name: .UIApplicationDidBecomeActive, object: nil)
     }
     
     // MARK: - APNS
@@ -293,10 +325,10 @@ class Network: NSObject, PNObjectEventListener {
         case remove
     }
     
-    func publishChat(message: String?) {
+    func publish(chat: String?) {
         networkContext.perform {
             var payload = [String: String]()
-            if let actualMessage = message {
+            if let actualMessage = chat {
                 payload["text"] = actualMessage
             }
             if let actualThumbnail = self.user?.thumbnailString {
@@ -310,6 +342,13 @@ class Network: NSObject, PNObjectEventListener {
             }
             self.publish(payload: payload, toChannel: self.chatChannel)
         }
+    }
+    
+    func publish(color: Color) {
+        var payload = [String: Any]()
+        payload["color"] = color.rawValue
+        payload["name"] = color.title
+        publish(payload: payload, toChannel: colorChannel)
     }
     
     private func publish(payload: Any?, toChannel: String) {
@@ -459,22 +498,25 @@ class Network: NSObject, PNObjectEventListener {
     func client(_ client: PubNub, didReceive status: PNStatus) {
         self.networkContext.perform {
             _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: status, with: self.user)
-            do {
-                try self.networkContext.save()
-            } catch {
-                fatalError(error.localizedDescription)
-            }
+            DataController.sharedController.save(context: self.networkContext)
         }
     }
     
     func client(_ client: PubNub, didReceiveMessage message: PNMessageResult) {
         self.networkContext.perform {
-            _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
-            do {
-                try self.networkContext.save()
-            } catch {
-                fatalError(error.localizedDescription)
+            switch message.data.channel {
+            case self.chatChannel:
+                _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
+            case self.colorChannel:
+                guard let payload = message.data.message as? [String: Any], let color = payload["color"] as? Int16 else {
+                    return
+                }
+                _ = self.user?.update(color: Color(rawValue: color), with: message.data.timetoken.int64Value)
+            default:
+                print("We can't handle other types of messages!")
+                return
             }
+            DataController.sharedController.save(context: self.networkContext)
         }
     }
 

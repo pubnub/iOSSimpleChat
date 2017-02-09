@@ -16,6 +16,8 @@ This app is a simple demo for showing the power of developing iOS applications u
 ## Using this app with your account
 If you want to use this app to test push with your own PubNub account, then you need to replace the publish and subscribe keys. 
 
+Make sure your account is configured with storage enabled (fill in storage image later)
+
 Make sure to use the bundle identifier already in the app or change it to one you are provisioning. You can find the bundle ID of the app in Xcode:
 ![Image of app bundle ID](https://raw.githubusercontent.com/pubnub/iOSPush/assets/update-bundle-id.png)
 
@@ -26,5 +28,8 @@ For troubleshooting with this app, please contact us at support@pubnub.com
 
 ## Tasks
 
-- [ ] Add color changing
 - [ ] Branch for Push Notifications
+- [ ] Share name of person who just changed the color
+- [ ] Format current user vs. all others (left vs. right align)
+- [ ] Fix formatting for UISegmentedControl
+- [ ] Explain that color updates go through PubNub's system, so the slight delay is an around the world trip (also with delays to update User Interface)

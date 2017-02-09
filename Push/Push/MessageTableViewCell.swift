@@ -12,12 +12,21 @@ struct MessageCellUpdate {
     let name: String
     let image: UIImage?
     let message: String?
+    let isSelf: Bool
+    
+    init(name: String, image: UIImage?, message: String?, isSelf: Bool = false) {
+        self.name = name
+        self.image = image
+        self.message = message
+        self.isSelf = isSelf
+    }
 }
 
 class MessageTableViewCell: UITableViewCell {
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+        backgroundColor = UIColor.fakeClear
     }
     
     required init?(coder aDecoder: NSCoder) {

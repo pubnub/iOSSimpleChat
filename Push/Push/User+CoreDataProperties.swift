@@ -29,6 +29,7 @@ extension User {
     @NSManaged public var thumbnail: UIImage?
     @NSManaged public var showDebug: Bool
     @NSManaged public var rawBackgroundColor: Int16
+    @NSManaged public var colorUpdateTimetoken: Int64
 }
 
 // MARK: Generated accessors for pushChannels
