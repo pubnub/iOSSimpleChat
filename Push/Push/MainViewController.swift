@@ -129,7 +129,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         }
         let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding - inputAccessoryHeight)
         stackView.frame = stackViewFrame
-        backgroundView.frame = bounds
+//        backgroundView.frame = bounds
         view.frame = bounds
     }
     
@@ -162,9 +162,9 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         stackView.alignment = .fill
         stackView.distribution = .fill
         backgroundView = UIImageView(frame: .zero)
-        backgroundView.isUserInteractionEnabled = true
         let baseView = UIView(frame: .zero)
         baseView.addSubview(backgroundView)
+        backgroundView.sizeAndCenter(to: baseView)
         baseView.addSubview(stackView)
         baseView.bringSubview(toFront: stackView)
         self.view = baseView
@@ -201,7 +201,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         profileView.forceAutoLayout()
         stackView.addArrangedSubview(profileView)
         colorSegmentedControl = ColorSegmentedControl()
-        colorSegmentedControl.isUserInteractionEnabled = true
         colorSegmentedControl.addTarget(self, action: #selector(colorSegmentedControlValueChanged(sender:)), for: .valueChanged)
         stackView.addArrangedSubview(colorSegmentedControl)
         colorSegmentedControl.forceAutoLayout()
@@ -283,7 +282,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if context == &mainViewContext {
-            print("KVO: \(keyPath)")
             guard let existingKeyPath = keyPath else {
                 return
             }

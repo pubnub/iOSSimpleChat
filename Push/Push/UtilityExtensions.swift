@@ -43,6 +43,23 @@ extension UIView {
     func forceAutoLayout() {
         self.translatesAutoresizingMaskIntoConstraints = false
     }
+    
+    func center(in view: UIView) {
+        forceAutoLayout()
+        centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+    
+    func size(to view: UIView) {
+        forceAutoLayout()
+        widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+    }
+    
+    func sizeAndCenter(to view: UIView) {
+        size(to: view)
+        center(in: view)
+    }
 }
 
 extension UINavigationItem {

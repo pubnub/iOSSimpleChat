@@ -39,8 +39,6 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         backgroundColor = UIColor.fakeClear
         tableView.backgroundColor = UIColor.fakeClear
         fetchedResultsController.delegate = self
-        isUserInteractionEnabled = true
-        tableView.isUserInteractionEnabled = true
         tableView.dataSource = self
         tableView.rowHeight = 100.0
         tableView.allowsSelection = false
