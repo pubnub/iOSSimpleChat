@@ -52,13 +52,11 @@ class Network: NSObject, PNObjectEventListener {
                 completion(nil, nil)
                 return
             }
-            guard let message = newestResult["message"] as? [String: Int16], let color = message["color"] else {
+            guard let message = newestResult["message"] as? [String: Any], let color = message["color"] as? Int16 else {
                 completion(nil, nil)
                 return
             }
             completion(Color(rawValue: color), timetoken)
-            print(newestResult)
-//            completion(colo)
         }
     }
     
@@ -76,8 +74,6 @@ class Network: NSObject, PNObjectEventListener {
                 }
             }
         }
-        // search history to update color
-        
     }
     
     
@@ -349,7 +345,10 @@ class Network: NSObject, PNObjectEventListener {
     }
     
     func publish(color: Color) {
-        publish(payload: ["color": color.rawValue], toChannel: colorChannel)
+        var payload = [String: Any]()
+        payload["color"] = color.rawValue
+        payload["name"] = color.title
+        publish(payload: payload, toChannel: colorChannel)
     }
     
     private func publish(payload: Any?, toChannel: String) {
@@ -509,11 +508,10 @@ class Network: NSObject, PNObjectEventListener {
             case self.chatChannel:
                 _ = DataController.sharedController.createCoreDataEvent(in: self.networkContext, for: message, with: self.user)
             case self.colorChannel:
-                guard let payload = message.data.message as? [String: Int16], let color = payload["color"] else {
+                guard let payload = message.data.message as? [String: Any], let color = payload["color"] as? Int16 else {
                     return
                 }
                 _ = self.user?.update(color: Color(rawValue: color), with: message.data.timetoken.int64Value)
-//                self.user?.backgroundColor = Color(rawValue: color)!
             default:
                 print("We can't handle other types of messages!")
                 return
