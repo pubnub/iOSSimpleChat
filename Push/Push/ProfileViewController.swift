@@ -50,16 +50,26 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         fatalError("init(coder:) has not been implemented")
     }
     
+    var backgroundView: UIImageView!
+    
     override func loadView() {
         stackView = UIStackView(frame: .zero)
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .equalSpacing
         //        stackView.distribution = .fillProportionally
-        let backgroundView = UIView(frame: .zero)
-        backgroundView.backgroundColor = .white
-        backgroundView.addSubview(stackView)
-        self.view = backgroundView
+//        let baseView = UIView(frame: .zero)
+//        baseView.backgroundColor = .white
+//        baseView.addSubview(stackView)
+//        self.view = backgroundView
+//        self.view.setNeedsLayout()
+        backgroundView = UIImageView(frame: .zero)
+        let baseView = UIView(frame: .zero)
+        baseView.addSubview(backgroundView)
+        backgroundView.sizeAndCenter(to: baseView)
+        baseView.addSubview(stackView)
+        baseView.bringSubview(toFront: stackView)
+        self.view = baseView
         self.view.setNeedsLayout()
     }
 
@@ -96,13 +106,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped(sender:)), for: .touchUpInside)
         profileImageButton.setImage(UIImage(named: "pubnub.png"), for: .normal)
         stackView.addArrangedSubview(profileImageButton)
-    
-//        profileNameButton.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.5).isActive = true
-//        profileNameButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 100).isActive = true
-//        profileNameInstructionsLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 20.0).isActive = true
-//        profileNameInstructionsLabel.heightAnchor.constraint(equalToConstant: 20.0).isActive = true
-//        profileNameButton.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.20).isActive = true
-//        profileImageInstructionsLabel.heightAnchor.constraint(equalToConstant: 20.0).isActive = true
         
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
@@ -117,6 +120,10 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        currentUser = nil
+    }
+    
+    deinit {
         currentUser = nil
     }
 
@@ -140,7 +147,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         let alertController = UIAlertController(title: "Choose a source", message: "Select a source below", preferredStyle: .alert)
         let cameraTitle = "Camera"
         let photosTitle = "Photo Library"
-//        let imagePickerController = UIImagePickerController()
         let handler: (UIAlertAction) -> Void = { (action) in
             let imagePickerController = UIImagePickerController()
             var sourceType: UIImagePickerControllerSourceType
@@ -180,20 +186,22 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
     
     var canSave: Bool = false {
         didSet {
-            DispatchQueue.main.async {
-                self.navigationItem.rightBarButtonItem?.isEnabled = self.canSave
+            DispatchQueue.main.async { [weak self] in
+                guard let actualCanSave = self?.canSave else {
+                    return
+                }
+                self?.navigationItem.rightBarButtonItem?.isEnabled = actualCanSave
             }
         }
     }
     
     var currentUser: User? {
         didSet {
-            let observingKeyPath = #keyPath(User.name)
-            let otherPath = #keyPath(User.thumbnail)
-            oldValue?.removeObserver(self, forKeyPath: observingKeyPath, context: &profileViewContext)
-            currentUser?.addObserver(self, forKeyPath: observingKeyPath, options: [.new, .old, .initial], context: &profileViewContext)
-            oldValue?.removeObserver(self, forKeyPath: otherPath, context: &profileViewContext)
-            currentUser?.addObserver(self, forKeyPath: otherPath, options: [.new, .old, .initial], context: &profileViewContext)
+            let observingKeyPaths = [#keyPath(User.name), #keyPath(User.thumbnail), #keyPath(User.rawBackgroundColor)]
+            observingKeyPaths.forEach { (keyPath) in
+                oldValue?.removeObserver(self, forKeyPath: keyPath, context: &profileViewContext)
+                self.currentUser?.addObserver(self, forKeyPath: keyPath, options: [.new, .old, .initial], context: &profileViewContext)
+            }
         }
     }
     
@@ -207,6 +215,8 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
                 updateName()
             case #keyPath(User.thumbnail):
                 updateImage()
+            case #keyPath(User.rawBackgroundColor):
+                updateBackgroundView()
             default:
                 fatalError("what wrong in KVO?")
             }
@@ -215,24 +225,37 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
     }
     
+    func updateBackgroundView() {
+        DataController.sharedController.viewContext.perform { [weak self] in
+            guard let actualUser = self?.currentUser else {
+                return
+            }
+            let backgroundColor = actualUser.backgroundColor.uiColor
+            DispatchQueue.main.async { [weak self] in
+                self?.backgroundView.image = UIImage(color: backgroundColor)
+                self?.backgroundView.setNeedsLayout()
+            }
+        }
+    }
+    
     func updateName() {
         guard let actualUser = currentUser else {
             canSave = false
             return
         }
-        DataController.sharedController.viewContext.perform {
+        DataController.sharedController.viewContext.perform { [weak self] in
             defer {
-                self.profileNameButton.setNeedsLayout()
+                self?.profileNameButton.setNeedsLayout()
             }
             guard let name = actualUser.name else {
-                self.canSave = false
-                self.profileNameButton.setTitle(nil, for: .selected)
-                self.profileNameButton.isSelected = false
+                self?.canSave = false
+                self?.profileNameButton.setTitle(nil, for: .selected)
+                self?.profileNameButton.isSelected = false
                 return
             }
-            self.canSave = true
-            self.profileNameButton.setTitle(name, for: .selected)
-            self.profileNameButton.isSelected = true
+            self?.canSave = true
+            self?.profileNameButton.setTitle(name, for: .selected)
+            self?.profileNameButton.isSelected = true
         }
     }
     
@@ -240,19 +263,14 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         guard let actualUser = currentUser else {
             return
         }
-        DataController.sharedController.viewContext.perform {
+        DataController.sharedController.viewContext.perform { [weak self] in
             defer {
-                self.profileImageButton.setNeedsLayout()
+                self?.profileImageButton.setNeedsLayout()
             }
             guard let thumbnail = actualUser.thumbnail else {
-//                self.profileNameButton.setTitle(nil, for: .selected)
-//                self.profileImageButton.setImage(nil, for: .selected)
-//                self.profileImageButton.isSelected = false
                 return
             }
-//            self.profileNameButton.setTitle(name, for: .selected)
-            self.profileImageButton.setImage(thumbnail, for: .normal)
-//            self.profileImageButton.isSelected = true
+            self?.profileImageButton.setImage(thumbnail, for: .normal)
         }
     }
     
