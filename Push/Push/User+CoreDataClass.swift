@@ -35,12 +35,19 @@ public class User: NSManagedObject {
     }
     
     // true if valid update, false if update is too old
-    func update(color: Color?, with timetoken: Int64) -> Bool {
+    func update(color: Color?, with timetoken: Int64, from updater: (name: String?, image: String?)) -> Bool {
         guard let actualColor = color, timetoken > colorUpdateTimetoken else {
             return false
         }
         colorUpdateTimetoken = timetoken
         backgroundColor = actualColor
+        lastColorUpdaterName = updater.name
+        if let thumbnailDataString = updater.image {
+            if let imageData = Data(base64Encoded: thumbnailDataString, options: []) {
+                
+                lastColorUpdaterThumbnail = UIImage(data: imageData)
+            }
+        }
         return true
     }
     
@@ -97,6 +104,14 @@ public class User: NSManagedObject {
             return nil
         }
         let resizedImage = ImageHandler.resizedImage(actualThumbnail, targetWidth: 100.0)
+        return ImageHandler.base64String(for: resizedImage, compressed: true)
+    }
+    
+    var smallThumbnailString: String? {
+        guard let actualThumbnail = thumbnail else {
+            return nil
+        }
+        let resizedImage = ImageHandler.resizedImage(actualThumbnail, targetWidth: 50.0)
         return ImageHandler.base64String(for: resizedImage, compressed: true)
     }
     

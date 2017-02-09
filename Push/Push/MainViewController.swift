@@ -53,10 +53,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
             fatalError("init(coder:) has not been implemented")
         }
         
-        override func layoutSubviews() {
-            super.layoutSubviews()
-        }
-        
         func update(with update: ProfileViewUpdate) {
             if let updatedName = update.name {
                 nameLabel.text = updatedName
@@ -190,7 +186,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        navigationItem.title = "Push!"
         view.backgroundColor = .white
         
         dismissInputAccessoryGR = UITapGestureRecognizer(target: self, action: #selector(dismissInputAccessoryTapped(sender:)))
@@ -277,6 +272,35 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         }
     }
     
+    func updateNavigationTitle() {
+        DataController.sharedController.viewContext.perform {
+            guard let actualUser = self.currentUser else {
+                return
+            }
+            let updatedTitleView = ColorTitleView(name: actualUser.lastColorUpdaterName, image: actualUser.lastColorUpdaterThumbnail)
+            DispatchQueue.main.async {
+                guard let navBar = self.navigationController?.navigationBar else {
+                    return
+                }
+                
+                var updatedSize = navBar.frame.size
+                updatedSize.width = updatedSize.width / 2.0
+                updatedSize.height -= 5.0
+                let titleViewFrame = CGRect(origin: navBar.frame.origin, size: updatedSize)
+                updatedTitleView.frame = titleViewFrame
+                print(titleViewFrame.debugDescription)
+                updatedTitleView.center = navBar.center
+                updatedTitleView.layoutIfNeeded()
+                self.navigationItem.titleView = updatedTitleView
+            }
+        }
+    }
+    
+    func receivedColorUpdate() {
+        updateBackgroundView()
+        updateNavigationTitle()
+    }
+    
     // MARK: - KVO
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -290,7 +314,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
             case #keyPath(User.thumbnail):
                 updateProfileView()
             case #keyPath(User.rawBackgroundColor):
-                updateBackgroundView()
+                receivedColorUpdate()
             default:
                 fatalError("what wrong in KVO?")
             }

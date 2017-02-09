@@ -63,6 +63,8 @@
         <attribute name="colorUpdateTimetoken" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="identifier" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="isSubscribingToDebug" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="lastColorUpdaterName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="lastColorUpdaterThumbnail" optional="YES" attributeType="Transformable" valueTransformerName="ImageToDataTransformer" customClassName="UIImage" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" indexed="YES" syncable="YES"/>
         <attribute name="origin" attributeType="String" defaultValueString="ps.pndsn.com" syncable="YES"/>
         <attribute name="publishKey" attributeType="String" syncable="YES"/>
@@ -84,6 +86,6 @@
         <element name="Result" positionX="-18" positionY="27" width="128" height="150"/>
         <element name="Status" positionX="0" positionY="90" width="128" height="75"/>
         <element name="SubscribeStatus" positionX="-18" positionY="72" width="128" height="150"/>
-        <element name="User" positionX="-18" positionY="72" width="128" height="255"/>
+        <element name="User" positionX="-18" positionY="72" width="128" height="285"/>
     </elements>
 </model>

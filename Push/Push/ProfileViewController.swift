@@ -207,6 +207,30 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
     }
     
+    func updateNavigationTitle() {
+        DataController.sharedController.viewContext.perform {
+            guard let actualUser = self.currentUser else {
+                return
+            }
+            let updatedTitleView = ColorTitleView(name: actualUser.lastColorUpdaterName, image: actualUser.lastColorUpdaterThumbnail)
+            DispatchQueue.main.async {
+                guard let navBar = self.navigationController?.navigationBar else {
+                    return
+                }
+                
+                var updatedSize = navBar.frame.size
+                updatedSize.width = updatedSize.width / 2.0
+                updatedSize.height -= 5.0
+                let titleViewFrame = CGRect(origin: navBar.frame.origin, size: updatedSize)
+                print(titleViewFrame.debugDescription)
+                updatedTitleView.frame = titleViewFrame
+                updatedTitleView.center = navBar.center
+                updatedTitleView.layoutIfNeeded()
+                self.navigationItem.titleView = updatedTitleView
+            }
+        }
+    }
+    
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if context == &profileViewContext {
             guard let existingKeyPath = keyPath else {
@@ -218,13 +242,18 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
             case #keyPath(User.thumbnail):
                 updateImage()
             case #keyPath(User.rawBackgroundColor):
-                updateBackgroundView()
+                receivedColorUpdate()
             default:
                 fatalError("what wrong in KVO?")
             }
         } else {
             super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
+    }
+    
+    func receivedColorUpdate() {
+        updateBackgroundView()
+        updateNavigationTitle()
     }
     
     func updateBackgroundView() {
