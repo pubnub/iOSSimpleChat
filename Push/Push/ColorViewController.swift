@@ -40,13 +40,15 @@ class ColorViewController: UIViewController {
     
     var backgroundView: UIImageView!
     
-    var stackView: UIStackView {
+    class var formattedStackView: UIStackView {
         let superStackView = UIStackView(frame: .zero)
         superStackView.axis = .vertical
         superStackView.alignment = .fill
         superStackView.distribution = .fill
         return superStackView
     }
+    
+    let stackView: UIStackView!
     
     override func loadView() {
         backgroundView = UIImageView(frame: .zero)
@@ -60,6 +62,7 @@ class ColorViewController: UIViewController {
     }
     
     required init() {
+        self.stackView = type(of: self).formattedStackView
         super.init(nibName: nil, bundle: nil)
     }
     

@@ -73,3 +73,16 @@ extension UINavigationItem {
     }
     
 }
+
+extension Dictionary {
+    mutating func merge(with dictionary: Dictionary) {
+        dictionary.forEach { updateValue($1, forKey: $0) }
+    }
+    func merged(with dictionary: Dictionary<Key,Value>) -> Dictionary<Key,Value> {
+        var copy = self
+        dictionary.forEach {
+            copy.updateValue($1, forKey: $0)
+        }
+        return copy
+    }
+}
