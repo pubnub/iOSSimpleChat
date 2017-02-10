@@ -21,7 +21,6 @@
 		510CED7F1E24360D00527101 /* Network.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED7E1E24360D00527101 /* Network.swift */; };
 		510CED821E24405E00527101 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED811E24405E00527101 /* DataController.swift */; };
 		510CED841E2446D200527101 /* ClientConsoleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED831E2446D200527101 /* ClientConsoleView.swift */; };
-		510CED861E2446E900527101 /* ManagedObjectTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED851E2446E900527101 /* ManagedObjectTableViewCell.swift */; };
 		510CED881E244C4A00527101 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED871E244C4A00527101 /* MainViewController.swift */; };
 		510CED9D1E25733800527101 /* PublishStatus+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED971E25733800527101 /* PublishStatus+CoreDataClass.swift */; };
 		510CED9E1E25733800527101 /* PublishStatus+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED981E25733800527101 /* PublishStatus+CoreDataProperties.swift */; };
@@ -88,7 +87,6 @@
 		510CED801E243D7300527101 /* Push.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Push.entitlements; sourceTree = "<group>"; };
 		510CED811E24405E00527101 /* DataController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		510CED831E2446D200527101 /* ClientConsoleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientConsoleView.swift; sourceTree = "<group>"; };
-		510CED851E2446E900527101 /* ManagedObjectTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedObjectTableViewCell.swift; sourceTree = "<group>"; };
 		510CED871E244C4A00527101 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		510CED971E25733800527101 /* PublishStatus+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PublishStatus+CoreDataClass.swift"; sourceTree = "<group>"; };
 		510CED981E25733800527101 /* PublishStatus+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "PublishStatus+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -230,7 +228,6 @@
 			isa = PBXGroup;
 			children = (
 				510CED831E2446D200527101 /* ClientConsoleView.swift */,
-				510CED851E2446E900527101 /* ManagedObjectTableViewCell.swift */,
 				5154E92E1E36C3B800235C0E /* EventTableViewCell.swift */,
 				510A2F671E4ACEA2001A1DB3 /* MessageTableViewCell.swift */,
 			);
@@ -450,7 +447,6 @@
 				51481C991E32B4D1002FEA7C /* Event+CoreDataClass.swift in Sources */,
 				513FD8B81E3AC0D000ADEC31 /* SubscribeStatus+CoreDataClass.swift in Sources */,
 				51481C9C1E32B4D1002FEA7C /* PushAuditResult+CoreDataProperties.swift in Sources */,
-				510CED861E2446E900527101 /* ManagedObjectTableViewCell.swift in Sources */,
 				516814841E26F05C00A9ED89 /* Result+CoreDataProperties.swift in Sources */,
 				510A2F5E1E4A8E14001A1DB3 /* ProfileViewController.swift in Sources */,
 				510CEDA01E25733800527101 /* Status+CoreDataProperties.swift in Sources */,

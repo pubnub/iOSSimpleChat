@@ -18,9 +18,12 @@ extension UIColor {
     }
 }
 
+@objc
 protocol ClientConsoleViewDelegate: NSObjectProtocol {
     // func scrollViewDidScroll(_ scrollView: UIScrollView)
-    func consoleViewDidMove(_ consoleView: ClientConsoleView)
+    @objc optional func consoleViewDidMove(_ consoleView: ClientConsoleView)
+    // public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    @objc optional func consoleViewCurrentUserIdentifier(_ consoleView: ClientConsoleView) -> String?
 }
 
 class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControllerDelegate, UITableViewDelegate, UIScrollViewDelegate {
@@ -44,7 +47,6 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         tableView.allowsSelection = false
         tableView.delegate = self
         tableView.forceAutoLayout()
-//        tableView.register(EventTableViewCell.self, forCellReuseIdentifier: EventTableViewCell.reuseIdentifier())
         tableView.register(MessageTableViewCell.self, forCellReuseIdentifier: MessageTableViewCell.reuseIdentifier())
         addSubview(tableView)
         let widthConstraint = NSLayoutConstraint(item: tableView, attribute: .width, relatedBy: .equal, toItem: self, attribute: .width, multiplier: 1.0, constant: 0.0)
@@ -66,26 +68,19 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     
     // MARK: - UITableViewDataSource
     
-//    func configureCell(cell: UITableViewCell, indexPath: IndexPath) {
-//        guard let eventCell = cell as? EventTableViewCell else {
-//            fatalError()
-//        }
-//        let event = fetchedResultsController.object(at: indexPath)
-//        // Populate cell from the NSManagedObject instance
-//        eventCell.update(with: event)
-//    }
-    
     func configureCell(cell: UITableViewCell, indexPath: IndexPath) {
         DataController.sharedController.viewContext.perform {
             guard let eventCell = cell as? MessageTableViewCell else {
                 fatalError()
             }
             guard let message = self.fetchedResultsController.object(at: indexPath) as? Message else {
-//                fatalError("Can't handle other type here")
                 return
             }
             
-            let update = MessageCellUpdate(name: message.publisherName!, image: message.thumbnail, message: message.message)
+            var update = MessageCellUpdate(name: message.publisherName!, image: message.thumbnail, message: message.message)
+            if let publisherID = message.publisher, let messageID = self.delegate?.consoleViewCurrentUserIdentifier?(self), publisherID == messageID {
+                update.isSelf = true
+            }
             // Populate cell from the NSManagedObject instance
             eventCell.update(with: update)
         }
@@ -111,11 +106,6 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
         return sections.count
     }
     
-//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: EventTableViewCell.reuseIdentifier(), for: indexPath)
-//        configureCell(cell: cell, indexPath: indexPath)
-//        return cell
-//    }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: MessageTableViewCell.reuseIdentifier(), for: indexPath)
         configureCell(cell: cell, indexPath: indexPath)
@@ -133,7 +123,7 @@ class ClientConsoleView: UIView, UITableViewDataSource, NSFetchedResultsControll
     // MARK: - UIScrollViewDelegate
 
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        delegate?.consoleViewDidMove(self)
+        delegate?.consoleViewDidMove?(self)
     }
     
     // MARK: - NSFetchedResultsControllerDelegate

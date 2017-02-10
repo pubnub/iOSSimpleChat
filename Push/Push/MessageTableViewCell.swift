@@ -12,7 +12,7 @@ struct MessageCellUpdate {
     let name: String
     let image: UIImage?
     let message: String?
-    let isSelf: Bool
+    var isSelf: Bool
     
     init(name: String, image: UIImage?, message: String?, isSelf: Bool = false) {
         self.name = name
@@ -51,6 +51,9 @@ class MessageTableViewCell: UITableViewCell {
         textLabel?.text = update.message
         detailTextLabel?.text = "from \(update.name)"
         detailTextLabel?.isHidden = false
+        if update.isSelf {
+            print("Handle isSelf")
+        }
         setNeedsLayout()
     }
     

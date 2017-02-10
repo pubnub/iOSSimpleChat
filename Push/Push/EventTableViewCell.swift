@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class EventTableViewCell: ManagedObjectTableViewCell {
+class EventTableViewCell: UITableViewCell {
 
     let textView: UITextView
     
@@ -31,7 +31,7 @@ class EventTableViewCell: ManagedObjectTableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func update(with object: NSManagedObject) {
+    func update(with object: NSManagedObject) {
         guard let event = object as? Event else {
             fatalError("Failed to convert: \(object.debugDescription)")
         }
