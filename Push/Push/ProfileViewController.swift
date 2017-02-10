@@ -8,9 +8,7 @@
 
 import UIKit
 
-class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
-    var stackView: UIStackView!
+class ProfileViewController: ColorViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var profileImageButton: UIButton!
     var profileNameButton: UIButton!
@@ -40,37 +38,12 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         //        accessoryView.frame = CGRect(origin: bounds.origin, size: accessorySize)
     }
     
-    init() {
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    private var profileViewContext = 0
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    var backgroundView: UIImageView!
-    
-    override func loadView() {
-        stackView = UIStackView(frame: .zero)
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .equalSpacing
-        //        stackView.distribution = .fillProportionally
-//        let baseView = UIView(frame: .zero)
-//        baseView.backgroundColor = .white
-//        baseView.addSubview(stackView)
-//        self.view = backgroundView
-//        self.view.setNeedsLayout()
-        backgroundView = UIImageView(frame: .zero)
-        let baseView = UIView(frame: .zero)
-        baseView.addSubview(backgroundView)
-        backgroundView.sizeAndCenter(to: baseView)
-        baseView.addSubview(stackView)
-        baseView.bringSubview(toFront: stackView)
-        self.view = baseView
-        self.view.setNeedsLayout()
+    override class var formattedStackView: UIStackView {
+        let creatingStackView = UIStackView(frame: .zero)
+        creatingStackView.axis = .vertical
+        creatingStackView.alignment = .fill
+        creatingStackView.distribution = .equalSpacing
+        return creatingStackView
     }
 
     override func viewDidLoad() {
@@ -111,22 +84,7 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         
         stackView.isLayoutMarginsRelativeArrangement = true
         stackView.layoutMargins = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
-        
-        view.setNeedsLayout()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        currentUser = DataController.sharedController.fetchCurrentUser()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        currentUser = nil
-    }
-    
-    deinit {
-        currentUser = nil
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -197,49 +155,6 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
     }
     
-    var currentUser: User? {
-        didSet {
-            let observingKeyPaths = [#keyPath(User.name), #keyPath(User.thumbnail), #keyPath(User.rawBackgroundColor)]
-            observingKeyPaths.forEach { (keyPath) in
-                oldValue?.removeObserver(self, forKeyPath: keyPath, context: &profileViewContext)
-                self.currentUser?.addObserver(self, forKeyPath: keyPath, options: [.new, .old, .initial], context: &profileViewContext)
-            }
-        }
-    }
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if context == &profileViewContext {
-            guard let existingKeyPath = keyPath else {
-                return
-            }
-            switch existingKeyPath {
-            case #keyPath(User.name):
-                updateName()
-            case #keyPath(User.thumbnail):
-                updateImage()
-            case #keyPath(User.rawBackgroundColor):
-                updateBackgroundView()
-            default:
-                fatalError("what wrong in KVO?")
-            }
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-        }
-    }
-    
-    func updateBackgroundView() {
-        DataController.sharedController.viewContext.perform { [weak self] in
-            guard let actualUser = self?.currentUser else {
-                return
-            }
-            let backgroundColor = actualUser.backgroundColor.uiColor
-            DispatchQueue.main.async { [weak self] in
-                self?.backgroundView.image = UIImage(color: backgroundColor)
-                self?.backgroundView.setNeedsLayout()
-            }
-        }
-    }
-    
     func updateName() {
         guard let actualUser = currentUser else {
             canSave = false
@@ -276,6 +191,13 @@ class ProfileViewController: UIViewController, UIImagePickerControllerDelegate, 
         }
     }
     
+    override class var observerResponses: [String:Selector] {
+        var finalObserverResponses = super.observerResponses
+        let addingObserverResponses = [#keyPath(User.name): #selector(updateName),
+                                       #keyPath(User.thumbnail): #selector(updateImage)]
+        finalObserverResponses.merge(with: addingObserverResponses)
+        return finalObserverResponses
+    }
 
     // MARK: - UIImagePickerControllerDelegate
     

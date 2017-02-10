@@ -12,7 +12,7 @@ class ColorSegmentedControl: UISegmentedControl {
     
     override init(items: [Any]?) {
         super.init(items: items)
-//        isMomentary = true
+        isMomentary = true
         let whiteImage = UIImage(color: .white)!
 //        tintColor = .clear
         setBackgroundImage(whiteImage, for: .normal, barMetrics: .default)

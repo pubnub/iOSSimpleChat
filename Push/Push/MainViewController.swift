@@ -7,10 +7,9 @@
 //
 
 import UIKit
-import PubNub
 import CoreData
 
-class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleViewDelegate {
+class MainViewController: ColorViewController, UITextFieldDelegate, ClientConsoleViewDelegate {
     
     struct ProfileViewUpdate {
         let name: String?
@@ -53,10 +52,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
             fatalError("init(coder:) has not been implemented")
         }
         
-        override func layoutSubviews() {
-            super.layoutSubviews()
-        }
-        
         func update(with update: ProfileViewUpdate) {
             if let updatedName = update.name {
                 nameLabel.text = updatedName
@@ -74,10 +69,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         inputAccessoryView?.resignFirstResponder()
     }
     
-    private var mainViewContext = 0
-        
-    var stackView: UIStackView!
-        
     let fetchRequest: NSFetchRequest<Event> = {
         let request: NSFetchRequest<Event> = Event.fetchRequest()
         request.predicate = NSPredicate(format: "self.entity == %@", Message.entity())
@@ -122,6 +113,7 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        print("look at this at some point \(#line)")
         let bounds = UIScreen.main.bounds
         var topPadding = UIApplication.shared.statusBarFrame.height
         if let navBarHeight = navigationController?.navigationBar.frame.height {
@@ -132,50 +124,12 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         view.frame = bounds
     }
     
-    func updateBackgroundView() {
-        DataController.sharedController.viewContext.perform {
-            guard let actualUser = self.currentUser else {
-                return
-            }
-            let backgroundColor = actualUser.backgroundColor.uiColor
-            DispatchQueue.main.async {
-                self.backgroundView.image = UIImage(color: backgroundColor)
-                self.backgroundView.setNeedsLayout()
-            }
-        }
-    }
-    
     public override var inputAccessoryView: UIView? {
         return customAccessoryView
     }
     
     public override var canBecomeFirstResponder: Bool {
         return true
-    }
-    
-    var backgroundView: UIImageView!
-    
-    override func loadView() {
-        stackView = UIStackView(frame: .zero)
-        stackView.axis = .vertical
-        stackView.alignment = .fill
-        stackView.distribution = .fill
-        backgroundView = UIImageView(frame: .zero)
-        let baseView = UIView(frame: .zero)
-        baseView.addSubview(backgroundView)
-        backgroundView.sizeAndCenter(to: baseView)
-        baseView.addSubview(stackView)
-        baseView.bringSubview(toFront: stackView)
-        self.view = baseView
-        self.view.setNeedsLayout()
-    }
-    
-    required init() {
-        super.init(nibName: nil, bundle: nil)
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     var colorSegmentedControl: ColorSegmentedControl!
@@ -190,8 +144,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        navigationItem.title = "Push!"
-        view.backgroundColor = .white
         
         dismissInputAccessoryGR = UITapGestureRecognizer(target: self, action: #selector(dismissInputAccessoryTapped(sender:)))
         profileView = ProfileView()
@@ -214,7 +166,9 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         view.setNeedsLayout()
         consoleView.scrollToBottom()
         consoleView.delegate = self
+        view.setNeedsLayout()
     }
+    
     
     func optionsButtonPressed(sender: UIBarButtonItem) {
         let optionsAlertController = UIAlertController.optionsAlertController(in: DataController.sharedController.viewContext) { (action) in
@@ -239,30 +193,18 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
         publish()
         return true
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        currentUser = DataController.sharedController.fetchCurrentUser()
-    }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        currentUser = nil
         inputAccessoryView?.resignFirstResponder()
     }
     
-    deinit {
-        currentUser = nil
-    }
-    
-    var currentUser: User? {
-        didSet {
-            let observingKeyPaths = [#keyPath(User.name), #keyPath(User.thumbnail), #keyPath(User.rawBackgroundColor)]
-            observingKeyPaths.forEach { (keyPath) in
-                oldValue?.removeObserver(self, forKeyPath: keyPath, context: &mainViewContext)
-                self.currentUser?.addObserver(self, forKeyPath: keyPath, options: [.new, .old, .initial], context: &mainViewContext)
-            }
-        }
+    override class var observerResponses: [String:Selector] {
+        var finalObserverResponses = super.observerResponses
+        let addingObserverResponses = [#keyPath(User.name): #selector(updateProfileView),
+         #keyPath(User.thumbnail): #selector(updateProfileView)]
+        finalObserverResponses.merge(with: addingObserverResponses)
+        return finalObserverResponses
     }
     
     func updateProfileView() {
@@ -274,28 +216,6 @@ class MainViewController: UIViewController, UITextFieldDelegate, ClientConsoleVi
             DispatchQueue.main.async {
                 self.profileView.update(with: update)
             }
-        }
-    }
-    
-    // MARK: - KVO
-    
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if context == &mainViewContext {
-            guard let existingKeyPath = keyPath else {
-                return
-            }
-            switch existingKeyPath {
-            case #keyPath(User.name):
-                fallthrough
-            case #keyPath(User.thumbnail):
-                updateProfileView()
-            case #keyPath(User.rawBackgroundColor):
-                updateBackgroundView()
-            default:
-                fatalError("what wrong in KVO?")
-            }
-        } else {
-            super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
         }
     }
     

@@ -28,6 +28,8 @@
 		510CED9F1E25733800527101 /* Status+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED991E25733800527101 /* Status+CoreDataClass.swift */; };
 		510CEDA01E25733800527101 /* Status+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CED9A1E25733800527101 /* Status+CoreDataProperties.swift */; };
 		510CEDA41E25789900527101 /* ModelExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510CEDA31E25789900527101 /* ModelExtensions.swift */; };
+		512423801E4D070800949A7C /* ColorTitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5124237F1E4D070800949A7C /* ColorTitleView.swift */; };
+		512423821E4D918700949A7C /* ColorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512423811E4D918700949A7C /* ColorViewController.swift */; };
 		513FD8901E39C48B00ADEC31 /* Options.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513FD88F1E39C48B00ADEC31 /* Options.swift */; };
 		513FD8B81E3AC0D000ADEC31 /* SubscribeStatus+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513FD8B41E3AC0D000ADEC31 /* SubscribeStatus+CoreDataClass.swift */; };
 		513FD8B91E3AC0D000ADEC31 /* SubscribeStatus+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513FD8B51E3AC0D000ADEC31 /* SubscribeStatus+CoreDataProperties.swift */; };
@@ -93,6 +95,8 @@
 		510CED991E25733800527101 /* Status+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Status+CoreDataClass.swift"; sourceTree = "<group>"; };
 		510CED9A1E25733800527101 /* Status+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Status+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		510CEDA31E25789900527101 /* ModelExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelExtensions.swift; sourceTree = "<group>"; };
+		5124237F1E4D070800949A7C /* ColorTitleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorTitleView.swift; sourceTree = "<group>"; };
+		512423811E4D918700949A7C /* ColorViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorViewController.swift; sourceTree = "<group>"; };
 		513FD88F1E39C48B00ADEC31 /* Options.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Options.swift; sourceTree = "<group>"; };
 		513FD8B41E3AC0D000ADEC31 /* SubscribeStatus+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SubscribeStatus+CoreDataClass.swift"; sourceTree = "<group>"; };
 		513FD8B51E3AC0D000ADEC31 /* SubscribeStatus+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SubscribeStatus+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -265,6 +269,7 @@
 			children = (
 				510CED871E244C4A00527101 /* MainViewController.swift */,
 				510A2F5D1E4A8E14001A1DB3 /* ProfileViewController.swift */,
+				512423811E4D918700949A7C /* ColorViewController.swift */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -274,6 +279,7 @@
 			children = (
 				51481C8C1E319A24002FEA7C /* Console */,
 				513FD88F1E39C48B00ADEC31 /* Options.swift */,
+				5124237F1E4D070800949A7C /* ColorTitleView.swift */,
 				510A2F5F1E4A99C5001A1DB3 /* PublishInputAccessoryView.swift */,
 				510A2F611E4A9C09001A1DB3 /* ColorSegmentedControl.swift */,
 			);
@@ -426,6 +432,7 @@
 				510CEDA41E25789900527101 /* ModelExtensions.swift in Sources */,
 				510CED9F1E25733800527101 /* Status+CoreDataClass.swift in Sources */,
 				5168147F1E26F05C00A9ED89 /* Channel+CoreDataClass.swift in Sources */,
+				512423821E4D918700949A7C /* ColorViewController.swift in Sources */,
 				510A2F661E4AB587001A1DB3 /* UserExtensions.swift in Sources */,
 				5154E92F1E36C3B800235C0E /* EventTableViewCell.swift in Sources */,
 				510CED821E24405E00527101 /* DataController.swift in Sources */,
@@ -448,6 +455,7 @@
 				510A2F5E1E4A8E14001A1DB3 /* ProfileViewController.swift in Sources */,
 				510CEDA01E25733800527101 /* Status+CoreDataProperties.swift in Sources */,
 				510A2F601E4A99C5001A1DB3 /* PublishInputAccessoryView.swift in Sources */,
+				512423801E4D070800949A7C /* ColorTitleView.swift in Sources */,
 				510CED7D1E24356800527101 /* UtilityExtensions.swift in Sources */,
 				510CED881E244C4A00527101 /* MainViewController.swift in Sources */,
 				51EB8E621E37F7550091FE01 /* Configuration.swift in Sources */,

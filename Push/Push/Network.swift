@@ -37,26 +37,33 @@ class Network: NSObject, PNObjectEventListener {
         }
     }
     
-    func getNewestColorInHistory(completion: @escaping (Color?, Int64?) -> ()) {
+    func getNewestColorInHistory(completion: @escaping (Color?, Int64?, (name: String?, image: String?)) -> ()) {
         client.historyForChannel(colorChannel, start: nil, end: nil, limit: 1, includeTimeToken: true) { (result, error) in
             if let actualError = error {
                 print(actualError.errorData.information)
-                completion(nil, nil)
+                completion(nil, nil, (nil, nil))
                 return
             }
             guard let newestResult = result?.data.messages.first as? [String: Any] else {
-                completion(nil, nil)
+                completion(nil, nil, (nil, nil))
                 return
             }
             guard let timetoken = newestResult["timetoken"] as? Int64 else {
-                completion(nil, nil)
+                completion(nil, nil, (nil, nil))
                 return
             }
             guard let message = newestResult["message"] as? [String: Any], let color = message["color"] as? Int16 else {
-                completion(nil, nil)
+                completion(nil, nil, (nil, nil))
                 return
             }
-            completion(Color(rawValue: color), timetoken)
+            var lastUpdater: (name: String?, image: String?) = (nil, nil)
+            if let actualName = message["name"] as? String {
+                lastUpdater.name = actualName
+            }
+            if let actualImage = message["image"] as? String {
+                lastUpdater.image = actualImage
+            }
+            completion(Color(rawValue: color), timetoken, lastUpdater)
         }
     }
     
@@ -64,12 +71,12 @@ class Network: NSObject, PNObjectEventListener {
         guard notification.name == .UIApplicationDidBecomeActive else {
             return
         }
-        getNewestColorInHistory { (updatedColor, updatedTimetoken) in
+        getNewestColorInHistory { (updatedColor, updatedTimetoken, lastUpdater) in
             guard let actualColor = updatedColor, let actualTimetoken = updatedTimetoken else {
                 return
             }
             self.networkContext.perform {
-                if let _ = self.user?.update(color: actualColor, with: actualTimetoken) {
+                if let _ = self.user?.update(color: actualColor, with: actualTimetoken, from: lastUpdater) {
                     DataController.sharedController.save(context: self.networkContext)
                 }
             }
@@ -348,7 +355,18 @@ class Network: NSObject, PNObjectEventListener {
         var payload = [String: Any]()
         payload["color"] = color.rawValue
         payload["name"] = color.title
-        publish(payload: payload, toChannel: colorChannel)
+        networkContext.perform {
+            guard let actualUser = self.user else {
+                return
+            }
+            if let actualThumbnail = actualUser.smallThumbnailString {
+                payload["image"] = actualThumbnail
+            }
+            if let actualName = actualUser.name {
+                payload["name"] = actualName
+            }
+            self.publish(payload: payload, toChannel: self.colorChannel)
+        }
     }
     
     private func publish(payload: Any?, toChannel: String) {
@@ -511,7 +529,14 @@ class Network: NSObject, PNObjectEventListener {
                 guard let payload = message.data.message as? [String: Any], let color = payload["color"] as? Int16 else {
                     return
                 }
-                _ = self.user?.update(color: Color(rawValue: color), with: message.data.timetoken.int64Value)
+                var lastColorUpdater: (name: String?, image: String?) = (nil, nil)
+                if let actualName = payload["name"] as? String {
+                    lastColorUpdater.name = actualName
+                }
+                if let actualImage = payload["image"] as? String {
+                    lastColorUpdater.image = actualImage
+                }
+                _ = self.user?.update(color: Color(rawValue: color), with: message.data.timetoken.int64Value, from: lastColorUpdater)
             default:
                 print("We can't handle other types of messages!")
                 return

@@ -27,6 +27,8 @@ extension User {
     @NSManaged public var events: Set<Event>?
     @NSManaged public var name: String?
     @NSManaged public var thumbnail: UIImage?
+    @NSManaged public var lastColorUpdaterThumbnail: UIImage?
+    @NSManaged public var lastColorUpdaterName: String?
     @NSManaged public var showDebug: Bool
     @NSManaged public var rawBackgroundColor: Int16
     @NSManaged public var colorUpdateTimetoken: Int64
