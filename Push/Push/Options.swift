@@ -40,57 +40,15 @@ extension UIAlertController {
         }
         alertController.addAction(screenStateAction)
         
-//        var showDebug = false
-//        context.performAndWait {
-//            let currentUser = DataController.sharedController.fetchCurrentUser(in: context)
-//            showDebug = currentUser.showDebug
-//        }
-        
-//        var isSubscribingTitle = "Subscribe to debug channels"
-//        if isSubscribing {
-//            isSubscribingTitle = "Stop subscribing to debug channels"
-//        }
-        
-//        let subscribeToDebugAction = UIAlertAction(title: isSubscribingTitle, style: .default) { (action) in
-//            DataController.sharedController.performBackgroundTask({ (backgroundContext) in
-//                let user = DataController.sharedController.fetchCurrentUser(in: backgroundContext)
-//                user.isSubscribingToDebug = (!user.isSubscribingToDebug)
-//                do {
-//                    try backgroundContext.save()
-//                } catch {
-//                    fatalError(error.localizedDescription)
-//                }
-//                DispatchQueue.main.async {
-//                    handler?(action)
-//                }
-//            })
-//        }
-//        alertController.addAction(subscribeToDebugAction)
-//        var toggleDebugTitle = "Show debug messages"
-//        if showDebug {
-//            toggleDebugTitle = "Hide debug messages"
-//        }
-//        let toggleDebug = UIAlertAction(title: toggleDebugTitle, style: .default) { (action) in
-//            DataController.sharedController.performBackgroundTask({ (backgroundContext) in
-//                let user = DataController.sharedController.fetchCurrentUser(in: backgroundContext)
-//                user.showDebug = (!user.showDebug)
-//                do {
-//                    try backgroundContext.save()
-//                } catch {
-//                    fatalError(error.localizedDescription)
-//                }
-//                DispatchQueue.main.async {
-//                    handler?(action)
-//                }
-//            })
-//        }
-//        alertController.addAction(toggleDebug)
-        
-//        let clearBadgeCountAction = UIAlertAction(title: "Reset application badge count", style: .default) { (action) in
-//            PushNotifications.sharedNotifications.clearBadgeCount()
-//            handler?(action)
-//        }
-//        alertController.addAction(clearBadgeCountAction)
+        let learnMoreAboutPubNubAction = UIAlertAction(title: "Learn more about PubNub", style: .default) { (action) in
+            guard let pubNubURL = URL(string: "https://www.pubnub.com/") else {
+                return
+            }
+            UIApplication.shared.open(pubNubURL, options: [:], completionHandler: { (_) in
+                handler?(action)
+            })
+        }
+        alertController.addAction(learnMoreAboutPubNubAction)
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             handler?(action)
