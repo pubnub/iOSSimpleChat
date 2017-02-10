@@ -224,5 +224,9 @@ class MainViewController: ColorViewController, UITextFieldDelegate, ClientConsol
     func consoleViewDidMove(_ consoleView: ClientConsoleView) {
         inputAccessoryView?.resignFirstResponder()
     }
+    
+    func consoleViewCurrentUserIdentifier(_ consoleView: ClientConsoleView) -> String? {
+        return currentUser?.identifier
+    }
 
 }
