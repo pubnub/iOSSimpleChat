@@ -61,36 +61,27 @@ class PublishInputAccessoryView: UIView {
         textField.backgroundColor = .white
         textField.clearButtonMode = .whileEditing
         let publishFrame = CGRect(x: 0, y: 0, width: frame.width/5.0, height: frame.height)
-        textField.placeholder = "Enter message ..."
-//        publishButton = UIButton(frame: publishFrame)
+        textField.placeholder = "Tap here to type a message ..."
         publishButton.forceAutoLayout()
-        //let publishButton = UIButton(type: .system)
         publishButton.setTitle("Publish", for: .normal)
+        publishButton.setTitleColor(.black, for: .normal)
         publishButton.layer.cornerRadius = 5.0
         publishButton.layer.masksToBounds = true
-        let normalImage = UIImage(color: .blue, size: publishFrame.size)
+        let normalImage = UIImage(color: .cyan, size: publishFrame.size)
         let highlightedImage = UIImage(color: .lightGray, size: publishFrame.size)
         publishButton.setBackgroundImage(normalImage, for: .normal)
         publishButton.setBackgroundImage(highlightedImage, for: .highlighted)
         publishButton.addTarget(target, action: action, for: .touchUpInside)
-//        textField.rightView = publishButton
         textField.adjustsFontSizeToFitWidth = true
-//        textField.rightViewMode = .unlessEditing
         textField.clearButtonMode = .always
-//        textField.rightViewMode = .always
         textField.returnKeyType = .send
         textField.forceAutoLayout()
-//        textField.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-//        textField.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-//        textField.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-//        publishButton.forceAutoLayout()
         stackView.addArrangedSubview(publishButton)
         stackView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
         stackView.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
         stackView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         stackView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         textField.widthAnchor.constraint(equalTo: stackView.widthAnchor, multiplier: 0.75).isActive = true
-//        textField.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 0.9).isActive = true
         
     }
     
