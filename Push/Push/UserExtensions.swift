@@ -59,8 +59,12 @@ public enum Color: Int16 {
     
     
     var image: UIImage {
-        let size = CGSize(width: 20.0, height: 20.0)
+        let size = CGSize(width: 50.0, height: 50.0)
         return UIImage(color: uiColor, size: size)!
+    }
+    
+    var originalImage: UIImage {
+        return image.withRenderingMode(.alwaysOriginal)
     }
     
     static var allColors: [Color] {
@@ -72,7 +76,7 @@ public enum Color: Int16 {
     }
     
     static var segmentedControlImages: [Any] {
-        return selectableColors.map { $0.image }
+        return selectableColors.map { $0.originalImage }
     }
     
     static var segmentedControlTitles: [String] {

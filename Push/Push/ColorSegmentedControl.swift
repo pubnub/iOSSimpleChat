@@ -13,9 +13,9 @@ class ColorSegmentedControl: UISegmentedControl {
     override init(items: [Any]?) {
         super.init(items: items)
         isMomentary = true
-        let whiteImage = UIImage(color: .white)!
-//        tintColor = .clear
-        setBackgroundImage(whiteImage, for: .normal, barMetrics: .default)
+        tintColor = .black
+        layer.borderColor = UIColor.black.cgColor
+        layer.borderWidth = 2.0
     }
     
     override init(frame: CGRect) {
@@ -23,8 +23,7 @@ class ColorSegmentedControl: UISegmentedControl {
     }
     
     convenience init() {
-//        self.init(items: Color.segmentedControlImages)
-        self.init(items: Color.segmentedControlTitles)
+        self.init(items: Color.segmentedControlImages)
     }
     
     required init?(coder aDecoder: NSCoder) {
