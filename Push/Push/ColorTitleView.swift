@@ -15,34 +15,27 @@ struct ColorTitleUpdate {
 
 class ColorTitleView: UIView {
     
-//    let name: String?
-//    let image: UIImage?
-
     let imageView = UIImageView(frame: .zero)
     let titleLabel = UILabel(frame: .zero)
     let stackView = UIStackView(frame: .zero)
-    
-//    var imageViewWidthConstraint: NSLayoutConstraint!
-    
+        
     required init(name: String?, image: UIImage?) {
         super.init(frame: .zero)
         addSubview(stackView)
-        //        imageView.forceAutoLayout()
-        //        titleLabel.forceAutoLayout()
         stackView.axis = .horizontal
-        stackView.alignment = .fill
-        stackView.distribution = .equalCentering
+        stackView.alignment = .center
+        stackView.distribution = .fillProportionally
         stackView.forceAutoLayout()
         stackView.sizeAndCenter(to: self)
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(imageView)
         titleLabel.forceAutoLayout()
+        titleLabel.numberOfLines = 2
+        titleLabel.textAlignment = .center
         titleLabel.adjustsFontSizeToFitWidth = true
-        titleLabel.widthAnchor.constraint(lessThanOrEqualTo: stackView.widthAnchor, multiplier: 0.4).isActive = true
+        stackView.spacing = 1.0
         imageView.forceAutoLayout()
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 5.0
-        imageView.widthAnchor.constraint(lessThanOrEqualTo: stackView.heightAnchor).isActive = true
+        imageView.roundCorners()
         imageView.heightAnchor.constraint(lessThanOrEqualTo: imageView.widthAnchor).isActive = true
         update(with: ColorTitleUpdate(image: image, name: name))
     }
@@ -52,7 +45,7 @@ class ColorTitleView: UIView {
     }
     
     func update(with update: ColorTitleUpdate) {
-        var titleText = "Color changed by: "
+        var titleText = "Color changed by:\n"
         defer {
             titleLabel.text = titleText
             setNeedsLayout()

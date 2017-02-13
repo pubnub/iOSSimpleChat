@@ -65,8 +65,7 @@ class PublishInputAccessoryView: UIView {
         publishButton.forceAutoLayout()
         publishButton.setTitle("Publish", for: .normal)
         publishButton.setTitleColor(.black, for: .normal)
-        publishButton.layer.cornerRadius = 5.0
-        publishButton.layer.masksToBounds = true
+        publishButton.roundCorners()
         let normalImage = UIImage(color: .cyan, size: publishFrame.size)
         let highlightedImage = UIImage(color: .lightGray, size: publishFrame.size)
         publishButton.setBackgroundImage(normalImage, for: .normal)

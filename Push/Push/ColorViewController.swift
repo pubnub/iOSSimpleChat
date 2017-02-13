@@ -11,7 +11,7 @@ import CoreData
 
 class ColorViewController: UIViewController {
     
-    private var mainViewContext = 0
+    private var colorViewContext = 0
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -132,8 +132,8 @@ class ColorViewController: UIViewController {
         didSet {
             let observingKeyPaths = type(of: self).observerResponses
             for (keyPath, _) in observingKeyPaths {
-                oldValue?.removeObserver(self, forKeyPath: keyPath, context: &mainViewContext)
-                currentUser?.addObserver(self, forKeyPath: keyPath, options: [.new, .old, .initial], context: &mainViewContext)
+                oldValue?.removeObserver(self, forKeyPath: keyPath, context: &colorViewContext)
+                currentUser?.addObserver(self, forKeyPath: keyPath, options: [.new, .old, .initial], context: &colorViewContext)
             }
         }
     }
@@ -141,7 +141,7 @@ class ColorViewController: UIViewController {
     // MARK: - KVO
     
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        if context == &mainViewContext {
+        if context == &colorViewContext {
             let observingKeyPaths = type(of: self).observerResponses
             guard let actualKeyPath = keyPath, let action = observingKeyPaths[actualKeyPath] else {
                 fatalError("we should have had an action for this keypath since we are observing it")
