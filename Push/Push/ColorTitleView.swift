@@ -15,20 +15,13 @@ struct ColorTitleUpdate {
 
 class ColorTitleView: UIView {
     
-//    let name: String?
-//    let image: UIImage?
-
     let imageView = UIImageView(frame: .zero)
     let titleLabel = UILabel(frame: .zero)
     let stackView = UIStackView(frame: .zero)
-    
-//    var imageViewWidthConstraint: NSLayoutConstraint!
-    
+        
     required init(name: String?, image: UIImage?) {
         super.init(frame: .zero)
         addSubview(stackView)
-        //        imageView.forceAutoLayout()
-        //        titleLabel.forceAutoLayout()
         stackView.axis = .horizontal
         stackView.alignment = .fill
         stackView.distribution = .equalCentering
