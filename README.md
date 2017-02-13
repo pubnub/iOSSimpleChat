@@ -29,6 +29,5 @@ For troubleshooting with this app, please contact us at support@pubnub.com
 ## Tasks
 
 - [ ] Branch for Push Notifications
-- [ ] Format current user vs. all others (left vs. right align)
 - [ ] Fix formatting for UISegmentedControl
 - [ ] Explain that color updates go through PubNub's system, so the slight delay is an around the world trip (also with delays to update User Interface)
