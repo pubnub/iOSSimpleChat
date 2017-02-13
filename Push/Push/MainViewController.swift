@@ -112,15 +112,10 @@ class MainViewController: ColorViewController, UITextFieldDelegate, ClientConsol
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        print("look at this at some point \(#line)")
-        let bounds = UIScreen.main.bounds
-        var topPadding = UIApplication.shared.statusBarFrame.height
-        if let navBarHeight = navigationController?.navigationBar.frame.height {
-            topPadding += navBarHeight
-        }
-        let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding - inputAccessoryHeight)
-        stackView.frame = stackViewFrame
-        view.frame = bounds
+        let currentStackViewFrame = stackView.frame
+        // adjust for inputAccessoryView (publish input at bottom of screen)
+        let updatedStackViewFrame = CGRect(x: currentStackViewFrame.origin.x, y: currentStackViewFrame.origin.y, width: currentStackViewFrame.size.width, height: currentStackViewFrame.size.height - inputAccessoryHeight)
+        stackView.frame = updatedStackViewFrame
     }
     
     public override var inputAccessoryView: UIView? {
