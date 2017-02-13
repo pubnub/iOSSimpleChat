@@ -34,6 +34,7 @@ class MessageTableViewCell: UITableViewCell {
     struct MessageViewUpdate {
         let message: String?
         let author: String?
+        let isSelf: Bool
     }
     
     class MessageView: UIView {
@@ -45,6 +46,7 @@ class MessageTableViewCell: UITableViewCell {
             self.stackView = UIStackView(frame: .zero)
             self.messageLabel = UILabel(frame: .zero)
             self.authorLabel = UILabel(frame: .zero)
+            self.isSelf = false
             super.init(frame: frame)
             stackView.forceAutoLayout()
             addSubview(stackView)
@@ -58,6 +60,7 @@ class MessageTableViewCell: UITableViewCell {
             stackView.addArrangedSubview(messageLabel)
             stackView.addArrangedSubview(authorLabel)
             authorLabel.font = UIFont.boldSystemFont(ofSize: 15.0)
+            roundCorners()
             setNeedsLayout()
         }
         
@@ -80,7 +83,14 @@ class MessageTableViewCell: UITableViewCell {
                 } else {
                     self?.authorLabel.text = nil
                 }
+                self?.isSelf = actualUpdate.isSelf
                 self?.setNeedsLayout()
+            }
+        }
+        
+        var isSelf: Bool {
+            didSet {
+                backgroundColor = (isSelf ? .cyan : .lightGray)
             }
         }
     }
@@ -107,9 +117,7 @@ class MessageTableViewCell: UITableViewCell {
         avatarView.forceAutoLayout()
         avatarView.roundCorners()
         avatarView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 1.0, constant: -5.0).isActive = true
-        
-//        stackView.addArrangedSubview(messageView)
-        
+        contentView.backgroundColor = .clear
         setNeedsLayout()
     }
     
@@ -135,11 +143,11 @@ class MessageTableViewCell: UITableViewCell {
             }
             if update.isSelf {
                 self?.stackView.insertArrangedSubview(actualMessageView, at: 0)
-                self?.backgroundColor = .cyan
+//                self?.backgroundColor = .cyan
             } else {
                 self?.stackView.addArrangedSubview(actualMessageView)
             }
-            let messageUpdate = MessageViewUpdate(message: update.message, author: update.name)
+            let messageUpdate = MessageViewUpdate(message: update.message, author: update.name, isSelf: update.isSelf)
             self?.messageView.update(with: messageUpdate)
             self?.avatarView.image = update.image
             self?.setNeedsLayout()
