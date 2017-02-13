@@ -56,6 +56,8 @@ class MessageTableViewCell: UITableViewCell {
             stackView.spacing = 5.0
             stackView.sizeAndCenter(to: self)
             messageLabel.forceAutoLayout()
+            messageLabel.adjustsFontSizeToFitWidth = true
+            authorLabel.adjustsFontSizeToFitWidth = true
             authorLabel.forceAutoLayout()
             stackView.addArrangedSubview(messageLabel)
             stackView.addArrangedSubview(authorLabel)
@@ -111,7 +113,9 @@ class MessageTableViewCell: UITableViewCell {
         stackView.spacing = 5.0
         stackView.alignment = .center
         stackView.distribution = .equalSpacing
-        stackView.sizeAndCenter(to: contentView)
+        stackView.center(in: contentView)
+        stackView.heightAnchor.constraint(equalTo: contentView.heightAnchor).isActive = true
+        stackView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.8).isActive = true
         
         stackView.addArrangedSubview(avatarView)
         avatarView.forceAutoLayout()
@@ -143,7 +147,6 @@ class MessageTableViewCell: UITableViewCell {
             }
             if update.isSelf {
                 self?.stackView.insertArrangedSubview(actualMessageView, at: 0)
-//                self?.backgroundColor = .cyan
             } else {
                 self?.stackView.addArrangedSubview(actualMessageView)
             }

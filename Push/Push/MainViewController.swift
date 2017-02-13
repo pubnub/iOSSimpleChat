@@ -93,7 +93,6 @@ class MainViewController: ColorViewController, UITextFieldDelegate, ClientConsol
             return
         }
         publishTextField.text = nil
-        print("message: \(message)")
         Network.sharedNetwork.publish(chat: message)
     }
     
