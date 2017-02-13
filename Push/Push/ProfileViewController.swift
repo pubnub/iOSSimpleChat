@@ -24,20 +24,6 @@ class ProfileViewController: ColorViewController, UIImagePickerControllerDelegat
         }
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        let bounds = UIScreen.main.bounds
-        var topPadding = UIApplication.shared.statusBarFrame.height
-        if let navBarHeight = navigationController?.navigationBar.frame.height {
-            topPadding += navBarHeight
-        }
-        let stackViewFrame = CGRect(x: bounds.origin.x, y: bounds.origin.y + topPadding, width: bounds.size.width, height: bounds.size.height - topPadding)
-        stackView.frame = stackViewFrame
-        view.frame = bounds
-//        let accessorySize = CGSize(width: bounds.size.width, height: 100.0)
-        //        accessoryView.frame = CGRect(origin: bounds.origin, size: accessorySize)
-    }
-    
     override class var formattedStackView: UIStackView {
         let creatingStackView = UIStackView(frame: .zero)
         creatingStackView.axis = .vertical
@@ -74,8 +60,7 @@ class ProfileViewController: ColorViewController, UIImagePickerControllerDelegat
         stackView.addArrangedSubview(profileImageInstructionsLabel)
         
         profileImageButton = UIButton(type: .custom)
-        profileImageButton.layer.masksToBounds = true
-        profileImageButton.layer.cornerRadius = 5.0
+        profileImageButton.roundCorners()
         profileImageButton.autoresizesSubviews = false
         profileImageButton.forceAutoLayout()
         profileImageButton.addTarget(self, action: #selector(profileImageButtonTapped(sender:)), for: .touchUpInside)

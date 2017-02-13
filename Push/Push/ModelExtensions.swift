@@ -118,6 +118,7 @@ enum EventType: CoreDataObjectType {
     
 }
 
+@objc(ImageToDataTransformer)
 class ImageToDataTransformer: ValueTransformer {
     
     class override func allowsReverseTransformation() -> Bool {

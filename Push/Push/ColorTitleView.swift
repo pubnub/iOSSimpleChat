@@ -40,8 +40,7 @@ class ColorTitleView: UIView {
         titleLabel.adjustsFontSizeToFitWidth = true
         titleLabel.widthAnchor.constraint(lessThanOrEqualTo: stackView.widthAnchor, multiplier: 0.4).isActive = true
         imageView.forceAutoLayout()
-        imageView.layer.masksToBounds = true
-        imageView.layer.cornerRadius = 5.0
+        imageView.roundCorners()
         imageView.widthAnchor.constraint(lessThanOrEqualTo: stackView.heightAnchor).isActive = true
         imageView.heightAnchor.constraint(lessThanOrEqualTo: imageView.widthAnchor).isActive = true
         update(with: ColorTitleUpdate(image: image, name: name))

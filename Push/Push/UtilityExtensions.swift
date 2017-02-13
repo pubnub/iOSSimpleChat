@@ -33,6 +33,16 @@ extension UIView {
 }
 
 extension UIView {
+    func roundCorners() {
+        // There are more efficient ways to do this,
+        // I should be drawing a UIBezierPath
+        // TODO: Clean this up
+        layer.masksToBounds = true
+        layer.cornerRadius = 5.0
+    }
+}
+
+extension UIView {
     
     var hasConstraints: Bool {
         let hasHorizontalConstraints = !self.constraintsAffectingLayout(for: .horizontal).isEmpty

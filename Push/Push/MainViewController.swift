@@ -39,8 +39,7 @@ class MainViewController: ColorViewController, UITextFieldDelegate, ClientConsol
             stackView.addArrangedSubview(profileImageView)
             stackView.addArrangedSubview(nameLabel)
             profileImageView.forceAutoLayout()
-            profileImageView.layer.masksToBounds = true
-            profileImageView.layer.cornerRadius = 5.0
+            profileImageView.roundCorners()
             nameLabel.forceAutoLayout()
             let constraint = profileImageView.widthAnchor.constraint(lessThanOrEqualTo: heightAnchor)
             constraint.isActive = true

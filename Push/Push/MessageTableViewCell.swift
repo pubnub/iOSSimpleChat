@@ -105,8 +105,7 @@ class MessageTableViewCell: UITableViewCell {
         
         stackView.addArrangedSubview(avatarView)
         avatarView.forceAutoLayout()
-        avatarView.layer.masksToBounds = true
-        avatarView.layer.cornerRadius = 5.0
+        avatarView.roundCorners()
         avatarView.heightAnchor.constraint(equalTo: stackView.heightAnchor, multiplier: 1.0, constant: -5.0).isActive = true
         
 //        stackView.addArrangedSubview(messageView)

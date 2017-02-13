@@ -10,11 +10,21 @@ import UIKit
 import CoreData
 import PubNub
 
+fileprivate let defaultPublishKey = "pub-c-d3e5298d-569b-456d-8098-441375674875"
+fileprivate let defaultSubscribeKey = "sub-c-67dc596e-ee3b-11e6-81cc-0619f8945a4f"
 fileprivate let PrivateChatChannel = "chat"
 fileprivate let PrivateColorChannel = "color"
+fileprivate let defaultOrigin = "ps.pndsn.com"
 
 @objc
 class Network: NSObject, PNObjectEventListener {
+    
+    static var defaultConfiguration: PNConfiguration {
+        let config = PNConfiguration(publishKey: defaultPublishKey, subscribeKey: defaultSubscribeKey)
+        config.stripMobilePayload = false
+        return config
+    }
+
     
     var chatChannel: String {
         return PrivateChatChannel
@@ -105,11 +115,7 @@ class Network: NSObject, PNObjectEventListener {
             print("\(#function) client: \(client.debugDescription)")
             let configuredConfig = currentConfiguration
             networkContext.perform {
-                self.user?.publishKey = configuredConfig.publishKey
-                self.user?.subscribeKey = configuredConfig.subscribeKey
                 self.user?.identifier = configuredConfig.uuid
-                self.user?.authKey = configuredConfig.authKey
-                self.user?.origin = configuredConfig.origin
                 if self.networkContext.hasChanges {
                     User.updateUserID(identifier: self.user?.identifier)
                     do {
@@ -149,16 +155,11 @@ class Network: NSObject, PNObjectEventListener {
                 guard let existingUser = settingUser else {
                     return
                 }
-                var config: PNConfiguration? = nil
+                let config = self.currentConfiguration
                 self.networkContext.performAndWait {
-                    config = PNConfiguration(publishKey: existingUser.publishKey!, subscribeKey: existingUser.subscribeKey!)
-                    config?.stripMobilePayload = false
-                    config?.uuid = existingUser.identifier!
-                    config?.authKey = existingUser.authKey
-                    config?.origin = existingUser.origin!
+                    config.uuid = existingUser.identifier!
                 }
-                self.client = PubNub.clientWithConfiguration(config!, callbackQueue: self.networkQueue)
-                self.client.addListener(self)
+                self.updateClient(with: config)
             }
             networkQueue.async(execute: setItem)
         }
@@ -222,12 +223,13 @@ class Network: NSObject, PNObjectEventListener {
     static let sharedNetwork = Network()
     
     override init() {
-        let config = User.defaultConfiguration
+        let config = Network.defaultConfiguration
         self.client = PubNub.clientWithConfiguration(config)
         let context = DataController.sharedController.newBackgroundContext()
         context.automaticallyMergesChangesFromParent = true
         self.networkContext = context
         super.init()
+        client.addListener(self)
         NotificationCenter.default.addObserver(self, selector: #selector(didReceiveAppStateChange(notification:)), name: .UIApplicationDidBecomeActive, object: nil)
     }
     

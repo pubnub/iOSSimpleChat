@@ -10,24 +10,15 @@ import Foundation
 import CoreData
 import PubNub
 
-fileprivate let defaultPublishKey = "pub-c-d3e5298d-569b-456d-8098-441375674875"
-fileprivate let defaultSubscribeKey = "sub-c-67dc596e-ee3b-11e6-81cc-0619f8945a4f"
 fileprivate let UserIdentifierKey = "UserIdentifierKey"
 
 @objc(User)
 public class User: NSManagedObject {
     
-    static var defaultConfiguration: PNConfiguration {
-        let config = PNConfiguration(publishKey: defaultPublishKey, subscribeKey: defaultSubscribeKey)
-        config.stripMobilePayload = false
-        return config
-    }
-    
+        
     public override func awakeFromInsert() {
         super.awakeFromInsert()
         identifier = UUID().uuidString
-        subscribeKey = defaultSubscribeKey
-        publishKey = defaultPublishKey
         showDebug = false
         thumbnail = UIImage(named: "pubnub.png")
         backgroundColor = .white
